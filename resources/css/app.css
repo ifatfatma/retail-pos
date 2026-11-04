@@ -1,0 +1,10 @@
+
+body {
+    background: #f5f7fb;
+    font-family: Arial, sans-serif;
+}
+
+.dashboard-card h3 {
+    color: #17365d;
+    font-weight: 700;
+}
