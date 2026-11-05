@@ -1,4 +1,3 @@
-
 <template>
     <aside class="sidebar">
 
@@ -43,7 +42,7 @@
         </router-link>
 
         <div class="sidebar-heading">
-            SALES
+            SALES & FULFILLMENT
         </div>
 
         <router-link to="/admin/pos" class="menu-link">
@@ -54,12 +53,61 @@
             Online Orders
         </router-link>
 
+        <router-link to="/admin/coupons" class="menu-link">
+            🏷️ Coupons & Discounts
+        </router-link>
+
         <router-link to="/admin/reports" class="menu-link">
             Reports
         </router-link>
 
+        <div class="sidebar-heading">
+            STOREFRONT & CMS
+        </div>
+
+        <router-link to="/admin/website-settings" class="menu-link">
+            ⚙️ Website CMS & SEO
+        </router-link>
+
+        <a href="/" target="_blank" class="menu-link text-primary fw-medium">
+            🌐 Visit Website
+        </a>
+
+        <div class="sidebar-heading">
+            ACCOUNT & SECURITY
+        </div>
+
+        <router-link to="/admin/profile" class="menu-link">
+            👤 Edit Profile / Password
+        </router-link>
+
+        <button type="button" class="menu-link text-danger border-0 bg-transparent w-100 text-start" @click="handleLogout">
+            🚪 Logout
+        </button>
+
     </aside>
 </template>
+
+<script setup>
+import { useAuth } from '../../composables/useAuth';
+import { useNotification } from '../../composables/useNotification';
+
+const { logout } = useAuth();
+const { confirmDialog } = useNotification();
+
+async function handleLogout() {
+    const ok = await confirmDialog({
+        title: 'Sign Out of Portal?',
+        message: 'Are you sure you want to log out of the Admin Portal?',
+        confirmText: 'Sign Out',
+        cancelText: 'Stay Logged In',
+        type: 'danger',
+    });
+    if (ok) {
+        logout();
+    }
+}
+</script>
 
 <style scoped>
 .sidebar {
@@ -85,6 +133,7 @@
     color: #495057;
     text-decoration: none;
     font-size: 14px;
+    cursor: pointer;
 }
 
 .menu-link:hover,

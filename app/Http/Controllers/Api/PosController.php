@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Coupon;
 use App\Models\Customer;
 use App\Models\Product;
 use App\Models\ProductVariant;
@@ -10,6 +11,7 @@ use App\Models\Sale;
 use App\Models\SaleItem;
 use App\Models\Stock;
 use App\Models\StockTransaction;
+use App\Services\DiscountService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -21,6 +23,7 @@ class PosController extends Controller
         $query = Product::with([
             'category:id,name',
             'unit:id,name,short_name,allow_decimal',
+            'images',
             'variants' => function ($v) {
                 $v->with('stock')->where('status', true);
             },
@@ -51,9 +54,20 @@ class PosController extends Controller
 
             $stock = (float) ($defaultVariant?->stock?->quantity ?? 0);
 
+            $primaryImage = $product->images->firstWhere('is_primary', true)
+                ?: $product->images->first();
+
+            $imageUrl = null;
+            if ($primaryImage && $primaryImage->image_path) {
+                $imageUrl = filter_var($primaryImage->image_path, FILTER_VALIDATE_URL)
+                    ? $primaryImage->image_path
+                    : asset('storage/' . ltrim($primaryImage->image_path, '/'));
+            }
+
             return [
                 'id' => $product->id,
                 'name' => $product->name,
+                'image_url' => $imageUrl,
                 'category_id' => $product->category_id,
                 'category_name' => $product->category ? $product->category->name : 'General',
                 'track_inventory' => (bool) $product->track_inventory,
@@ -84,14 +98,51 @@ class PosController extends Controller
         ]);
     }
 
+    // Validate coupon code for POS counter
+    public function validateCoupon(Request $request, DiscountService $discountService)
+    {
+        $request->validate([
+            'code' => 'required|string',
+            'items' => 'required|array|min:1',
+            'items.*.product_id' => 'required|exists:products,id',
+            'items.*.quantity' => 'required|numeric|min:0.001',
+            'items.*.unit_price' => 'required|numeric|min:0',
+            'customer_id' => 'nullable|exists:customers,id',
+        ]);
+
+        $customer = $request->filled('customer_id') ? Customer::find($request->customer_id) : null;
+
+        $result = $discountService->validateAndCalculate(
+            $request->code,
+            $request->items,
+            'pos_only',
+            $customer,
+            $customer?->phone,
+            0.0
+        );
+
+        if (!$result['valid']) {
+            return response()->json([
+                'success' => false,
+                'message' => $result['message'],
+            ], 422);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $result,
+        ]);
+    }
+
     // Process POS checkout
-    public function checkout(Request $request)
+    public function checkout(Request $request, DiscountService $discountService)
     {
         $validated = $request->validate([
             'customer_id' => 'nullable|exists:customers,id',
             'payment_method' => 'required|string|in:cash,upi,card,other',
             'paid_amount' => 'required|numeric|min:0',
             'discount_amount' => 'nullable|numeric|min:0',
+            'coupon_code' => 'nullable|string|max:50',
             'notes' => 'nullable|string|max:500',
             'items' => 'required|array|min:1',
             'items.*.product_id' => 'required|exists:products,id',
@@ -101,7 +152,7 @@ class PosController extends Controller
             'items.*.tax_rate' => 'nullable|numeric|min:0|max:100',
         ]);
 
-        $sale = DB::transaction(function () use ($validated) {
+        $sale = DB::transaction(function () use ($validated, $discountService) {
             // Generate invoice number: POS-YYYYMMDD-0001
             $today = date('Ymd');
             $countToday = Sale::whereDate('created_at', today())->count() + 1;
@@ -152,7 +203,29 @@ class PosController extends Controller
                 ];
             }
 
+            // Coupon validation vs Manual discount
+            $customer = !empty($validated['customer_id']) ? Customer::find($validated['customer_id']) : null;
+            $appliedCoupon = null;
             $discount = isset($validated['discount_amount']) ? (float) $validated['discount_amount'] : 0;
+
+            if (!empty($validated['coupon_code'])) {
+                $couponValidation = $discountService->validateAndCalculate(
+                    $validated['coupon_code'],
+                    $itemsData,
+                    'pos_only',
+                    $customer,
+                    $customer?->phone,
+                    0.0
+                );
+
+                if (!$couponValidation['valid']) {
+                    abort(422, $couponValidation['message']);
+                }
+
+                $discount = (float) $couponValidation['discount_amount'];
+                $appliedCoupon = $couponValidation['coupon'];
+            }
+
             $totalAmount = max(0, round($subtotal + $taxAmount - $discount, 2));
 
             $paidAmount = (float) $validated['paid_amount'];
@@ -173,12 +246,28 @@ class PosController extends Controller
                 'subtotal' => $subtotal,
                 'tax_amount' => $taxAmount,
                 'discount_amount' => $discount,
+                'coupon_id' => $appliedCoupon ? $appliedCoupon['id'] : null,
+                'coupon_code' => $appliedCoupon ? $appliedCoupon['code'] : null,
                 'total_amount' => $totalAmount,
                 'paid_amount' => $actualPaid,
                 'change_amount' => $changeAmount,
                 'notes' => $validated['notes'] ?? null,
                 'user_id' => auth()->id() ?? null,
             ]);
+
+            // Commit coupon usage
+            if ($appliedCoupon) {
+                $couponModel = Coupon::find($appliedCoupon['id']);
+                if ($couponModel) {
+                    $discountService->recordUsage(
+                        $couponModel,
+                        $sale,
+                        $customer,
+                        $customer?->phone,
+                        $discount
+                    );
+                }
+            }
 
             // Save line items & deduct stock
             foreach ($itemsData as $row) {

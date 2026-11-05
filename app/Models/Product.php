@@ -67,4 +67,32 @@ class Product extends Model
     {
         return $this->hasMany(ProductImage::class);
     }
+
+    public function primaryImage()
+    {
+        return $this->hasOne(ProductImage::class)->where('is_primary', true);
+    }
+
+    public function getImageUrlAttribute()
+    {
+        $primary = $this->relationLoaded('images')
+            ? ($this->images->firstWhere('is_primary', true) ?: $this->images->first())
+            : ($this->relationLoaded('primaryImage') && $this->primaryImage
+                ? $this->primaryImage
+                : ($this->images()->where('is_primary', true)->first() ?: $this->images()->first()));
+
+        if ($primary && $primary->image_path) {
+            if (filter_var($primary->image_path, FILTER_VALIDATE_URL)) {
+                return $primary->image_path;
+            }
+            return asset('storage/' . ltrim($primary->image_path, '/'));
+        }
+
+        return null;
+    }
+
+    public function wishlists()
+    {
+        return $this->hasMany(Wishlist::class);
+    }
 }

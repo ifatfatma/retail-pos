@@ -14,24 +14,34 @@ class Sale extends Model
         'customer_id',
         'sale_date',
         'order_type',
+        'channel',
         'status',
         'payment_status',
         'payment_method',
         'subtotal',
         'tax_amount',
         'discount_amount',
+        'coupon_id',
+        'coupon_code',
+        'shipping_cost',
         'total_amount',
         'paid_amount',
         'change_amount',
         'notes',
+        'shipping_address',
+        'delivery_partner',
+        'tracking_number',
+        'estimated_delivery_date',
         'user_id',
     ];
 
     protected $casts = [
         'sale_date' => 'datetime',
+        'estimated_delivery_date' => 'date',
         'subtotal' => 'decimal:2',
         'tax_amount' => 'decimal:2',
         'discount_amount' => 'decimal:2',
+        'shipping_cost' => 'decimal:2',
         'total_amount' => 'decimal:2',
         'paid_amount' => 'decimal:2',
         'change_amount' => 'decimal:2',
@@ -50,6 +60,16 @@ class Sale extends Model
     public function cashier()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function coupon()
+    {
+        return $this->belongsTo(Coupon::class);
+    }
+
+    public function couponUsage()
+    {
+        return $this->hasOne(CouponUsage::class);
     }
 }
 

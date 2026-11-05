@@ -13,10 +13,22 @@ class DatabaseSeeder extends Seeder
     /**
      * Seed the application's database.
      */
- public function run(): void
-{
-    $this->call([
-        RoleSeeder::class,
-    ]);
-}
+    public function run(): void
+    {
+        $this->call([
+            RoleSeeder::class,
+        ]);
+
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@retailpos.local'],
+            [
+                'name' => 'Administrator',
+                'password' => bcrypt('password'),
+            ]
+        );
+
+        if (!$admin->hasRole('Admin')) {
+            $admin->assignRole('Admin');
+        }
+    }
 }
