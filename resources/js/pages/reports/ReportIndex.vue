@@ -1,12 +1,30 @@
 <template>
     <div class="container-fluid py-4">
 
-        <!-- Page Header & Global Date Filter -->
-        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+        <!-- Dedicated Print Header (Hidden on screen, visible ONLY when printing) -->
+        <div class="d-none d-print-block mb-4 pb-3 border-bottom">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <h2 class="fw-bold mb-1 text-dark">The Smart Stationery</h2>
+                    <div class="text-secondary small">{{ $t('reports.official_report_sub') }}</div>
+                </div>
+                <div class="text-end">
+                    <h5 class="fw-bold text-primary mb-1">{{ currentTabHeading }}</h5>
+                    <div class="small text-muted">
+                        <span v-if="activeTab !== 'valuation'"><strong>{{ $t('reports.reporting_period') }}:</strong> {{ formatDate(fromDate) }} — {{ formatDate(toDate) }}</span>
+                        <span v-else><strong>{{ $t('reports.inventory_as_of') }}:</strong> {{ formatCurrentDate() }}</span>
+                    </div>
+                    <div class="extra-small text-muted mt-1">{{ $t('reports.generated_on') }}: {{ formatPrintTimestamp() }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page Header & Global Date Filter (Hidden on Print) -->
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2 d-print-none">
             <div>
-                <h3 class="fw-bold mb-1">Reports & Analytics</h3>
+                <h3 class="fw-bold mb-1">{{ $t('reports.title') }}</h3>
                 <p class="text-muted mb-0">
-                    Financial performance, sales velocity, product margins, and inventory valuation
+                    {{ $t('reports.subtitle') }}
                 </p>
             </div>
 
@@ -14,25 +32,25 @@
                 <button
                     class="btn btn-outline-secondary"
                     @click="printReport"
-                    title="Print current report"
+                    :title="$t('common.print')"
                 >
-                    🖨️ Print
+                    🖨️ {{ $t('common.print') }}
                 </button>
 
                 <button
                     class="btn btn-outline-secondary"
                     @click="refreshCurrentTab"
                     :disabled="loading"
-                    title="Refresh data"
+                    :title="$t('common.refresh')"
                 >
                     <span v-if="loading" class="spinner-border spinner-border-sm me-1"></span>
-                    Refresh
+                    {{ $t('common.refresh') }}
                 </button>
             </div>
         </div>
 
-        <!-- Date Range Filter Bar (Applies to Sales, Products, and P&L) -->
-        <div class="card border-0 shadow-sm mb-4" v-if="activeTab !== 'valuation'">
+        <!-- Date Range Filter Bar (Applies to Sales, Products, and P&L) (Hidden on Print) -->
+        <div class="card border-0 shadow-sm mb-4 d-print-none" v-if="activeTab !== 'valuation'">
             <div class="card-body p-3">
                 <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
                     <!-- Quick Presets -->
@@ -43,7 +61,7 @@
                             :class="datePreset === 'today' ? 'btn-primary' : 'btn-outline-secondary'"
                             @click="applyPreset('today')"
                         >
-                            Today
+                            {{ $t('reports.today') }}
                         </button>
                         <button
                             type="button"
@@ -51,7 +69,7 @@
                             :class="datePreset === '7days' ? 'btn-primary' : 'btn-outline-secondary'"
                             @click="applyPreset('7days')"
                         >
-                            Last 7 Days
+                            {{ $t('reports.last_7_days') }}
                         </button>
                         <button
                             type="button"
@@ -59,7 +77,7 @@
                             :class="datePreset === 'this_month' ? 'btn-primary' : 'btn-outline-secondary'"
                             @click="applyPreset('this_month')"
                         >
-                            This Month
+                            {{ $t('reports.this_month') }}
                         </button>
                         <button
                             type="button"
@@ -67,20 +85,20 @@
                             :class="datePreset === 'last_month' ? 'btn-primary' : 'btn-outline-secondary'"
                             @click="applyPreset('last_month')"
                         >
-                            Last Month
+                            {{ $t('reports.last_month') }}
                         </button>
                     </div>
 
                     <!-- Custom Date Range Picker -->
                     <div class="d-flex align-items-center gap-2">
-                        <span class="small text-muted">From:</span>
+                        <span class="small text-muted">{{ $t('common.from') }}:</span>
                         <input
                             v-model="fromDate"
                             type="date"
                             class="form-control form-control-sm"
                             style="width: 140px;"
                         />
-                        <span class="small text-muted">To:</span>
+                        <span class="small text-muted">{{ $t('common.to') }}:</span>
                         <input
                             v-model="toDate"
                             type="date"
@@ -92,22 +110,22 @@
                             @click="applyCustomDateRange"
                             :disabled="loading"
                         >
-                            Filter
+                            {{ $t('common.filter') }}
                         </button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Report Tabs Navigation -->
-        <ul class="nav nav-pills mb-4 gap-2">
+        <!-- Report Tabs Navigation (Hidden on Print) -->
+        <ul class="nav nav-pills mb-4 gap-2 d-print-none">
             <li class="nav-item">
                 <button
                     class="nav-link"
                     :class="{ 'active': activeTab === 'overview' }"
                     @click="switchTab('overview')"
                 >
-                    📊 Executive Overview & Sales
+                    📊 {{ $t('reports.tab_overview') }}
                 </button>
             </li>
             <li class="nav-item">
@@ -116,7 +134,7 @@
                     :class="{ 'active': activeTab === 'products' }"
                     @click="switchTab('products')"
                 >
-                    🏆 Product Performance & Margins
+                    🏆 {{ $t('reports.tab_products') }}
                 </button>
             </li>
             <li class="nav-item">
@@ -125,7 +143,7 @@
                     :class="{ 'active': activeTab === 'valuation' }"
                     @click="switchTab('valuation')"
                 >
-                    📦 Inventory Valuation & Health
+                    📦 {{ $t('reports.tab_valuation') }}
                 </button>
             </li>
             <li class="nav-item">
@@ -134,7 +152,7 @@
                     :class="{ 'active': activeTab === 'pnl' }"
                     @click="switchTab('pnl')"
                 >
-                    📑 Profit & Loss (P&L) Statement
+                    📑 {{ $t('reports.tab_pnl') }}
                 </button>
             </li>
         </ul>
@@ -395,7 +413,7 @@
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-header bg-white fw-bold py-3 d-flex justify-content-between align-items-center">
                     <span>Product Margin & Velocity Ranking</span>
-                    <button class="btn btn-sm btn-outline-secondary" @click="downloadProductsCsv">
+                    <button class="btn btn-sm btn-outline-secondary d-print-none" @click="downloadProductsCsv">
                         📥 Download CSV
                     </button>
                 </div>
@@ -662,7 +680,7 @@
                             </div>
                         </div>
 
-                        <div class="card-footer bg-white text-center py-3">
+                        <div class="card-footer bg-white text-center py-3 d-print-none">
                             <button class="btn btn-outline-secondary btn-sm" @click="printReport">
                                 🖨️ Print Statement
                             </button>
@@ -676,11 +694,44 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue';
+import { ref, reactive, computed, onMounted } from 'vue';
 import api from '../../services/api';
 
 const activeTab = ref('overview');
 const loading = ref(false);
+
+const currentTabHeading = computed(() => {
+    switch (activeTab.value) {
+        case 'overview':
+            return 'Executive Overview & Sales Report';
+        case 'products':
+            return 'Product Performance & Margins Report';
+        case 'valuation':
+            return 'Inventory Valuation & Health Report';
+        case 'pnl':
+            return 'Profit & Loss (P&L) Statement';
+        default:
+            return 'Business Analytics Report';
+    }
+});
+
+function formatCurrentDate() {
+    return new Date().toLocaleDateString([], {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+    });
+}
+
+function formatPrintTimestamp() {
+    return new Date().toLocaleString([], {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+}
 
 // Date filters
 const datePreset = ref('this_month');
@@ -909,7 +960,13 @@ function downloadProductsCsv() {
 }
 
 function printReport() {
+    const originalTitle = document.title;
+    const periodStr = activeTab.value !== 'valuation' ? ` (${fromDate.value} to ${toDate.value})` : '';
+    document.title = `The Smart Stationery - ${currentTabHeading.value}${periodStr}`;
     window.print();
+    setTimeout(() => {
+        document.title = originalTitle;
+    }, 1000);
 }
 
 // -------------------------------------------------------------------------
@@ -965,18 +1022,95 @@ onMounted(() => {
 }
 
 @media print {
-    body * {
-        visibility: hidden;
+    /* Hide all screen control elements */
+    .d-print-none,
+    button,
+    .btn,
+    .btn-group,
+    input,
+    select,
+    .nav,
+    .nav-pills {
+        display: none !important;
     }
-    #printableOverviewSection, #printableOverviewSection *,
-    #printableProductsSection, #printableProductsSection *,
-    #printableValuationSection, #printableValuationSection *,
-    #printablePnlSection, #printablePnlSection * {
-        visibility: visible;
-    }
-    .pos-container, .main-content {
+
+    .container-fluid {
         padding: 0 !important;
         margin: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    /* Print cards with neat borders and no shadows */
+    .card {
+        border: 1px solid #d0d7de !important;
+        box-shadow: none !important;
+        break-inside: avoid;
+        page-break-inside: avoid;
+        margin-bottom: 1.25rem !important;
+        background: #ffffff !important;
+    }
+
+    .card-header {
+        background-color: #f6f8fa !important;
+        border-bottom: 1px solid #d0d7de !important;
+        color: #000000 !important;
+        font-weight: bold;
+    }
+
+    /* Professional table layout */
+    .table-responsive {
+        overflow: visible !important;
+    }
+
+    .table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+    }
+
+    .table th,
+    .table td {
+        padding: 6px 8px !important;
+        border-bottom: 1px solid #dee2e6 !important;
+        color: #000000 !important;
+        font-size: 11px !important;
+    }
+
+    .table thead th {
+        background-color: #f1f3f5 !important;
+        border-bottom: 2px solid #adb5bd !important;
+        color: #000000 !important;
+    }
+
+    tr {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    .stat-icon {
+        background-color: #f8f9fa !important;
+        border: 1px solid #dee2e6 !important;
+        color: #333333 !important;
+    }
+
+    /* Color adjustments for print contrast */
+    .text-muted {
+        color: #495057 !important;
+    }
+
+    html[dir="rtl"] .table th,
+    html[dir="rtl"] .table td {
+        text-align: right !important;
+    }
+
+    html[dir="rtl"] .table th.text-end,
+    html[dir="rtl"] .table td.text-end {
+        text-align: left !important;
+    }
+
+    html[dir="rtl"] .table th.text-center,
+    html[dir="rtl"] .table td.text-center {
+        text-align: center !important;
     }
 }
 </style>

@@ -20,10 +20,10 @@
 
                     <div class="d-flex align-items-center gap-2">
                         <router-link to="/shop" class="btn btn-outline-primary btn-sm rounded-pill px-3">
-                            🛍️ Shop Catalog
+                            🛍️ {{ $t('storefront.catalog') }}
                         </router-link>
                         <button class="btn btn-outline-danger btn-sm rounded-pill px-3" @click="handleSignOut">
-                            🚪 Sign Out
+                            🚪 {{ $t('nav.logout') }}
                         </button>
                     </div>
                 </div>
@@ -41,7 +41,7 @@
                                 @click="activeTab = 'overview'"
                             >
                                 <span>📊</span>
-                                <span>Dashboard</span>
+                                <span>{{ $t('account.tab_overview') }}</span>
                             </button>
                             <button
                                 class="nav-link text-start rounded-pill py-2 px-3 fw-semibold d-flex align-items-center gap-2"
@@ -49,7 +49,7 @@
                                 @click="switchToOrders"
                             >
                                 <span>📦</span>
-                                <span>My Orders</span>
+                                <span>{{ $t('account.tab_orders') }}</span>
                                 <span class="badge bg-secondary rounded-pill ms-auto small" v-if="customer?.total_orders">
                                     {{ customer.total_orders }}
                                 </span>
@@ -60,7 +60,7 @@
                                 @click="switchToWishlist"
                             >
                                 <span>❤️</span>
-                                <span>My Wishlist</span>
+                                <span>{{ $t('account.tab_wishlist') }}</span>
                                 <span class="badge bg-danger rounded-pill ms-auto small" v-if="wishlistCount">
                                     {{ wishlistCount }}
                                 </span>
@@ -71,7 +71,7 @@
                                 @click="activeTab = 'profile'"
                             >
                                 <span>👤</span>
-                                <span>Profile & Address</span>
+                                <span>{{ $t('account.tab_profile') }}</span>
                             </button>
                             <button
                                 class="nav-link text-start rounded-pill py-2 px-3 fw-semibold d-flex align-items-center gap-2"
@@ -79,7 +79,7 @@
                                 @click="activeTab = 'security'"
                             >
                                 <span>🔒</span>
-                                <span>Change Password</span>
+                                <span>{{ $t('account.tab_security') }}</span>
                             </button>
                         </div>
                     </div>
@@ -92,28 +92,28 @@
                         <div class="row g-3 mb-4">
                             <div class="col-sm-6 col-md-4">
                                 <div class="card border-0 shadow-sm rounded-4 p-3 bg-white h-100">
-                                    <div class="text-muted extra-small text-uppercase fw-semibold mb-1">Total Purchases</div>
+                                    <div class="text-muted extra-small text-uppercase fw-semibold mb-1">{{ $t('account.total_purchases') }}</div>
                                     <h3 class="fw-bold text-primary mb-0">{{ customer?.total_orders || 0 }}</h3>
-                                    <div class="extra-small text-muted mt-1">Orders placed with us</div>
+                                    <div class="extra-small text-muted mt-1">{{ $t('account.orders_placed') }}</div>
                                 </div>
                             </div>
 
                             <div class="col-sm-6 col-md-4">
                                 <div class="card border-0 shadow-sm rounded-4 p-3 bg-white h-100">
-                                    <div class="text-muted extra-small text-uppercase fw-semibold mb-1">Total Spent</div>
+                                    <div class="text-muted extra-small text-uppercase fw-semibold mb-1">{{ $t('account.total_spent') }}</div>
                                     <h3 class="fw-bold text-success mb-0">₹{{ formatMoney(customer?.total_spent) }}</h3>
-                                    <div class="extra-small text-muted mt-1">Lifetime spending</div>
+                                    <div class="extra-small text-muted mt-1">{{ $t('account.lifetime_spending') }}</div>
                                 </div>
                             </div>
 
                             <div class="col-sm-12 col-md-4">
                                 <div class="card border-0 shadow-sm rounded-4 p-3 bg-white h-100">
-                                    <div class="text-muted extra-small text-uppercase fw-semibold mb-1">Default Address</div>
+                                    <div class="text-muted extra-small text-uppercase fw-semibold mb-1">{{ $t('account.default_address') }}</div>
                                     <div class="small text-truncate-2 mb-0">
-                                        {{ customer?.address ? `${customer.address}, ${customer.city || ''} ${customer.pincode || ''}` : 'No address saved yet.' }}
+                                        {{ customer?.address ? `${customer.address}, ${customer.city || ''} ${customer.pincode || ''}` : $t('account.no_address_saved') }}
                                     </div>
                                     <button class="btn btn-link p-0 extra-small text-primary text-decoration-none mt-1" @click="activeTab = 'profile'">
-                                        Edit Address →
+                                        {{ $t('account.edit_address') }} →
                                     </button>
                                 </div>
                             </div>
@@ -122,9 +122,9 @@
                         <!-- Recent Orders Preview -->
                         <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h5 class="fw-bold mb-0">Recent Order Activity</h5>
+                                <h5 class="fw-bold mb-0">{{ $t('account.recent_order_activity') }}</h5>
                                 <button class="btn btn-link btn-sm text-decoration-none text-primary" @click="switchToOrders">
-                                    View All Orders →
+                                    {{ $t('account.view_all_orders') }} →
                                 </button>
                             </div>
 
@@ -134,9 +134,9 @@
 
                             <div v-else-if="orders.length === 0" class="text-center py-4 text-muted">
                                 <div class="fs-2 mb-1">🛍️</div>
-                                <div class="small">You haven't placed any orders yet.</div>
+                                <div class="small">{{ $t('account.no_orders_yet') }}</div>
                                 <router-link to="/shop" class="btn btn-primary btn-sm rounded-pill mt-2">
-                                    Start Shopping
+                                    {{ $t('account.start_shopping') }}
                                 </router-link>
                             </div>
 
@@ -158,7 +158,7 @@
                                     </div>
                                     <div>
                                         <router-link :to="{ path: '/track-order', query: { order_number: order.order_number } }" class="btn btn-outline-primary btn-sm rounded-pill py-0 px-2 extra-small">
-                                            Track
+                                            {{ $t('common.track') }}
                                         </router-link>
                                     </div>
                                 </div>
@@ -170,19 +170,19 @@
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <div class="d-flex align-items-center gap-2">
                                     <span class="fs-5">❤️</span>
-                                    <h5 class="fw-bold mb-0">Saved in Wishlist</h5>
+                                    <h5 class="fw-bold mb-0">{{ $t('storefront.saved_in_wishlist') }}</h5>
                                     <span class="badge bg-danger-subtle text-danger rounded-pill">{{ wishlistCount }}</span>
                                 </div>
                                 <button class="btn btn-link btn-sm text-decoration-none text-primary" @click="switchToWishlist">
-                                    View Wishlist Tab →
+                                    {{ $t('account.view_wishlist_tab') }} →
                                 </button>
                             </div>
 
                             <div v-if="wishlistCount === 0" class="text-center py-4 text-muted">
                                 <div class="fs-2 mb-1">🤍</div>
-                                <div class="small">No products saved to wishlist yet.</div>
+                                <div class="small">{{ $t('account.no_wishlist_yet') }}</div>
                                 <router-link to="/shop" class="btn btn-outline-primary btn-sm rounded-pill mt-2">
-                                    Browse Stationery Items
+                                    {{ $t('account.browse_items') }}
                                 </router-link>
                             </div>
 
@@ -209,8 +209,8 @@
                                         <div class="mt-auto pt-2">
                                             <div class="small fw-bold text-primary">₹{{ formatMoney(item.selling_price) }}</div>
                                             <div class="d-flex justify-content-center gap-1 mt-1">
-                                                <span v-if="item.in_stock" class="badge bg-success-subtle text-success extra-small">In Stock</span>
-                                                <span v-else class="badge bg-danger-subtle text-danger extra-small">Out of Stock</span>
+                                                <span v-if="item.in_stock" class="badge bg-success-subtle text-success extra-small">{{ $t('common.in_stock') }}</span>
+                                                <span v-else class="badge bg-danger-subtle text-danger extra-small">{{ $t('common.out_of_stock') }}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -222,19 +222,19 @@
                     <!-- Tab 2: Orders List -->
                     <div v-show="activeTab === 'orders'">
                         <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
-                            <h5 class="fw-bold mb-4">📦 All My Orders</h5>
+                            <h5 class="fw-bold mb-4">📦 {{ $t('account.all_my_orders') }}</h5>
 
                             <div v-if="ordersLoading" class="text-center py-5">
                                 <div class="spinner-border text-primary" role="status"></div>
-                                <p class="text-muted small mt-2">Loading orders...</p>
+                                <p class="text-muted small mt-2">{{ $t('account.loading_orders') }}</p>
                             </div>
 
                             <div v-else-if="orders.length === 0" class="text-center py-5 text-muted">
                                 <div class="fs-1 mb-2">📦</div>
-                                <h6>No Orders Found</h6>
-                                <p class="small">Browse our catalog and place your first order!</p>
+                                <h6>{{ $t('account.no_orders_found') }}</h6>
+                                <p class="small">{{ $t('account.browse_and_order') }}</p>
                                 <router-link to="/shop" class="btn btn-primary rounded-pill px-4">
-                                    Explore Products
+                                    {{ $t('account.explore_products') }}
                                 </router-link>
                             </div>
 
@@ -268,16 +268,16 @@
                                     <!-- Tracking and Courier info if present -->
                                     <div class="d-flex flex-wrap justify-content-between align-items-center pt-2 border-top extra-small text-muted gap-2">
                                         <div>
-                                            <span v-if="order.delivery_partner">Courier: <strong>{{ order.delivery_partner }}</strong> | </span>
-                                            <span v-if="order.tracking_number">Tracking #: <strong>{{ order.tracking_number }}</strong> | </span>
-                                            <span>Payment: <strong class="text-uppercase">{{ order.payment_method }} ({{ order.payment_status }})</strong></span>
+                                            <span v-if="order.delivery_partner">{{ $t('account.courier') }}: <strong>{{ order.delivery_partner }}</strong> | </span>
+                                            <span v-if="order.tracking_number">{{ $t('account.tracking_num') }}: <strong>{{ order.tracking_number }}</strong> | </span>
+                                            <span>{{ $t('account.payment') }}: <strong class="text-uppercase">{{ order.payment_method }} ({{ order.payment_status }})</strong></span>
                                         </div>
                                         <div class="d-flex gap-2">
                                             <router-link
                                                 :to="{ path: '/track-order', query: { order_number: order.order_number } }"
                                                 class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1"
                                             >
-                                                📍 Live Track
+                                                📍 {{ $t('account.live_track') }}
                                             </router-link>
                                         </div>
                                     </div>
@@ -287,7 +287,7 @@
                                 <div v-if="ordersPagination.last_page > 1" class="d-flex justify-content-center mt-4">
                                     <ul class="pagination pagination-sm mb-0">
                                         <li class="page-item" :class="{ disabled: ordersPagination.current_page <= 1 }">
-                                            <button class="page-link" @click="changeOrdersPage(ordersPagination.current_page - 1)">« Prev</button>
+                                            <button class="page-link" @click="changeOrdersPage(ordersPagination.current_page - 1)">« {{ $t('common.previous') }}</button>
                                         </li>
                                         <li
                                             v-for="p in ordersPagination.last_page"
@@ -298,62 +298,9 @@
                                             <button class="page-link" @click="changeOrdersPage(p)">{{ p }}</button>
                                         </li>
                                         <li class="page-item" :class="{ disabled: ordersPagination.current_page >= ordersPagination.last_page }">
-                                            <button class="page-link" @click="changeOrdersPage(ordersPagination.current_page + 1)">Next »</button>
+                                            <button class="page-link" @click="changeOrdersPage(ordersPagination.current_page + 1)">{{ $t('common.next') }} »</button>
                                         </li>
                                     </ul>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Wishlist Overview Preview -->
-                        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <div class="d-flex align-items-center gap-2">
-                                    <span class="fs-5">❤️</span>
-                                    <h5 class="fw-bold mb-0">Saved in Wishlist</h5>
-                                    <span class="badge bg-danger-subtle text-danger rounded-pill">{{ wishlistCount }}</span>
-                                </div>
-                                <button class="btn btn-link btn-sm text-decoration-none text-primary" @click="switchToWishlist">
-                                    View Wishlist Tab →
-                                </button>
-                            </div>
-
-                            <div v-if="wishlistCount === 0" class="text-center py-4 text-muted">
-                                <div class="fs-2 mb-1">🤍</div>
-                                <div class="small">No products saved to wishlist yet.</div>
-                                <router-link to="/shop" class="btn btn-outline-primary btn-sm rounded-pill mt-2">
-                                    Browse Stationery Items
-                                </router-link>
-                            </div>
-
-                            <div v-else class="row g-3">
-                                <div
-                                    v-for="item in wishlistItems.slice(0, 4)"
-                                    :key="item.id || item.product_id"
-                                    class="col-6 col-md-3"
-                                >
-                                    <div class="p-2 border rounded-3 text-center h-100 d-flex flex-column bg-light-subtle">
-                                        <router-link :to="`/product/${item.product_id}`" class="text-decoration-none">
-                                            <img
-                                                v-if="item.image_url"
-                                                :src="item.image_url"
-                                                :alt="item.name"
-                                                class="img-fluid rounded mb-2"
-                                                style="height: 80px; object-fit: contain;"
-                                            />
-                                            <div v-else class="rounded bg-white mb-2 d-flex align-items-center justify-content-center" style="height: 80px;">
-                                                📦
-                                            </div>
-                                            <div class="extra-small fw-semibold text-dark text-truncate">{{ item.name }}</div>
-                                        </router-link>
-                                        <div class="mt-auto pt-2">
-                                            <div class="small fw-bold text-primary">₹{{ formatMoney(item.selling_price) }}</div>
-                                            <div class="d-flex justify-content-center gap-1 mt-1">
-                                                <span v-if="item.in_stock" class="badge bg-success-subtle text-success extra-small">In Stock</span>
-                                                <span v-else class="badge bg-danger-subtle text-danger extra-small">Out of Stock</span>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -362,12 +309,12 @@
                     <!-- Tab 3: Profile & Address -->
                     <div v-show="activeTab === 'profile'">
                         <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
-                            <h5 class="fw-bold mb-4">👤 Profile & Shipping Address</h5>
+                            <h5 class="fw-bold mb-4">👤 {{ $t('account.profile_shipping_address') }}</h5>
 
                             <form @submit.prevent="saveProfile">
                                 <div class="row g-3 mb-4">
                                     <div class="col-md-6">
-                                        <label class="form-label small fw-semibold text-muted text-uppercase">Full Name <span class="text-danger">*</span></label>
+                                        <label class="form-label small fw-semibold text-muted text-uppercase">{{ $t('checkout.full_name') }} <span class="text-danger">*</span></label>
                                         <input
                                             v-model="profileForm.name"
                                             type="text"
@@ -377,7 +324,7 @@
                                     </div>
 
                                     <div class="col-md-6">
-                                        <label class="form-label small fw-semibold text-muted text-uppercase">Email Address <span class="text-danger">*</span></label>
+                                        <label class="form-label small fw-semibold text-muted text-uppercase">{{ $t('checkout.email') }} <span class="text-danger">*</span></label>
                                         <input
                                             v-model="profileForm.email"
                                             type="email"
@@ -387,7 +334,7 @@
                                     </div>
 
                                     <div class="col-md-6">
-                                        <label class="form-label small fw-semibold text-muted text-uppercase">Phone Number <span class="text-danger">*</span></label>
+                                        <label class="form-label small fw-semibold text-muted text-uppercase">{{ $t('checkout.phone') }} <span class="text-danger">*</span></label>
                                         <input
                                             v-model="profileForm.phone"
                                             type="tel"
@@ -398,43 +345,43 @@
 
                                     <!-- Address -->
                                     <div class="col-12 pt-3 border-top">
-                                        <div class="fw-semibold small text-muted text-uppercase mb-2">Default Shipping Address</div>
-                                        <label class="form-label small fw-semibold text-muted text-uppercase">Street Address</label>
+                                        <div class="fw-semibold small text-muted text-uppercase mb-2">{{ $t('account.default_shipping_address') }}</div>
+                                        <label class="form-label small fw-semibold text-muted text-uppercase">{{ $t('checkout.delivery_address') }}</label>
                                         <textarea
                                             v-model="profileForm.address"
                                             class="form-control"
                                             rows="2"
-                                            placeholder="House / Flat No., Street, Landmark"
+                                            :placeholder="$t('checkout.delivery_address')"
                                         ></textarea>
                                     </div>
 
                                     <div class="col-md-4">
-                                        <label class="form-label small fw-semibold text-muted text-uppercase">City</label>
+                                        <label class="form-label small fw-semibold text-muted text-uppercase">{{ $t('checkout.city') }}</label>
                                         <input
                                             v-model="profileForm.city"
                                             type="text"
                                             class="form-control"
-                                            placeholder="City"
+                                            :placeholder="$t('checkout.city')"
                                         />
                                     </div>
 
                                     <div class="col-md-4">
-                                        <label class="form-label small fw-semibold text-muted text-uppercase">State</label>
+                                        <label class="form-label small fw-semibold text-muted text-uppercase">{{ $t('checkout.state') }}</label>
                                         <input
                                             v-model="profileForm.state"
                                             type="text"
                                             class="form-control"
-                                            placeholder="State"
+                                            :placeholder="$t('checkout.state')"
                                         />
                                     </div>
 
                                     <div class="col-md-4">
-                                        <label class="form-label small fw-semibold text-muted text-uppercase">Pincode</label>
+                                        <label class="form-label small fw-semibold text-muted text-uppercase">{{ $t('checkout.pincode') }}</label>
                                         <input
                                             v-model="profileForm.pincode"
                                             type="text"
                                             class="form-control"
-                                            placeholder="Pincode"
+                                            :placeholder="$t('checkout.pincode')"
                                         />
                                     </div>
                                 </div>
@@ -446,7 +393,7 @@
                                         :disabled="savingProfile"
                                     >
                                         <span v-if="savingProfile" class="spinner-border spinner-border-sm me-1" role="status"></span>
-                                        Save Profile Changes
+                                        {{ $t('profile.update_profile') }}
                                     </button>
                                 </div>
                             </form>
@@ -456,40 +403,40 @@
                     <!-- Tab 4: Security -->
                     <div v-show="activeTab === 'security'">
                         <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
-                            <h5 class="fw-bold mb-4">🔒 Change Password</h5>
+                            <h5 class="fw-bold mb-4">🔒 {{ $t('profile.security') }}</h5>
 
                             <form @submit.prevent="savePassword">
                                 <div class="mb-3">
-                                    <label class="form-label small fw-semibold text-muted text-uppercase">Current Password</label>
+                                    <label class="form-label small fw-semibold text-muted text-uppercase">{{ $t('profile.current_password') }}</label>
                                     <input
                                         v-model="passwordForm.current_password"
                                         type="password"
                                         class="form-control"
-                                        placeholder="Enter current password"
+                                        :placeholder="$t('profile.current_password')"
                                         required
                                     />
                                 </div>
 
                                 <div class="row g-3 mb-4">
                                     <div class="col-md-6">
-                                        <label class="form-label small fw-semibold text-muted text-uppercase">New Password</label>
+                                        <label class="form-label small fw-semibold text-muted text-uppercase">{{ $t('profile.new_password') }}</label>
                                         <input
                                             v-model="passwordForm.password"
                                             type="password"
                                             class="form-control"
-                                            placeholder="Min. 6 characters"
+                                            placeholder="••••••"
                                             required
                                             minlength="6"
                                         />
                                     </div>
 
                                     <div class="col-md-6">
-                                        <label class="form-label small fw-semibold text-muted text-uppercase">Confirm New Password</label>
+                                        <label class="form-label small fw-semibold text-muted text-uppercase">{{ $t('profile.confirm_password') }}</label>
                                         <input
                                             v-model="passwordForm.password_confirmation"
                                             type="password"
                                             class="form-control"
-                                            placeholder="Repeat new password"
+                                            placeholder="••••••"
                                             required
                                             minlength="6"
                                         />
@@ -503,7 +450,7 @@
                                         :disabled="savingPassword"
                                     >
                                         <span v-if="savingPassword" class="spinner-border spinner-border-sm me-1" role="status"></span>
-                                        Update Password
+                                        {{ $t('profile.update_password') }}
                                     </button>
                                 </div>
                             </form>
@@ -515,8 +462,8 @@
                         <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
                             <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
                                 <div>
-                                    <h5 class="fw-bold mb-1">❤️ My Wishlist & Saved Products</h5>
-                                    <div class="text-muted small">Items you've bookmarked for later purchase</div>
+                                    <h5 class="fw-bold mb-1">❤️ {{ $t('account.wishlist_and_saved') }}</h5>
+                                    <div class="text-muted small">{{ $t('account.bookmarked_sub') }}</div>
                                 </div>
                                 <div class="d-flex gap-2">
                                     <button
@@ -525,10 +472,10 @@
                                         @click="moveAllToCart"
                                         :disabled="wishlistMeta.in_stock_count === 0"
                                     >
-                                        🛒 Add Available to Cart ({{ wishlistMeta.in_stock_count }})
+                                        🛒 {{ $t('wishlist.add_all_to_cart') }} ({{ wishlistMeta.in_stock_count }})
                                     </button>
                                     <router-link to="/wishlist" class="btn btn-primary btn-sm rounded-pill px-3">
-                                        Open Full Wishlist →
+                                        {{ $t('account.open_full_wishlist') }} →
                                     </router-link>
                                 </div>
                             </div>
@@ -537,30 +484,30 @@
                             <div class="row g-3 mb-4">
                                 <div class="col-6 col-md-3">
                                     <div class="p-3 rounded-4 bg-light text-center h-100">
-                                        <div class="text-muted extra-small text-uppercase fw-semibold mb-1">Total Saved</div>
+                                        <div class="text-muted extra-small text-uppercase fw-semibold mb-1">{{ $t('account.total_saved') }}</div>
                                         <div class="fs-4 fw-bold text-dark">{{ wishlistCount }}</div>
-                                        <div class="extra-small text-muted">Bookmarked items</div>
+                                        <div class="extra-small text-muted">{{ $t('account.bookmarked_items') }}</div>
                                     </div>
                                 </div>
                                 <div class="col-6 col-md-3">
                                     <div class="p-3 rounded-4 bg-success-subtle text-center h-100">
-                                        <div class="text-success extra-small text-uppercase fw-semibold mb-1">Available Now</div>
+                                        <div class="text-success extra-small text-uppercase fw-semibold mb-1">{{ $t('account.available_now') }}</div>
                                         <div class="fs-4 fw-bold text-success">{{ wishlistMeta.in_stock_count }}</div>
-                                        <div class="extra-small text-muted">Ready to purchase</div>
+                                        <div class="extra-small text-muted">{{ $t('account.ready_to_purchase') }}</div>
                                     </div>
                                 </div>
                                 <div class="col-6 col-md-3">
                                     <div class="p-3 rounded-4 bg-danger-subtle text-center h-100">
-                                        <div class="text-danger extra-small text-uppercase fw-semibold mb-1">Out of Stock</div>
+                                        <div class="text-danger extra-small text-uppercase fw-semibold mb-1">{{ $t('common.out_of_stock') }}</div>
                                         <div class="fs-4 fw-bold text-danger">{{ wishlistMeta.out_of_stock_count }}</div>
-                                        <div class="extra-small text-muted">Awaiting restock</div>
+                                        <div class="extra-small text-muted">{{ $t('account.awaiting_restock') }}</div>
                                     </div>
                                 </div>
                                 <div class="col-6 col-md-3">
                                     <div class="p-3 rounded-4 bg-warning-subtle text-center h-100">
-                                        <div class="text-warning-emphasis extra-small text-uppercase fw-semibold mb-1">Price Drops</div>
+                                        <div class="text-warning-emphasis extra-small text-uppercase fw-semibold mb-1">{{ $t('account.price_drops') }}</div>
                                         <div class="fs-4 fw-bold text-warning-emphasis">{{ wishlistMeta.price_drop_count || 0 }}</div>
-                                        <div class="extra-small text-muted">Discounted since saved</div>
+                                        <div class="extra-small text-muted">{{ $t('account.discounted_since_saved') }}</div>
                                     </div>
                                 </div>
                             </div>
@@ -568,18 +515,18 @@
                             <!-- Loading State -->
                             <div v-if="wishlistLoading" class="text-center py-5">
                                 <div class="spinner-border text-danger" role="status"></div>
-                                <p class="text-muted small mt-2">Loading saved items...</p>
+                                <p class="text-muted small mt-2">{{ $t('account.loading_saved_items') }}</p>
                             </div>
 
                             <!-- Empty State -->
                             <div v-else-if="wishlistCount === 0" class="text-center py-5 text-muted">
                                 <div class="fs-1 mb-2">🤍</div>
-                                <h6 class="fw-bold">Your Wishlist is Empty</h6>
+                                <h6 class="fw-bold">{{ $t('wishlist.empty_title') }}</h6>
                                 <p class="small mx-auto mb-3" style="max-width: 400px;">
-                                    Browse our stationery collections and click the heart icon on any product to save it here.
+                                    {{ $t('wishlist.empty_sub') }}
                                 </p>
                                 <router-link to="/shop" class="btn btn-primary btn-sm rounded-pill px-4">
-                                    Browse Catalog
+                                    {{ $t('account.browse_catalog') }}
                                 </router-link>
                             </div>
 
@@ -596,7 +543,7 @@
                                             type="button"
                                             class="btn btn-sm btn-light position-absolute top-0 end-0 m-2 rounded-circle p-1 d-flex align-items-center justify-content-center shadow-sm text-muted"
                                             style="width: 28px; height: 28px; z-index: 2;"
-                                            title="Remove"
+                                            :title="$t('common.remove')"
                                             @click="removeFromWishlist(item.product_id)"
                                         >
                                             ✕
@@ -605,13 +552,13 @@
                                         <!-- Stock status / Price drop badge -->
                                         <div class="mb-2">
                                             <span v-if="!item.in_stock" class="badge bg-danger text-white rounded-pill extra-small">
-                                                Out of Stock
+                                                {{ $t('common.out_of_stock') }}
                                             </span>
                                             <span v-else-if="item.price_dropped" class="badge bg-warning text-dark rounded-pill extra-small fw-bold">
-                                                📉 Saved ₹{{ formatMoney(item.price_diff) }}
+                                                📉 {{ $t('storefront.save_discount') }} ₹{{ formatMoney(item.price_diff) }}
                                             </span>
                                             <span v-else class="badge bg-success-subtle text-success rounded-pill extra-small">
-                                                ● In Stock ({{ item.stock }})
+                                                ● {{ $t('common.in_stock') }} ({{ item.stock }})
                                             </span>
                                         </div>
 
@@ -649,14 +596,14 @@
                                                 class="btn btn-primary btn-sm rounded-pill w-100 fw-semibold"
                                                 @click="moveItemToCart(item)"
                                             >
-                                                🛒 Move to Cart
+                                                🛒 {{ $t('cart.move_to_cart') }}
                                             </button>
                                             <button
                                                 v-else
                                                 class="btn btn-secondary btn-sm rounded-pill w-100 disabled"
                                                 disabled
                                             >
-                                                Unavailable
+                                                {{ $t('account.unavailable') }}
                                             </button>
                                         </div>
                                     </div>

@@ -1,18 +1,17 @@
-
 <template>
     <div class="container-fluid py-4">
 
         <!-- Header -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                <h3 class="fw-bold mb-1">Brands</h3>
+                <h3 class="fw-bold mb-1">{{ $t('brands.title') }}</h3>
                 <p class="text-muted mb-0">
-                    Manage your product brands
+                    {{ $t('brands.subtitle') }}
                 </p>
             </div>
 
             <button class="btn btn-primary" @click="openModal()">
-                + Add Brand
+                + {{ $t('brands.add_brand') }}
             </button>
         </div>
 
@@ -22,7 +21,7 @@
                 <input
                     v-model="search"
                     class="form-control"
-                    placeholder="Search brand..."
+                    :placeholder="$t('common.search') + '...'"
                     @input="loadBrands(1)"
                 />
             </div>
@@ -37,12 +36,12 @@
                     <thead class="table-light">
                         <tr>
                             <th>#</th>
-                            <th>Logo</th>
-                            <th>Brand Name</th>
-                            <th>Description</th>
-                            <th>Slug</th>
-                            <th>Status</th>
-                            <th>Action</th>
+                            <th>{{ $t('common.image') }}</th>
+                            <th>{{ $t('brands.brand_name') }}</th>
+                            <th>{{ $t('common.description') }}</th>
+                            <th>{{ $t('categories.category_slug') }}</th>
+                            <th>{{ $t('common.status') }}</th>
+                            <th>{{ $t('common.actions') }}</th>
                         </tr>
                     </thead>
 
@@ -50,13 +49,13 @@
 
                         <tr v-if="loading">
                             <td colspan="7" class="text-center py-4">
-                                Loading...
+                                {{ $t('common.loading') }}
                             </td>
                         </tr>
 
                         <tr v-else-if="brands.length === 0">
                             <td colspan="7" class="text-center py-4">
-                                No brands found.
+                                {{ $t('common.no_data') }}
                             </td>
                         </tr>
 
@@ -75,7 +74,7 @@
                                 />
 
                                 <span v-else class="text-muted">
-                                    No Logo
+                                    -
                                 </span>
                             </td>
 
@@ -94,7 +93,7 @@
                                         ? 'bg-success'
                                         : 'bg-secondary'">
 
-                                    {{ brand.status ? 'Active' : 'Inactive' }}
+                                    {{ brand.status ? $t('common.active') : $t('common.inactive') }}
                                 </span>
                             </td>
 
@@ -102,13 +101,13 @@
                                 <button
                                     class="btn btn-sm btn-outline-primary me-2"
                                     @click="openModal(brand)">
-                                    Edit
+                                    {{ $t('common.edit') }}
                                 </button>
 
                                 <button
                                     class="btn btn-sm btn-outline-danger"
                                     @click="deleteBrand(brand.id)">
-                                    Delete
+                                    {{ $t('common.delete') }}
                                 </button>
                             </td>
 
@@ -123,7 +122,7 @@
             <div class="card-body d-flex justify-content-between">
 
                 <span class="text-muted">
-                    Total: {{ totalBrands }} brands
+                    {{ $t('common.total') }}: {{ totalBrands }}
                 </span>
 
                 <div>
@@ -131,14 +130,14 @@
                         class="btn btn-sm btn-outline-secondary me-2"
                         :disabled="currentPage <= 1"
                         @click="loadBrands(currentPage - 1)">
-                        Previous
+                        {{ $t('common.previous') }}
                     </button>
 
                     <button
                         class="btn btn-sm btn-outline-secondary"
                         :disabled="currentPage >= lastPage"
                         @click="loadBrands(currentPage + 1)">
-                        Next
+                        {{ $t('common.next') }}
                     </button>
                 </div>
 
@@ -156,7 +155,7 @@
 
                         <div class="modal-header">
                             <h5 class="modal-title">
-                                {{ editingId ? 'Edit Brand' : 'Add Brand' }}
+                                {{ editingId ? $t('brands.edit_brand') : $t('brands.add_brand') }}
                             </h5>
 
                             <button
@@ -170,7 +169,7 @@
 
                             <div class="mb-3">
                                 <label class="form-label">
-                                    Brand Name *
+                                    {{ $t('brands.brand_name') }} *
                                 </label>
 
                                 <input
@@ -183,7 +182,7 @@
 
                             <div class="mb-3">
                                 <label class="form-label">
-                                    Description
+                                    {{ $t('common.description') }}
                                 </label>
 
                                 <textarea
@@ -195,7 +194,7 @@
 
                             <div class="mb-3">
                                 <label class="form-label">
-                                    Brand Logo
+                                    {{ $t('common.image') }} / Logo
                                 </label>
 
                                 <input
@@ -225,7 +224,7 @@
                                 <label
                                     class="form-check-label"
                                     for="brandStatus">
-                                    Active
+                                    {{ $t('common.active') }}
                                 </label>
                             </div>
 
@@ -238,21 +237,19 @@
                         </div>
 
                         <div class="modal-footer">
-
                             <button
                                 type="button"
                                 class="btn btn-light"
                                 data-bs-dismiss="modal">
-                                Cancel
+                                {{ $t('common.cancel') }}
                             </button>
 
                             <button
                                 type="submit"
                                 class="btn btn-primary"
                                 :disabled="saving">
-                                {{ saving ? 'Saving...' : 'Save Brand' }}
+                                {{ saving ? $t('common.processing') : $t('common.save') }}
                             </button>
-
                         </div>
 
                     </form>
@@ -266,8 +263,11 @@
 
 <script setup>
 import { ref, reactive, onMounted, onBeforeUnmount } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { Modal } from 'bootstrap';
 import api from '../../services/api';
+
+const { t } = useI18n();
 
 const brands = ref([]);
 const search = ref('');
@@ -311,7 +311,7 @@ async function loadBrands(page = 1) {
 
     } catch (error) {
         console.error(error);
-        alert('Unable to load brands.');
+        alert(t('common.error') + ': ' + (error.response?.data?.message || 'Unable to load brands.'));
     } finally {
         loading.value = false;
     }
@@ -390,14 +390,14 @@ async function saveBrand() {
 
         await loadBrands(currentPage.value);
 
-        alert('Brand saved successfully.');
+        alert(t('common.saved_successfully'));
 
     } catch (error) {
         const errors = error.response?.data?.errors;
 
         errorMessage.value = errors
             ? Object.values(errors).flat().join(', ')
-            : error.response?.data?.message || 'Something went wrong.';
+            : error.response?.data?.message || t('common.error');
 
     } finally {
         saving.value = false;
@@ -405,7 +405,7 @@ async function saveBrand() {
 }
 
 async function deleteBrand(id) {
-    if (!confirm('Are you sure you want to delete this brand?')) {
+    if (!confirm(t('brands.delete_confirm'))) {
         return;
     }
 
@@ -414,12 +414,12 @@ async function deleteBrand(id) {
 
         await loadBrands(currentPage.value);
 
-        alert('Brand deleted successfully.');
+        alert(t('common.deleted_successfully'));
 
     } catch (error) {
         alert(
             error.response?.data?.message ||
-            'Unable to delete brand.'
+            t('common.error')
         );
     }
 }

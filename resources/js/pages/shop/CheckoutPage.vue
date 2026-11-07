@@ -1,16 +1,16 @@
 <template>
     <div class="checkout-page py-4">
         <div class="container">
-            <h3 class="fw-bold mb-4">💳 Checkout & Delivery</h3>
+            <h3 class="fw-bold mb-4">💳 {{ $t('checkout.title') }}</h3>
 
             <!-- If Cart is Empty -->
             <div v-if="cartItems.length === 0" class="card border-0 shadow-sm rounded-4 p-5 text-center bg-white">
                 <div class="fs-1 text-muted mb-3">🛒</div>
-                <h4 class="fw-bold mb-2">Your Cart is Empty</h4>
-                <p class="text-muted small mb-4">Please add items to your cart before proceeding to checkout.</p>
+                <h4 class="fw-bold mb-2">{{ $t('cart.empty_cart') }}</h4>
+                <p class="text-muted small mb-4">{{ $t('wishlist.empty_sub') }}</p>
                 <div>
                     <router-link to="/shop" class="btn btn-primary rounded-pill px-4">
-                        Browse Catalog
+                        {{ $t('cart.explore_catalog') }}
                     </router-link>
                 </div>
             </div>
@@ -25,20 +25,20 @@
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <h5 class="fw-bold mb-0 d-flex align-items-center gap-2">
                                     <span>1.</span>
-                                    <span>Customer Information</span>
+                                    <span>{{ $t('checkout.contact_shipping') }}</span>
                                 </h5>
 
                                 <span v-if="isCustomerAuthenticated" class="badge bg-success-subtle text-success small">
-                                    ✓ Logged in as {{ customerName }}
+                                    ✓ {{ customerName }}
                                 </span>
                                 <router-link v-else :to="{ path: '/login', query: { redirect: '/checkout' } }" class="small text-primary text-decoration-none">
-                                    Have an account? Sign In →
+                                    {{ $t('auth.customer_sign_in') }} &rarr;
                                 </router-link>
                             </div>
 
                             <div class="row g-3">
                                 <div class="col-md-6">
-                                    <label class="form-label small fw-semibold">Full Name <span class="text-danger">*</span></label>
+                                    <label class="form-label small fw-semibold">{{ $t('checkout.full_name') }} <span class="text-danger">*</span></label>
                                     <input
                                         v-model="form.customer_name"
                                         type="text"
@@ -49,7 +49,7 @@
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label class="form-label small fw-semibold">Phone Number <span class="text-danger">*</span></label>
+                                    <label class="form-label small fw-semibold">{{ $t('checkout.phone') }} <span class="text-danger">*</span></label>
                                     <input
                                         v-model="form.customer_phone"
                                         type="tel"
@@ -57,11 +57,11 @@
                                         placeholder="e.g. 9876543210"
                                         required
                                     />
-                                    <div class="extra-small text-muted mt-1">We will send SMS / WhatsApp updates on this number.</div>
+                                    <div class="extra-small text-muted mt-1">SMS / WhatsApp notifications</div>
                                 </div>
 
                                 <div class="col-12">
-                                    <label class="form-label small fw-semibold">Email Address <span class="text-muted fw-normal">(Optional)</span></label>
+                                    <label class="form-label small fw-semibold">{{ $t('checkout.email') }} <span class="text-muted fw-normal">({{ $t('common.info') }})</span></label>
                                     <input
                                         v-model="form.customer_email"
                                         type="email"
@@ -76,23 +76,23 @@
                         <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
                             <h5 class="fw-bold mb-3 d-flex align-items-center gap-2">
                                 <span>2.</span>
-                                <span>Delivery Address</span>
+                                <span>{{ $t('common.address') }}</span>
                             </h5>
 
                             <div class="row g-3">
                                 <div class="col-12">
-                                    <label class="form-label small fw-semibold">House / Flat No., Street, Landmark <span class="text-danger">*</span></label>
+                                    <label class="form-label small fw-semibold">{{ $t('checkout.delivery_address') }} <span class="text-danger">*</span></label>
                                     <textarea
                                         v-model="form.street_address"
                                         class="form-control"
                                         rows="2"
-                                        placeholder="e.g. Flat 402, Royal Palms, Link Road, Near Metro Pillar 12"
+                                        :placeholder="$t('checkout.delivery_address')"
                                         required
                                     ></textarea>
                                 </div>
 
                                 <div class="col-md-4">
-                                    <label class="form-label small fw-semibold">City <span class="text-danger">*</span></label>
+                                    <label class="form-label small fw-semibold">{{ $t('checkout.city') }} <span class="text-danger">*</span></label>
                                     <input
                                         v-model="form.city"
                                         type="text"
@@ -103,7 +103,7 @@
                                 </div>
 
                                 <div class="col-md-4">
-                                    <label class="form-label small fw-semibold">State <span class="text-danger">*</span></label>
+                                    <label class="form-label small fw-semibold">{{ $t('checkout.state') }} <span class="text-danger">*</span></label>
                                     <input
                                         v-model="form.state"
                                         type="text"
@@ -114,7 +114,7 @@
                                 </div>
 
                                 <div class="col-md-4">
-                                    <label class="form-label small fw-semibold">Pincode <span class="text-danger">*</span></label>
+                                    <label class="form-label small fw-semibold">{{ $t('checkout.pincode') }} <span class="text-danger">*</span></label>
                                     <input
                                         v-model="form.pincode"
                                         type="text"
@@ -125,12 +125,12 @@
                                 </div>
 
                                 <div class="col-12">
-                                    <label class="form-label small fw-semibold">Delivery Instructions / Notes <span class="text-muted fw-normal">(Optional)</span></label>
+                                    <label class="form-label small fw-semibold">{{ $t('common.notes') }} <span class="text-muted fw-normal">({{ $t('common.info') }})</span></label>
                                     <input
                                         v-model="form.notes"
                                         type="text"
                                         class="form-control"
-                                        placeholder="e.g. Call before delivery, leave with security guard"
+                                        :placeholder="$t('common.notes')"
                                     />
                                 </div>
                             </div>
@@ -140,31 +140,31 @@
                         <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
                             <h5 class="fw-bold mb-3 d-flex align-items-center gap-2">
                                 <span>3.</span>
-                                <span>Payment Method</span>
+                                <span>{{ $t('checkout.payment_selection') }}</span>
                             </h5>
 
                             <div class="d-flex flex-column gap-3">
                                 <label class="border rounded-3 p-3 d-flex align-items-center gap-3 cursor-pointer" :class="{ 'border-primary bg-primary-subtle': form.payment_method === 'cod' }">
                                     <input type="radio" v-model="form.payment_method" value="cod" class="form-check-input mt-0" />
                                     <div>
-                                        <div class="fw-bold text-dark">💵 Cash on Delivery (COD)</div>
-                                        <div class="extra-small text-muted">Pay by cash or scan QR when your parcel arrives.</div>
+                                        <div class="fw-bold text-dark">💵 {{ $t('checkout.cash_on_delivery') }}</div>
+                                        <div class="extra-small text-muted">{{ $t('storefront.cod_available') }}</div>
                                     </div>
                                 </label>
 
                                 <label class="border rounded-3 p-3 d-flex align-items-center gap-3 cursor-pointer" :class="{ 'border-primary bg-primary-subtle': form.payment_method === 'upi' }">
                                     <input type="radio" v-model="form.payment_method" value="upi" class="form-check-input mt-0" />
                                     <div>
-                                        <div class="fw-bold text-dark">📱 Instant UPI / QR Payment</div>
-                                        <div class="extra-small text-muted">Google Pay, PhonePe, Paytm, BHIM.</div>
+                                        <div class="fw-bold text-dark">📱 {{ $t('checkout.upi_online') }}</div>
+                                        <div class="extra-small text-muted">Google Pay, PhonePe, Paytm, BHIM UPI</div>
                                     </div>
                                 </label>
 
                                 <label class="border rounded-3 p-3 d-flex align-items-center gap-3 cursor-pointer" :class="{ 'border-primary bg-primary-subtle': form.payment_method === 'card' }">
                                     <input type="radio" v-model="form.payment_method" value="card" class="form-check-input mt-0" />
                                     <div>
-                                        <div class="fw-bold text-dark">💳 Credit / Debit Card</div>
-                                        <div class="extra-small text-muted">Visa, MasterCard, RuPay, Maestro.</div>
+                                        <div class="fw-bold text-dark">💳 {{ $t('pos.card') }}</div>
+                                        <div class="extra-small text-muted">Visa, MasterCard, RuPay</div>
                                     </div>
                                 </label>
                             </div>
@@ -172,18 +172,18 @@
 
                         <!-- Server Error Display -->
                         <div v-if="serverError" class="alert alert-danger rounded-3 mb-4" role="alert">
-                            <strong>Order Placement Error:</strong> {{ serverError }}
+                            <strong>{{ $t('common.error') }}:</strong> {{ serverError }}
                         </div>
 
                         <!-- Submit Button on mobile/tablet -->
                         <div class="d-lg-none mb-4">
                             <button
                                 type="submit"
-                                class="btn btn-primary btn-lg w-100 fw-bold rounded-pill"
-                                :disabled="submitting"
+                                class="btn btn-primary btn-lg w-100 fw-bold rounded-pill shadow-sm"
+                                :disabled="submitting || cartItems.length === 0"
                             >
-                                <span v-if="submitting" class="spinner-border spinner-border-sm me-2" role="status"></span>
-                                {{ submitting ? 'Placing Order...' : `Place Order (₹${formatMoney(cartGrandTotal)})` }}
+                                <span v-if="submitting" class="spinner-border spinner-border-sm me-2"></span>
+                                <span>{{ submitting ? $t('common.processing') : $t('checkout.place_order') }}</span>
                             </button>
                         </div>
                     </form>
@@ -192,7 +192,7 @@
                 <!-- Right Column: Order Review & Placement -->
                 <div class="col-lg-5">
                     <div class="card border-0 shadow-sm rounded-4 bg-white p-4 sticky-top" style="top: 80px;">
-                        <h5 class="fw-bold mb-3">Order Items ({{ cartCount }})</h5>
+                        <h5 class="fw-bold mb-3">{{ $t('storefront.items_in_order') }} ({{ cartCount }})</h5>
 
                         <!-- Items list -->
                         <div class="order-items-scroll mb-3" style="max-height: 240px; overflow-y: auto;">
@@ -216,7 +216,7 @@
                                             {{ item.name }}
                                         </div>
                                         <div class="extra-small text-muted">
-                                            Qty: {{ item.quantity }} {{ item.unit_name }} × ₹{{ formatMoney(item.selling_price) }}
+                                            {{ $t('common.qty') }}: {{ item.quantity }} {{ item.unit_name }} × ₹{{ formatMoney(item.selling_price) }}
                                         </div>
                                     </div>
                                 </div>
@@ -228,18 +228,18 @@
 
                         <!-- Coupon Code Section -->
                         <div class="mb-3 pb-3 border-bottom">
-                            <label class="form-label extra-small fw-semibold text-uppercase text-muted mb-1">Coupon Code</label>
+                            <label class="form-label extra-small fw-semibold text-uppercase text-muted mb-1">{{ $t('cart.apply_coupon') }}</label>
 
                             <div v-if="appliedCoupon" class="p-2 rounded bg-success-subtle border border-success-subtle d-flex align-items-center justify-content-between">
                                 <div class="d-flex align-items-center gap-2">
                                     <span class="fs-5">🏷️</span>
                                     <div>
                                         <div class="fw-bold text-success small font-monospace">{{ appliedCoupon.code }}</div>
-                                        <div class="extra-small text-secondary">{{ appliedCoupon.name || 'Coupon Applied' }}</div>
+                                        <div class="extra-small text-secondary">{{ appliedCoupon.name || $t('coupons.title') }}</div>
                                     </div>
                                 </div>
-                                <button type="button" class="btn btn-sm btn-link text-danger p-0 text-decoration-none" title="Remove Coupon" @click="removeCoupon">
-                                    ✕ Remove
+                                <button type="button" class="btn btn-sm btn-link text-danger p-0 text-decoration-none" :title="$t('common.remove')" @click="removeCoupon">
+                                    ✕ {{ $t('common.remove') }}
                                 </button>
                             </div>
 
@@ -249,7 +249,7 @@
                                         v-model="couponInput"
                                         type="text"
                                         class="form-control text-uppercase font-monospace"
-                                        placeholder="e.g. WELCOME100"
+                                        :placeholder="$t('cart.coupon_placeholder')"
                                         :disabled="validatingCoupon"
                                         @input="couponInput = couponInput.toUpperCase()"
                                         @keydown.enter.prevent="handleApplyCoupon"
@@ -261,7 +261,7 @@
                                         @click="handleApplyCoupon"
                                     >
                                         <span v-if="validatingCoupon" class="spinner-border spinner-border-sm me-1"></span>
-                                        {{ validatingCoupon ? 'Checking...' : 'Apply' }}
+                                        {{ validatingCoupon ? $t('common.processing') : $t('cart.apply') }}
                                     </button>
                                 </div>
                                 <div v-if="couponError" class="extra-small text-danger mt-1">
@@ -272,22 +272,22 @@
 
                         <!-- Calculation breakdown -->
                         <div class="d-flex justify-content-between small text-muted mb-2">
-                            <span>Subtotal</span>
+                            <span>{{ $t('common.subtotal') }}</span>
                             <span class="fw-semibold text-dark">₹{{ formatMoney(cartSubtotal) }}</span>
                         </div>
 
                         <div class="d-flex justify-content-between small text-muted mb-2">
-                            <span>GST Tax</span>
+                            <span>{{ $t('common.tax') }}</span>
                             <span class="fw-semibold text-dark">₹{{ formatMoney(cartTaxTotal) }}</span>
                         </div>
 
                         <div v-if="appliedCoupon && couponDiscount > 0" class="d-flex justify-content-between small text-success mb-2">
-                            <span class="fw-medium">Coupon Savings ({{ appliedCoupon.code }})</span>
+                            <span class="fw-medium">{{ $t('common.discount') }} ({{ appliedCoupon.code }})</span>
                             <span class="fw-bold">-₹{{ formatMoney(couponDiscount) }}</span>
                         </div>
 
                         <div class="d-flex justify-content-between small text-muted mb-3 pb-3 border-bottom">
-                            <span>Delivery</span>
+                            <span>{{ $t('common.shipping') }}</span>
                             <span v-if="cartShipping === 0" class="badge bg-success-subtle text-success">
                                 FREE
                             </span>
@@ -297,7 +297,7 @@
                         </div>
 
                         <div class="d-flex justify-content-between fs-5 fw-bold text-dark mb-4">
-                            <span>Total Amount</span>
+                            <span>{{ $t('common.grand_total') }}</span>
                             <span class="text-primary">₹{{ formatMoney(cartGrandTotal) }}</span>
                         </div>
 
@@ -309,7 +309,7 @@
                             @click="submitOrder"
                         >
                             <span v-if="submitting" class="spinner-border spinner-border-sm me-2" role="status"></span>
-                            {{ submitting ? 'Processing Order...' : `Confirm & Place Order` }}
+                            {{ submitting ? $t('common.processing') : $t('checkout.place_order') }}
                         </button>
 
                         <div class="extra-small text-muted text-center">

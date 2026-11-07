@@ -1,18 +1,17 @@
-
 <template>
     <div class="container-fluid py-4">
 
         <!-- Header -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                <h3 class="fw-bold mb-1">Units</h3>
+                <h3 class="fw-bold mb-1">{{ $t('units.title') }}</h3>
                 <p class="text-muted mb-0">
-                    Manage product measurement units
+                    {{ $t('units.subtitle') }}
                 </p>
             </div>
 
             <button class="btn btn-primary" @click="openModal()">
-                + Add Unit
+                + {{ $t('units.add_unit') }}
             </button>
         </div>
 
@@ -23,7 +22,7 @@
                     v-model="search"
                     type="text"
                     class="form-control"
-                    placeholder="Search unit name or code..."
+                    :placeholder="$t('common.search') + '...'"
                     @input="loadUnits(1)"
                 />
             </div>
@@ -38,11 +37,11 @@
                     <thead class="table-light">
                         <tr>
                             <th>#</th>
-                            <th>Unit Name</th>
-                            <th>Short Code</th>
-                            <th>Decimal Quantity</th>
-                            <th>Status</th>
-                            <th width="160">Action</th>
+                            <th>{{ $t('units.unit_name') }}</th>
+                            <th>{{ $t('units.short_name') }}</th>
+                            <th>{{ $t('units.allow_decimal') }}</th>
+                            <th>{{ $t('common.status') }}</th>
+                            <th width="160">{{ $t('common.actions') }}</th>
                         </tr>
                     </thead>
 
@@ -50,13 +49,13 @@
 
                         <tr v-if="loading">
                             <td colspan="6" class="text-center py-4">
-                                Loading...
+                                {{ $t('common.loading') }}
                             </td>
                         </tr>
 
                         <tr v-else-if="units.length === 0">
                             <td colspan="6" class="text-center py-4">
-                                No units found.
+                                {{ $t('common.no_data') }}
                             </td>
                         </tr>
 
@@ -82,7 +81,7 @@
                                         ? 'text-success'
                                         : 'text-muted'">
 
-                                    {{ unit.allow_decimal ? 'Yes' : 'No' }}
+                                    {{ unit.allow_decimal ? $t('common.yes') : $t('common.no') }}
                                 </span>
                             </td>
 
@@ -93,7 +92,7 @@
                                         ? 'bg-success'
                                         : 'bg-secondary'">
 
-                                    {{ unit.status ? 'Active' : 'Inactive' }}
+                                    {{ unit.status ? $t('common.active') : $t('common.inactive') }}
                                 </span>
                             </td>
 
@@ -101,13 +100,13 @@
                                 <button
                                     class="btn btn-sm btn-outline-primary me-2"
                                     @click="openModal(unit)">
-                                    Edit
+                                    {{ $t('common.edit') }}
                                 </button>
 
                                 <button
                                     class="btn btn-sm btn-outline-danger"
                                     @click="deleteUnit(unit.id)">
-                                    Delete
+                                    {{ $t('common.delete') }}
                                 </button>
                             </td>
 
@@ -122,7 +121,7 @@
             <div class="card-body d-flex justify-content-between">
 
                 <span class="text-muted">
-                    Total: {{ totalUnits }} units
+                    {{ $t('common.total') }}: {{ totalUnits }}
                 </span>
 
                 <div>
@@ -130,14 +129,14 @@
                         class="btn btn-sm btn-outline-secondary me-2"
                         :disabled="currentPage <= 1"
                         @click="loadUnits(currentPage - 1)">
-                        Previous
+                        {{ $t('common.previous') }}
                     </button>
 
                     <button
                         class="btn btn-sm btn-outline-secondary"
                         :disabled="currentPage >= lastPage"
                         @click="loadUnits(currentPage + 1)">
-                        Next
+                        {{ $t('common.next') }}
                     </button>
                 </div>
 
@@ -154,7 +153,7 @@
 
                         <div class="modal-header">
                             <h5 class="modal-title">
-                                {{ editingId ? 'Edit Unit' : 'Add Unit' }}
+                                {{ editingId ? $t('units.edit_unit') : $t('units.add_unit') }}
                             </h5>
 
                             <button
@@ -168,7 +167,7 @@
 
                             <div class="mb-3">
                                 <label class="form-label">
-                                    Unit Name *
+                                    {{ $t('units.unit_name') }} *
                                 </label>
 
                                 <input
@@ -182,7 +181,7 @@
 
                             <div class="mb-3">
                                 <label class="form-label">
-                                    Short Code *
+                                    {{ $t('units.short_name') }} *
                                 </label>
 
                                 <input
@@ -206,7 +205,7 @@
                                 <label
                                     class="form-check-label"
                                     for="allowDecimal">
-                                    Allow decimal quantity
+                                    {{ $t('units.allow_decimal') }}
                                 </label>
                             </div>
 
@@ -221,7 +220,7 @@
                                 <label
                                     class="form-check-label"
                                     for="unitStatus">
-                                    Active
+                                    {{ $t('common.active') }}
                                 </label>
                             </div>
 
@@ -239,7 +238,7 @@
                                 type="button"
                                 class="btn btn-light"
                                 data-bs-dismiss="modal">
-                                Cancel
+                                {{ $t('common.cancel') }}
                             </button>
 
                             <button
@@ -247,7 +246,7 @@
                                 class="btn btn-primary"
                                 :disabled="saving">
 
-                                {{ saving ? 'Saving...' : 'Save Unit' }}
+                                {{ saving ? $t('common.processing') : $t('common.save') }}
 
                             </button>
 
@@ -265,8 +264,11 @@
 
 <script setup>
 import { ref, reactive, onMounted, onBeforeUnmount } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { Modal } from 'bootstrap';
 import api from '../../services/api';
+
+const { t } = useI18n();
 
 const units = ref([]);
 const search = ref('');
@@ -308,7 +310,7 @@ async function loadUnits(page = 1) {
 
     } catch (error) {
         console.error(error);
-        alert('Unable to load units.');
+        alert(t('common.error') + ': ' + (error.response?.data?.message || 'Unable to load units.'));
     } finally {
         loading.value = false;
     }
@@ -365,14 +367,14 @@ async function saveUnit() {
 
         await loadUnits(currentPage.value);
 
-        alert('Unit saved successfully.');
+        alert(t('common.saved_successfully'));
 
     } catch (error) {
         const errors = error.response?.data?.errors;
 
         errorMessage.value = errors
             ? Object.values(errors).flat().join(', ')
-            : error.response?.data?.message || 'Something went wrong.';
+            : error.response?.data?.message || t('common.error');
 
     } finally {
         saving.value = false;
@@ -380,7 +382,7 @@ async function saveUnit() {
 }
 
 async function deleteUnit(id) {
-    if (!confirm('Are you sure you want to delete this unit?')) {
+    if (!confirm(t('units.delete_confirm'))) {
         return;
     }
 
@@ -389,12 +391,12 @@ async function deleteUnit(id) {
 
         await loadUnits(currentPage.value);
 
-        alert('Unit deleted successfully.');
+        alert(t('common.deleted_successfully'));
 
     } catch (error) {
         alert(
             error.response?.data?.message ||
-            'Unable to delete unit.'
+            t('common.error')
         );
     }
 }

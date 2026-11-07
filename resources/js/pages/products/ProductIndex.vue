@@ -1,15 +1,14 @@
-
 <template>
     <div class="container-fluid p-4">
 
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                <h2 class="fw-bold mb-1">Products</h2>
-                <p class="text-muted mb-0">Manage your product inventory</p>
+                <h2 class="fw-bold mb-1">{{ $t('products.title') }}</h2>
+                <p class="text-muted mb-0">{{ $t('products.subtitle') }}</p>
             </div>
 
             <button class="btn btn-primary" @click="openCreate">
-                + Add Product
+                + {{ $t('products.add_product') }}
             </button>
         </div>
 
@@ -20,7 +19,7 @@
                     @input="getProducts"
                     type="text"
                     class="form-control"
-                    placeholder="Search product name or SKU..."
+                    :placeholder="$t('products.search_placeholder')"
                 >
             </div>
         </div>
@@ -31,15 +30,15 @@
                     <thead class="table-light">
                         <tr>
                             <th>#</th>
-                            <th>Product</th>
-                            <th>SKU</th>
-                            <th>Category</th>
-                            <th>Brand</th>
-                            <th>Unit</th>
-                            <th>Purchase Price</th>
-                            <th>Selling Price</th>
-                            <th>Status</th>
-                            <th>Action</th>
+                            <th>{{ $t('products.product_name') }}</th>
+                            <th>{{ $t('products.sku') }}</th>
+                            <th>{{ $t('products.category') }}</th>
+                            <th>{{ $t('products.brand') }}</th>
+                            <th>{{ $t('products.unit') }}</th>
+                            <th>{{ $t('products.purchase_price') }}</th>
+                            <th>{{ $t('products.selling_price') }}</th>
+                            <th>{{ $t('common.status') }}</th>
+                            <th>{{ $t('common.actions') }}</th>
                         </tr>
                     </thead>
 
@@ -55,10 +54,10 @@
                             <td>₹{{ product.selling_price }}</td>
                             <td>
                                 <span class="badge bg-success" v-if="product.status">
-                                    Active
+                                    {{ $t('common.active') }}
                                 </span>
                                 <span class="badge bg-danger" v-else>
-                                    Inactive
+                                    {{ $t('common.inactive') }}
                                 </span>
                             </td>
                             <td>
@@ -66,21 +65,21 @@
                                     class="btn btn-sm btn-outline-primary me-1"
                                     @click="editProduct(product)"
                                 >
-                                    Edit
+                                    {{ $t('common.edit') }}
                                 </button>
 
                                 <button
                                     class="btn btn-sm btn-outline-danger"
                                     @click="deleteProduct(product.id)"
                                 >
-                                    Delete
+                                    {{ $t('common.delete') }}
                                 </button>
                             </td>
                         </tr>
 
                         <tr v-if="products.length === 0">
                             <td colspan="10" class="text-center py-4">
-                                No products found.
+                                {{ $t('common.no_data') }}
                             </td>
                         </tr>
                     </tbody>
@@ -88,7 +87,7 @@
             </div>
 
             <div class="card-footer bg-white">
-                Total: {{ total }} products
+                {{ $t('common.total') }}: {{ total }}
             </div>
         </div>
 
@@ -97,9 +96,11 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import { useI18n } from 'vue-i18n';
 import api from '../../services/api';
 import { useRouter } from 'vue-router';
 
+const { t } = useI18n();
 const products = ref([]);
 const search = ref('');
 const total = ref(0);
@@ -128,7 +129,7 @@ const editProduct = (product) => {
 };
 
 const deleteProduct = async (id) => {
-    if (!confirm('Are you sure you want to delete this product?')) {
+    if (!confirm(t('products.delete_confirm_msg'))) {
         return;
     }
 
@@ -136,9 +137,11 @@ const deleteProduct = async (id) => {
         await api.delete(`/products/${id}`);
         getProducts();
     } catch (error) {
-        alert(error.response?.data?.message || 'Unable to delete product.');
+        alert(error.response?.data?.message || t('common.error'));
     }
 };
 
-onMounted(getProducts);
+onMounted(() => {
+    getProducts();
+});
 </script>

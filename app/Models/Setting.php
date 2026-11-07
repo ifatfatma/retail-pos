@@ -146,6 +146,34 @@ class Setting extends Model
             'upi_id' => 'smartstationery@upi',
             'upi_merchant_name' => 'Smart Stationery Store',
             'upi_enabled' => '1',
+
+            // Marketing & Notification Settings
+            'marketing_test_mode' => '1',
+            'marketing_email_enabled' => '1',
+            'marketing_email_provider' => 'simulated',
+            'marketing_email_from_name' => 'Retail POS Deals',
+            'marketing_email_from_address' => 'offers@retailstore.local',
+            'marketing_email_smtp_host' => 'smtp.mailtrap.io',
+            'marketing_email_smtp_port' => '2525',
+            'marketing_email_smtp_user' => '',
+            'marketing_email_smtp_pass' => '',
+
+            'marketing_sms_enabled' => '1',
+            'marketing_sms_provider' => 'simulated',
+            'marketing_sms_sender_id' => 'RETAIL',
+            'marketing_sms_api_key' => '',
+
+            'marketing_whatsapp_enabled' => '1',
+            'marketing_whatsapp_provider' => 'simulated',
+            'marketing_whatsapp_phone_number_id' => '',
+            'marketing_whatsapp_token' => '',
+
+            'marketing_push_enabled' => '1',
+            'marketing_push_provider' => 'simulated',
+            'marketing_push_public_key' => '',
+            'marketing_push_private_key' => '',
+
+            'marketing_in_app_enabled' => '1',
         ];
     }
 

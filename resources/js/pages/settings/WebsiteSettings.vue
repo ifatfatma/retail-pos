@@ -3,16 +3,16 @@
         <!-- Page Header -->
         <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
             <div>
-                <h3 class="fw-bold mb-1">⚙️ Website CMS, Logo & SEO Settings</h3>
+                <h3 class="fw-bold mb-1">⚙️ {{ $t('settings.title') }}</h3>
                 <p class="text-muted mb-0">
-                    Customize your public storefront branding, logo, homepage hero contents, footer details, and search engine optimization.
+                    {{ $t('settings.subtitle') }}
                 </p>
             </div>
 
             <div class="d-flex gap-2">
                 <a href="/" target="_blank" class="btn btn-outline-primary btn-sm rounded-pill px-3 d-flex align-items-center gap-1">
                     <span>🌐</span>
-                    <span>Preview Storefront</span>
+                    <span>{{ $t('nav.view_store') }}</span>
                 </a>
                 <button
                     class="btn btn-primary btn-sm rounded-pill px-4 fw-semibold shadow-sm d-flex align-items-center gap-2"
@@ -20,26 +20,26 @@
                     @click="saveSettings"
                 >
                     <span v-if="saving" class="spinner-border spinner-border-sm" role="status"></span>
-                    <span>{{ saving ? 'Saving...' : '💾 Save Changes' }}</span>
+                    <span>{{ saving ? $t('common.processing') : `💾 ${$t('settings.save_settings')}` }}</span>
                 </button>
             </div>
         </div>
 
         <!-- Success and Error Alerts -->
         <div v-if="successMsg" class="alert alert-success alert-dismissible fade show rounded-3 shadow-sm mb-4" role="alert">
-            <strong>Success:</strong> {{ successMsg }}
+            <strong>{{ $t('common.success') }}:</strong> {{ successMsg }}
             <button type="button" class="btn-close" @click="successMsg = ''"></button>
         </div>
 
         <div v-if="errorMsg" class="alert alert-danger alert-dismissible fade show rounded-3 shadow-sm mb-4" role="alert">
-            <strong>Error:</strong> {{ errorMsg }}
+            <strong>{{ $t('common.error') }}:</strong> {{ errorMsg }}
             <button type="button" class="btn-close" @click="errorMsg = ''"></button>
         </div>
 
         <!-- Loading Spinner -->
         <div v-if="loading" class="text-center py-5">
             <div class="spinner-border text-primary" role="status"></div>
-            <p class="text-muted mt-2">Loading settings...</p>
+            <p class="text-muted mt-2">{{ $t('common.loading') }}</p>
         </div>
 
         <!-- Main Settings Form Tabs -->
@@ -53,7 +53,7 @@
                             :class="{ active: activeTab === 'branding' }"
                             @click="activeTab = 'branding'"
                         >
-                            🏷️ Branding & Logo
+                            🏷️ {{ $t('settings.general') }}
                         </button>
                     </li>
                     <li class="nav-item">
@@ -62,7 +62,7 @@
                             :class="{ active: activeTab === 'slideshow' }"
                             @click="activeTab = 'slideshow'"
                         >
-                            🎠 Homepage Slideshow
+                            🎠 {{ $t('settings.slideshow') }}
                         </button>
                     </li>
                     <li class="nav-item">
@@ -80,7 +80,7 @@
                             :class="{ active: activeTab === 'hero' }"
                             @click="activeTab = 'hero'"
                         >
-                            🚀 Homepage & Hero
+                            🚀 {{ $t('settings.announcement') }}
                         </button>
                     </li>
                     <li class="nav-item">
@@ -89,7 +89,7 @@
                             :class="{ active: activeTab === 'contact' }"
                             @click="activeTab = 'contact'"
                         >
-                            📞 Store Info & Footer
+                            📞 {{ $t('settings.contact') }}
                         </button>
                     </li>
                     <li class="nav-item">
@@ -107,7 +107,7 @@
                             :class="{ active: activeTab === 'payments' }"
                             @click="activeTab = 'payments'"
                         >
-                            📱 UPI & Payments
+                            📱 {{ $t('pos.upi_qr') }}
                         </button>
                     </li>
                 </ul>
@@ -116,11 +116,11 @@
             <div class="card-body p-4 p-md-5">
                 <!-- 1. Branding & Logo Tab -->
                 <div v-show="activeTab === 'branding'">
-                    <h5 class="fw-bold mb-4 pb-2 border-bottom">Brand Identity & Announcement Bar</h5>
+                    <h5 class="fw-bold mb-4 pb-2 border-bottom">{{ $t('settings.general') }}</h5>
 
                     <div class="row g-4 mb-4">
                         <div class="col-md-6">
-                            <label class="form-label small fw-semibold text-muted text-uppercase">Store / Brand Name</label>
+                            <label class="form-label small fw-semibold text-muted text-uppercase">{{ $t('settings.site_name') }}</label>
                             <input
                                 v-model="form.site_name"
                                 type="text"

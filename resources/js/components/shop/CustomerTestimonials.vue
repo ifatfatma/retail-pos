@@ -25,11 +25,11 @@
                     </div>
                     <span class="text-muted d-none d-sm-inline">|</span>
                     <span class="small fw-semibold text-secondary">
-                        <span class="text-success fw-bold">✔</span> 100% Verified Customer Reviews
+                        <span class="text-success fw-bold">✔</span> {{ $t('storefront.verified_reviews') }}
                     </span>
                     <span class="text-muted d-none d-sm-inline">|</span>
                     <span class="small fw-semibold text-secondary">
-                        <span class="text-success fw-bold">✔</span> Real Counter Stock Sync
+                        <span class="text-success fw-bold">✔</span> {{ $t('storefront.counter_stock_sync') }}
                     </span>
                 </div>
             </div>
@@ -42,7 +42,7 @@
                     :class="activeFilter === 'all' ? 'btn-primary shadow-sm' : 'btn-white border text-secondary'"
                     @click="activeFilter = 'all'"
                 >
-                    All Reviews ({{ testimonials.length }})
+                    {{ $t('storefront.all_reviews') }} ({{ testimonials.length }})
                 </button>
                 <button
                     type="button"
@@ -50,7 +50,7 @@
                     :class="activeFilter === '5stars' ? 'btn-primary shadow-sm' : 'btn-white border text-secondary'"
                     @click="activeFilter = '5stars'"
                 >
-                    ⭐ 5 Stars Only ({{ count5Stars }})
+                    ⭐ {{ $t('storefront.stars_only') }} ({{ count5Stars }})
                 </button>
                 <button
                     type="button"
@@ -58,7 +58,7 @@
                     :class="activeFilter === 'verified' ? 'btn-primary shadow-sm' : 'btn-white border text-secondary'"
                     @click="activeFilter = 'verified'"
                 >
-                    🛡️ Verified Buyers ({{ countVerified }})
+                    🛡️ {{ $t('storefront.verified_buyers') }} ({{ countVerified }})
                 </button>
             </div>
 

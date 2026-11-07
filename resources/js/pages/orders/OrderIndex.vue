@@ -4,9 +4,9 @@
         <!-- Page Header -->
         <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
             <div>
-                <h3 class="fw-bold mb-1">Online Orders</h3>
+                <h3 class="fw-bold mb-1">{{ $t('orders.title') }}</h3>
                 <p class="text-muted mb-0">
-                    Track, dispatch and deliver orders from your web storefront, WhatsApp & delivery channels
+                    {{ $t('orders.subtitle') }}
                 </p>
             </div>
 
@@ -15,17 +15,17 @@
                     class="btn btn-outline-secondary"
                     @click="refreshData"
                     :disabled="loading"
-                    title="Refresh"
+                    :title="$t('common.refresh')"
                 >
                     <span v-if="loading" class="spinner-border spinner-border-sm me-1"></span>
-                    Refresh
+                    {{ $t('common.refresh') }}
                 </button>
 
                 <button
                     class="btn btn-primary"
                     @click="openCreateModal"
                 >
-                    + New Online Order
+                    + {{ $t('common.create') }}
                 </button>
             </div>
         </div>
@@ -41,9 +41,9 @@
                             </svg>
                         </div>
                         <div>
-                            <div class="text-muted small fw-medium">Total Online Revenue</div>
+                            <div class="text-muted small fw-medium">{{ $t('reports.total_revenue') }}</div>
                             <h4 class="fw-bold mb-0">₹{{ Number(summary.total_revenue).toLocaleString() }}</h4>
-                            <div class="small text-muted mt-1">{{ summary.total_orders }} total orders</div>
+                            <div class="small text-muted mt-1">{{ summary.total_orders }} {{ $t('orders.all_orders') }}</div>
                         </div>
                     </div>
                 </div>
@@ -62,9 +62,9 @@
                             </svg>
                         </div>
                         <div>
-                            <div class="text-muted small fw-medium">Pending Action</div>
+                            <div class="text-muted small fw-medium">{{ $t('common.pending') }}</div>
                             <h4 class="fw-bold text-warning mb-0">{{ summary.pending_count }}</h4>
-                            <div class="small text-muted mt-1">Needs confirmation</div>
+                            <div class="small text-muted mt-1">{{ $t('common.warning') }}</div>
                         </div>
                     </div>
                 </div>
@@ -83,9 +83,9 @@
                             </svg>
                         </div>
                         <div>
-                            <div class="text-muted small fw-medium">In Packing / Prep</div>
+                            <div class="text-muted small fw-medium">{{ $t('common.processing_status') }}</div>
                             <h4 class="fw-bold text-info mb-0">{{ summary.processing_count }}</h4>
-                            <div class="small text-muted mt-1">Confirmed & processing</div>
+                            <div class="small text-muted mt-1">{{ $t('common.processing') }}</div>
                         </div>
                     </div>
                 </div>
@@ -104,9 +104,9 @@
                             </svg>
                         </div>
                         <div>
-                            <div class="text-muted small fw-medium">Out for Delivery</div>
+                            <div class="text-muted small fw-medium">{{ $t('common.shipped') }}</div>
                             <h4 class="fw-bold text-primary mb-0">{{ summary.shipped_count }}</h4>
-                            <div class="small text-muted mt-1">In transit with courier</div>
+                            <div class="small text-muted mt-1">{{ $t('orders.shipping_status') }}</div>
                         </div>
                     </div>
                 </div>
@@ -120,21 +120,21 @@
                 :class="statusFilter === 'all' ? 'btn-dark' : 'btn-light border'"
                 @click="setStatusFilter('all')"
             >
-                All Orders ({{ summary.total_orders }})
+                {{ $t('orders.all_orders') }} ({{ summary.total_orders }})
             </button>
             <button
                 class="btn btn-sm rounded-pill px-3"
                 :class="statusFilter === 'pending' ? 'btn-warning text-dark fw-bold' : 'btn-light border'"
                 @click="setStatusFilter('pending')"
             >
-                Pending ({{ summary.pending_count }})
+                {{ $t('common.pending') }} ({{ summary.pending_count }})
             </button>
             <button
                 class="btn btn-sm rounded-pill px-3"
                 :class="statusFilter === 'processing' ? 'btn-primary' : 'btn-light border'"
                 @click="setStatusFilter('processing')"
             >
-                Processing ({{ summary.processing_count }})
+                {{ $t('common.processing_status') }} ({{ summary.processing_count }})
             </button>
             <button
                 class="btn btn-sm rounded-pill px-3"
@@ -143,7 +143,7 @@
                 style="background-color: #6610f2; border-color: #6610f2;"
                 v-if="statusFilter === 'shipped'"
             >
-                Shipped ({{ summary.shipped_count }})
+                {{ $t('common.shipped') }} ({{ summary.shipped_count }})
             </button>
             <button
                 class="btn btn-sm rounded-pill px-3"
@@ -151,21 +151,21 @@
                 @click="setStatusFilter('shipped')"
                 v-else
             >
-                Shipped ({{ summary.shipped_count }})
+                {{ $t('common.shipped') }} ({{ summary.shipped_count }})
             </button>
             <button
                 class="btn btn-sm rounded-pill px-3"
                 :class="statusFilter === 'delivered' ? 'btn-success' : 'btn-light border'"
                 @click="setStatusFilter('delivered')"
             >
-                Delivered ({{ summary.delivered_count }})
+                {{ $t('common.delivered') }} ({{ summary.delivered_count }})
             </button>
             <button
                 class="btn btn-sm rounded-pill px-3"
                 :class="statusFilter === 'cancelled' ? 'btn-danger' : 'btn-light border'"
                 @click="setStatusFilter('cancelled')"
             >
-                Cancelled ({{ summary.cancelled_count }})
+                {{ $t('common.cancelled') }} ({{ summary.cancelled_count }})
             </button>
         </div>
 
@@ -178,7 +178,7 @@
                             v-model="search"
                             type="text"
                             class="form-control"
-                            placeholder="Search by order #, customer name, phone, or tracking..."
+                            :placeholder="$t('common.search') + '...'"
                             @input="debouncedLoad"
                         />
                     </div>
@@ -189,7 +189,7 @@
                             class="form-select"
                             @change="loadOrders(1)"
                         >
-                            <option value="all">All Channels</option>
+                            <option value="all">-- {{ $t('orders.channel') }} ({{ $t('common.all') }}) --</option>
                             <option value="web">Web Store</option>
                             <option value="whatsapp">WhatsApp Order</option>
                             <option value="phone">Phone / Direct</option>
@@ -203,16 +203,16 @@
                             class="form-select"
                             @change="loadOrders(1)"
                         >
-                            <option value="all">All Payment Statuses</option>
-                            <option value="paid">Paid (Pre-paid / Settled)</option>
-                            <option value="unpaid">Unpaid / Cash on Delivery (COD)</option>
-                            <option value="partial">Partially Paid</option>
+                            <option value="all">-- {{ $t('orders.payment_status') }} ({{ $t('common.all') }}) --</option>
+                            <option value="paid">{{ $t('common.paid') }}</option>
+                            <option value="unpaid">{{ $t('common.unpaid') }}</option>
+                            <option value="partial">{{ $t('common.partial') }}</option>
                         </select>
                     </div>
 
                     <div class="col-md-1">
-                        <button class="btn btn-light w-100" @click="resetFilters" title="Reset filters">
-                            Clear
+                        <button class="btn btn-light w-100" @click="resetFilters" :title="$t('common.clear')">
+                            {{ $t('common.clear') }}
                         </button>
                     </div>
                 </div>
@@ -261,13 +261,13 @@
                                 />
                             </th>
                             <th width="50">#</th>
-                            <th>Order Details</th>
-                            <th>Customer & Address</th>
-                            <th>Items Summary</th>
-                            <th class="text-end">Total Amount</th>
-                            <th>Payment</th>
-                            <th>Order Status</th>
-                            <th class="text-center" width="240">Workflow Action</th>
+                            <th>{{ $t('orders.order_number') }} & {{ $t('common.date') }}</th>
+                            <th>{{ $t('dashboard.customer') }} & {{ $t('common.address') }}</th>
+                            <th>{{ $t('dashboard.items') }}</th>
+                            <th class="text-end">{{ $t('common.grand_total') }}</th>
+                            <th>{{ $t('orders.payment_status') }}</th>
+                            <th>{{ $t('orders.shipping_status') }}</th>
+                            <th class="text-center" width="240">{{ $t('common.actions') }}</th>
                         </tr>
                     </thead>
 
@@ -275,13 +275,13 @@
                         <tr v-if="loading">
                             <td colspan="9" class="text-center py-5 text-muted">
                                 <div class="spinner-border spinner-border-sm me-2"></div>
-                                Loading orders...
+                                {{ $t('common.loading') }}
                             </td>
                         </tr>
 
                         <tr v-else-if="orders.length === 0">
                             <td colspan="9" class="text-center py-5 text-muted">
-                                No online orders found matching current criteria.
+                                {{ $t('common.no_data') }}
                             </td>
                         </tr>
 
@@ -474,8 +474,27 @@
                     </div>
 
                     <div class="modal-body p-4" id="printablePackingSlip">
-                        <!-- Workflow Status Stepper Bar -->
-                        <div class="card bg-light border-0 p-3 mb-4">
+                        <!-- Dedicated Print Header (Visible ONLY when printing) -->
+                        <div class="d-none d-print-block mb-4 pb-3 border-bottom">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h3 class="fw-bold mb-1 text-dark">The Smart Stationery</h3>
+                                    <div class="small text-secondary">{{ $t('receipt.packing_slip') }}</div>
+                                </div>
+                                <div class="text-end">
+                                    <h4 class="fw-bold text-primary mb-1">{{ selectedOrder.invoice_number }}</h4>
+                                    <div class="small text-muted">
+                                        {{ $t('common.date') }}: {{ formatDateTime(selectedOrder.sale_date) }}
+                                    </div>
+                                    <div class="extra-small text-muted">
+                                        {{ $t('orders.channel') }}: {{ channelLabel(selectedOrder.channel) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Workflow Status Stepper Bar (Screen Only - Hidden on Print) -->
+                        <div class="card bg-light border-0 p-3 mb-4 d-print-none">
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <span class="small fw-bold text-uppercase text-muted">Order Lifecycle Status</span>
                                 <span class="badge" :class="statusBadgeClass(selectedOrder.status)">
@@ -542,23 +561,23 @@
                         <div class="row g-3 mb-4">
                             <div class="col-sm-6">
                                 <div class="card h-100 border p-3">
-                                    <h6 class="fw-bold mb-2">👤 Customer Information</h6>
-                                    <div><strong>Name:</strong> {{ selectedOrder.customer?.name || 'Walk-in / Guest' }}</div>
-                                    <div v-if="selectedOrder.customer?.phone"><strong>Phone:</strong> {{ selectedOrder.customer.phone }}</div>
-                                    <div v-if="selectedOrder.customer?.email"><strong>Email:</strong> {{ selectedOrder.customer.email }}</div>
+                                    <h6 class="fw-bold mb-2">👤 {{ $t('receipt.customer_info') }}</h6>
+                                    <div><strong>{{ $t('checkout.full_name') }}:</strong> {{ selectedOrder.customer?.name || 'Walk-in / Guest' }}</div>
+                                    <div v-if="selectedOrder.customer?.phone"><strong>{{ $t('checkout.phone') }}:</strong> {{ selectedOrder.customer.phone }}</div>
+                                    <div v-if="selectedOrder.customer?.email"><strong>{{ $t('checkout.email') }}:</strong> {{ selectedOrder.customer.email }}</div>
                                 </div>
                             </div>
 
                             <div class="col-sm-6">
                                 <div class="card h-100 border p-3">
-                                    <h6 class="fw-bold mb-2">📍 Shipping & Delivery Destination</h6>
+                                    <h6 class="fw-bold mb-2">📍 {{ $t('receipt.shipping_destination') }}</h6>
                                     <div class="text-dark">{{ selectedOrder.shipping_address || 'No address provided' }}</div>
 
                                     <div class="mt-2 pt-2 border-top small" v-if="selectedOrder.delivery_partner || selectedOrder.tracking_number">
-                                        <div><strong>Courier Partner:</strong> {{ selectedOrder.delivery_partner || 'In-house' }}</div>
-                                        <div><strong>Tracking #:</strong> <span class="fw-mono">{{ selectedOrder.tracking_number || '-' }}</span></div>
+                                        <div><strong>{{ $t('receipt.courier_partner') }}:</strong> {{ selectedOrder.delivery_partner || 'In-house' }}</div>
+                                        <div><strong>{{ $t('receipt.tracking_no') }}:</strong> <span class="fw-mono">{{ selectedOrder.tracking_number || '-' }}</span></div>
                                         <div v-if="selectedOrder.estimated_delivery_date">
-                                            <strong>Est. Delivery:</strong> {{ selectedOrder.estimated_delivery_date }}
+                                            <strong>{{ $t('receipt.est_delivery') }}:</strong> {{ selectedOrder.estimated_delivery_date }}
                                         </div>
                                     </div>
                                 </div>
@@ -571,12 +590,12 @@
                                 <thead class="table-light small">
                                     <tr>
                                         <th>#</th>
-                                        <th>Item Name</th>
-                                        <th>SKU</th>
-                                        <th class="text-center">Qty</th>
-                                        <th class="text-end">Price</th>
-                                        <th class="text-end">Tax</th>
-                                        <th class="text-end">Total</th>
+                                        <th>{{ $t('orders.item') }}</th>
+                                        <th>{{ $t('common.sku') }}</th>
+                                        <th class="text-center">{{ $t('receipt.qty') }}</th>
+                                        <th class="text-end">{{ $t('common.price') }}</th>
+                                        <th class="text-end">{{ $t('common.tax') }}</th>
+                                        <th class="text-end">{{ $t('common.total') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -600,20 +619,20 @@
                         <div class="row justify-content-between align-items-start">
                             <div class="col-md-6 mb-3 mb-md-0">
                                 <div class="card bg-light border-0 p-3">
-                                    <h6 class="fw-bold mb-2">Payment Details</h6>
-                                    <div><strong>Method:</strong> <span class="text-uppercase">{{ selectedOrder.payment_method }}</span></div>
+                                    <h6 class="fw-bold mb-2">{{ $t('receipt.payment_details') }}</h6>
+                                    <div><strong>{{ $t('receipt.mode') }}:</strong> <span class="text-uppercase">{{ selectedOrder.payment_method }}</span></div>
                                     <div class="d-flex align-items-center gap-2 mt-1">
-                                        <strong>Status:</strong>
+                                        <strong>{{ $t('common.status') }}:</strong>
                                         <span class="badge" :class="paymentBadgeClass(selectedOrder.payment_status)">
                                             {{ selectedOrder.payment_status.toUpperCase() }}
                                         </span>
                                     </div>
 
-                                    <!-- Quick Mark as Paid Button if Unpaid/COD -->
+                                    <!-- Quick Mark as Paid Button if Unpaid/COD (Screen only) -->
                                     <button
                                         v-if="selectedOrder.payment_status !== 'paid'"
                                         type="button"
-                                        class="btn btn-sm btn-outline-success mt-2"
+                                        class="btn btn-sm btn-outline-success mt-2 d-print-none"
                                         @click="markOrderPaid(selectedOrder)"
                                     >
                                         ✔ Mark Payment Received (₹{{ selectedOrder.total_amount }})
@@ -623,27 +642,27 @@
 
                             <div class="col-md-5">
                                 <div class="d-flex justify-content-between mb-1">
-                                    <span class="text-muted">Subtotal:</span>
+                                    <span class="text-muted">{{ $t('common.subtotal') }}:</span>
                                     <span>₹{{ Number(selectedOrder.subtotal).toFixed(2) }}</span>
                                 </div>
 
                                 <div class="d-flex justify-content-between mb-1" v-if="Number(selectedOrder.tax_amount) > 0">
-                                    <span class="text-muted">Taxes:</span>
+                                    <span class="text-muted">{{ $t('common.tax') }}:</span>
                                     <span>+ ₹{{ Number(selectedOrder.tax_amount).toFixed(2) }}</span>
                                 </div>
 
                                 <div class="d-flex justify-content-between mb-1">
-                                    <span class="text-muted">Shipping Charges:</span>
+                                    <span class="text-muted">{{ $t('receipt.shipping_charges') }}:</span>
                                     <span>+ ₹{{ Number(selectedOrder.shipping_cost || 0).toFixed(2) }}</span>
                                 </div>
 
                                 <div class="d-flex justify-content-between mb-2" v-if="Number(selectedOrder.discount_amount) > 0">
-                                    <span class="text-muted">Discount:</span>
+                                    <span class="text-muted">{{ $t('common.discount') }}:</span>
                                     <span class="text-danger">- ₹{{ Number(selectedOrder.discount_amount).toFixed(2) }}</span>
                                 </div>
 
                                 <div class="d-flex justify-content-between border-top pt-2 fw-bold fs-5 text-primary">
-                                    <span>Total:</span>
+                                    <span>{{ $t('common.grand_total') }}:</span>
                                     <span>₹{{ Number(selectedOrder.total_amount).toFixed(2) }}</span>
                                 </div>
                             </div>
@@ -1397,6 +1416,26 @@ onBeforeUnmount(() => {
         left: 0 !important;
         top: 0 !important;
         width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        background: #ffffff !important;
+    }
+    html[dir="rtl"] body.printing-packing-slip #printablePackingSlip {
+        direction: rtl !important;
+        text-align: right !important;
+        font-family: 'Noto Sans Arabic', Tahoma, sans-serif !important;
+    }
+    html[dir="rtl"] body.printing-packing-slip #printablePackingSlip table th,
+    html[dir="rtl"] body.printing-packing-slip #printablePackingSlip table td {
+        text-align: right !important;
+    }
+    html[dir="rtl"] body.printing-packing-slip #printablePackingSlip table th.text-end,
+    html[dir="rtl"] body.printing-packing-slip #printablePackingSlip table td.text-end {
+        text-align: left !important;
+    }
+    html[dir="rtl"] body.printing-packing-slip #printablePackingSlip table th.text-center,
+    html[dir="rtl"] body.printing-packing-slip #printablePackingSlip table td.text-center {
+        text-align: center !important;
     }
 }
 </style>

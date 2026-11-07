@@ -15,6 +15,9 @@ import { useRoute } from 'vue-router';
 import AdminLayout from './layouts/AdminLayout.vue';
 import ShopLayout from './layouts/ShopLayout.vue';
 import NotificationHost from './components/common/NotificationHost.vue';
+import { useTheme } from './composables/useTheme';
+
+const { isDark } = useTheme();
 
 const route = useRoute();
 

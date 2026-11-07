@@ -1,3 +1,26 @@
+/* Multi-Language & RTL Typography */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap');
+
+/* Global Modern Sleek Scrollbars */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 6px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
 
 body {
     background: #f5f7fb;
@@ -7,4 +30,492 @@ body {
 .dashboard-card h3 {
     color: #17365d;
     font-weight: 700;
+}
+
+html[lang="ar"], html[lang="ur"], body.rtl-mode {
+    font-family: 'Noto Sans Arabic', 'Segoe UI', Tahoma, Arial, sans-serif;
+    direction: rtl;
+    text-align: right;
+}
+
+html[lang="hi"] {
+    font-family: 'Noto Sans Devanagari', 'Segoe UI', Arial, sans-serif;
+}
+
+html[lang="bn"] {
+    font-family: 'Noto Sans Bengali', 'Segoe UI', Arial, sans-serif;
+}
+
+/* RTL Layout overrides for Admin Sidebar & Body */
+html[dir="rtl"] .admin-body {
+    flex-direction: row !important;
+}
+
+html[dir="rtl"] .sidebar {
+    border-right: none !important;
+    border-left: 1px solid #e5e7eb !important;
+    text-align: right !important;
+}
+
+html[dir="rtl"] .sidebar .menu-link {
+    text-align: right !important;
+    justify-content: flex-start !important;
+}
+
+html[dir="rtl"] .sidebar-heading {
+    text-align: right !important;
+}
+
+html[dir="rtl"] .navbar .navbar-brand {
+    margin-right: 0 !important;
+    margin-left: 1rem !important;
+}
+
+html[dir="rtl"] .dropdown-menu-end {
+    right: auto !important;
+    left: 0 !important;
+}
+
+html[dir="rtl"] .text-start {
+    text-align: right !important;
+}
+
+html[dir="rtl"] .text-end {
+    text-align: left !important;
+}
+
+html[dir="rtl"] .me-auto {
+    margin-right: 0 !important;
+    margin-left: auto !important;
+}
+
+html[dir="rtl"] .ms-auto {
+    margin-left: 0 !important;
+    margin-right: auto !important;
+}
+
+html[dir="rtl"] .modal-header .btn-close {
+    margin-right: auto !important;
+    margin-left: 0 !important;
+}
+
+/* Flip arrows and chevrons in RTL */
+html[dir="rtl"] .bi-chevron-right,
+html[dir="rtl"] .arrow-next {
+    transform: rotate(180deg);
+}
+
+html[dir="rtl"] .bi-chevron-left,
+html[dir="rtl"] .arrow-prev {
+    transform: rotate(180deg);
+}
+
+/* Table alignment in RTL */
+html[dir="rtl"] .table th,
+html[dir="rtl"] .table td {
+    text-align: right;
+}
+
+html[dir="rtl"] .table th.text-center,
+html[dir="rtl"] .table td.text-center {
+    text-align: center;
+}
+
+html[dir="rtl"] .table th.text-end,
+html[dir="rtl"] .table td.text-end {
+    text-align: left;
+}
+
+/* Input group alignment in RTL */
+html[dir="rtl"] .input-group > :not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
+    margin-right: -1px;
+    margin-left: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-top-left-radius: var(--bs-border-radius);
+    border-bottom-left-radius: var(--bs-border-radius);
+}
+
+html[dir="rtl"] .input-group > :not(:last-child):not(.dropdown-toggle):not(.dropdown-menu):not(.form-floating) {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-top-right-radius: var(--bs-border-radius);
+    border-bottom-right-radius: var(--bs-border-radius);
+}
+
+/* Language selector button styling */
+.lang-selector-btn {
+    border-radius: 50rem;
+    padding: 0.25rem 0.75rem;
+    font-weight: 500;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+}
+
+.lang-selector-btn:hover {
+    transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   Dark Mode Theme System (Screens & Components)
+   ========================================================================== */
+[data-bs-theme="dark"] body {
+    background-color: #0b1329 !important;
+    color: #e2e8f0 !important;
+}
+
+/* Scrollbars in dark mode */
+[data-bs-theme="dark"] ::-webkit-scrollbar-thumb {
+    background: #334155;
+}
+[data-bs-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+    background: #475569;
+}
+[data-bs-theme="dark"] * {
+    scrollbar-color: #334155 transparent;
+}
+
+/* Admin Layout Dark Mode */
+[data-bs-theme="dark"] .main-content {
+    background: #0b1329 !important;
+    color: #e2e8f0 !important;
+}
+
+[data-bs-theme="dark"] .sidebar {
+    background: #111c38 !important;
+    border-color: #1e293b !important;
+}
+
+[data-bs-theme="dark"] .sidebar-heading {
+    color: #64748b !important;
+}
+
+[data-bs-theme="dark"] .sidebar .menu-link {
+    color: #94a3b8 !important;
+}
+
+[data-bs-theme="dark"] .sidebar .menu-link:hover {
+    background: #1e293b !important;
+    color: #60a5fa !important;
+}
+
+[data-bs-theme="dark"] .sidebar .menu-link.router-link-active {
+    background: #1e3a8a !important;
+    color: #93c5fd !important;
+}
+
+/* Cards & Modals in Dark Mode */
+[data-bs-theme="dark"] .card {
+    background-color: #111c38 !important;
+    border-color: #1e293b !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35) !important;
+}
+
+[data-bs-theme="dark"] .card-header,
+[data-bs-theme="dark"] .card-footer {
+    background-color: #162447 !important;
+    border-color: #1e293b !important;
+}
+
+[data-bs-theme="dark"] .modal-content {
+    background-color: #111c38 !important;
+    border-color: #1e293b !important;
+    color: #e2e8f0 !important;
+}
+
+[data-bs-theme="dark"] .modal-header,
+[data-bs-theme="dark"] .modal-footer {
+    border-color: #1e293b !important;
+}
+
+/* Tables in Dark Mode */
+[data-bs-theme="dark"] .table {
+    --bs-table-bg: #111c38 !important;
+    --bs-table-color: #e2e8f0 !important;
+    --bs-table-border-color: #1e293b !important;
+}
+
+[data-bs-theme="dark"] .table-light,
+[data-bs-theme="dark"] thead.table-light th {
+    background-color: #162447 !important;
+    color: #93c5fd !important;
+    border-color: #1e293b !important;
+}
+
+/* Dropdowns in Dark Mode */
+[data-bs-theme="dark"] .dropdown-menu {
+    background-color: #111c38 !important;
+    border-color: #1e293b !important;
+    color: #e2e8f0 !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5) !important;
+}
+
+[data-bs-theme="dark"] .dropdown-item {
+    color: #cbd5e1 !important;
+}
+
+[data-bs-theme="dark"] .dropdown-item:hover,
+[data-bs-theme="dark"] .dropdown-item:focus {
+    background-color: #1e293b !important;
+    color: #38bdf8 !important;
+}
+
+[data-bs-theme="dark"] .dropdown-divider {
+    border-color: #1e293b !important;
+}
+
+/* Form Inputs & Selects in Dark Mode */
+[data-bs-theme="dark"] .form-control,
+[data-bs-theme="dark"] .form-select {
+    background-color: #0b1329 !important;
+    border-color: #334155 !important;
+    color: #f8fafc !important;
+}
+
+[data-bs-theme="dark"] .form-control:focus,
+[data-bs-theme="dark"] .form-select:focus {
+    background-color: #0f172a !important;
+    border-color: #3b82f6 !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25) !important;
+    color: #ffffff !important;
+}
+
+[data-bs-theme="dark"] .form-control::placeholder {
+    color: #64748b !important;
+}
+
+/* Utilities in Dark Mode */
+[data-bs-theme="dark"] .bg-white {
+    background-color: #111c38 !important;
+}
+
+[data-bs-theme="dark"] .text-dark {
+    color: #f8fafc !important;
+}
+
+[data-bs-theme="dark"] .text-muted {
+    color: #94a3b8 !important;
+}
+
+[data-bs-theme="dark"] .bg-light,
+[data-bs-theme="dark"] .bg-light-subtle {
+    background-color: #0b1329 !important;
+}
+
+[data-bs-theme="dark"] .border,
+[data-bs-theme="dark"] .border-top,
+[data-bs-theme="dark"] .border-bottom,
+[data-bs-theme="dark"] .border-start,
+[data-bs-theme="dark"] .border-end {
+    border-color: #1e293b !important;
+}
+
+/* Storefront Dark Mode */
+[data-bs-theme="dark"] .store-header-navbar {
+    background-color: #111c38 !important;
+    border-bottom: 1px solid #1e293b !important;
+}
+
+[data-bs-theme="dark"] .store-name-text {
+    color: #f8fafc !important;
+}
+
+[data-bs-theme="dark"] .store-nav-link {
+    color: #cbd5e1 !important;
+}
+
+[data-bs-theme="dark"] .store-nav-link:hover {
+    color: #38bdf8 !important;
+    background-color: #1e293b !important;
+}
+
+[data-bs-theme="dark"] .store-nav-link.active {
+    color: #60a5fa !important;
+    background-color: #1e3a8a !important;
+}
+
+[data-bs-theme="dark"] .store-search-box {
+    background: #0b1329 !important;
+    border-color: #334155 !important;
+}
+
+[data-bs-theme="dark"] .store-search-box:focus-within {
+    background: #0f172a !important;
+    border-color: #38bdf8 !important;
+}
+
+[data-bs-theme="dark"] .store-search-input {
+    color: #f8fafc !important;
+}
+
+[data-bs-theme="dark"] .store-user-pill {
+    background: #111c38 !important;
+    border-color: #334155 !important;
+}
+
+[data-bs-theme="dark"] .store-user-pill:hover {
+    background: #1e293b !important;
+    border-color: #475569 !important;
+}
+
+[data-bs-theme="dark"] .shop-wrapper {
+    background-color: #070d1e !important;
+    color: #e2e8f0 !important;
+}
+
+[data-bs-theme="dark"] .product-card,
+[data-bs-theme="dark"] .cart-item-row,
+[data-bs-theme="dark"] .wishlist-card {
+    background-color: #111c38 !important;
+    border-color: #1e293b !important;
+}
+
+/* POS Counter in Dark Mode */
+[data-bs-theme="dark"] .pos-header {
+    background: #111c38 !important;
+    border-color: #1e293b !important;
+}
+
+[data-bs-theme="dark"] .pos-cart-col {
+    background: #111c38 !important;
+    border-color: #1e293b !important;
+}
+
+[data-bs-theme="dark"] .pos-catalog-col {
+    background: #070d1e !important;
+}
+
+[data-bs-theme="dark"] .pos-category-bar {
+    background: #111c38 !important;
+    border-color: #1e293b !important;
+}
+
+[data-bs-theme="dark"] .pos-product-card {
+    background: #111c38 !important;
+    border-color: #1e293b !important;
+    color: #f8fafc !important;
+}
+
+[data-bs-theme="dark"] .pos-product-card:hover {
+    background: #162447 !important;
+    border-color: #38bdf8 !important;
+}
+
+[data-bs-theme="dark"] .cart-items-wrap {
+    background: #0b1329 !important;
+}
+
+/* POS Receipts MUST stay paper white when printing or previewing */
+.pos-receipt-paper {
+    background: #ffffff !important;
+    color: #000000 !important;
+}
+
+/* ==========================================================================
+   Global Multilingual & Clean Paper Print Stylesheet
+   ========================================================================== */
+@media print {
+    /* Hide all site chrome, headers, navigation, sidebars and utility buttons */
+    header,
+    aside,
+    footer,
+    .navbar,
+    .sidebar,
+    .admin-header,
+    .storefront-header,
+    .announcement-bar,
+    .d-print-none,
+    .btn:not(.d-print-inline),
+    button:not(.d-print-inline),
+    .modal-backdrop,
+    .toast-container,
+    .pagination,
+    .btn-group,
+    .lang-selector-btn,
+    .shop-header,
+    .shop-footer {
+        display: none !important;
+    }
+
+    /* Reset background and sizing for paper */
+    html, body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        font-size: 11pt !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* RTL vs LTR Print Alignment */
+    html[dir="rtl"], html[dir="rtl"] body {
+        direction: rtl !important;
+        text-align: right !important;
+        font-family: 'Noto Sans Arabic', Tahoma, Arial, sans-serif !important;
+    }
+
+    html[dir="ltr"], html[dir="ltr"] body {
+        direction: ltr !important;
+        text-align: left !important;
+    }
+
+    html[lang="hi"] body {
+        font-family: 'Noto Sans Devanagari', 'Segoe UI', Arial, sans-serif !important;
+    }
+
+    html[lang="bn"] body {
+        font-family: 'Noto Sans Bengali', 'Segoe UI', Arial, sans-serif !important;
+    }
+
+    .admin-wrapper, .admin-body, .main-content {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        background: #ffffff !important;
+        display: block !important;
+        min-height: auto !important;
+    }
+
+    /* Clean printable tables */
+    .table-responsive {
+        overflow: visible !important;
+    }
+
+    table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+    }
+
+    html[dir="rtl"] table th,
+    html[dir="rtl"] table td {
+        text-align: right !important;
+    }
+
+    html[dir="rtl"] table th.text-end,
+    html[dir="rtl"] table td.text-end {
+        text-align: left !important;
+    }
+
+    html[dir="rtl"] table th.text-center,
+    html[dir="rtl"] table td.text-center {
+        text-align: center !important;
+    }
+
+    /* Clean cards on paper */
+    .card {
+        border: 1px solid #d0d7de !important;
+        box-shadow: none !important;
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+        margin-bottom: 1rem !important;
+        background: #ffffff !important;
+    }
+
+    /* Avoid page cuts across rows */
+    tr, .printable-block {
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+    }
 }

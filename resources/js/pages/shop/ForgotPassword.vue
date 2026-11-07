@@ -9,16 +9,16 @@
                         <div class="icon-bubble bg-primary-subtle text-primary rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center">
                             <span class="fs-2">🔐</span>
                         </div>
-                        <h3 class="fw-bold mb-1">Forgot Password</h3>
+                        <h3 class="fw-bold mb-1">{{ $t('auth.forgot_password_title') }}</h3>
                         <p class="text-muted small">
-                            Enter your registered email address or phone number to receive a 6-digit reset code.
+                            {{ $t('auth.forgot_password_sub') }}
                         </p>
                     </div>
 
                     <form @submit.prevent="handleRequestCode">
                         <div class="mb-4">
                             <label class="form-label small fw-semibold text-muted text-uppercase">
-                                Email or Mobile Number
+                                {{ $t('auth.email_or_phone') }}
                             </label>
                             <div class="input-group">
                                 <span class="input-group-text bg-light border-end-0">📱</span>
@@ -26,13 +26,13 @@
                                     v-model="loginField"
                                     type="text"
                                     class="form-control border-start-0"
-                                    placeholder="e.g. name@example.com or 9876543210"
+                                    :placeholder="$t('auth.email_placeholder')"
                                     required
                                     autofocus
                                 />
                             </div>
                             <div class="form-text extra-small text-muted mt-1">
-                                We will send a secure verification code to reset your password.
+                                {{ $t('auth.reset_code_help') }}
                             </div>
                         </div>
 
@@ -42,7 +42,7 @@
                             :disabled="loading"
                         >
                             <span v-if="loading" class="spinner-border spinner-border-sm" role="status"></span>
-                            <span>{{ loading ? 'Sending Code...' : 'Send Verification Code →' }}</span>
+                            <span>{{ loading ? $t('auth.sending_code') : $t('auth.send_code') + ' →' }}</span>
                         </button>
                     </form>
 
@@ -51,7 +51,7 @@
                             :to="{ path: '/login', query: route.query }"
                             class="fw-semibold text-primary text-decoration-none"
                         >
-                            ← Back to Sign In
+                            ← {{ $t('auth.back_to_sign_in') }}
                         </router-link>
                     </div>
                 </div>
@@ -62,9 +62,9 @@
                         <div class="icon-bubble bg-success-subtle text-success rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center">
                             <span class="fs-2">🔑</span>
                         </div>
-                        <h3 class="fw-bold mb-1">Set New Password</h3>
+                        <h3 class="fw-bold mb-1">{{ $t('auth.set_new_password') }}</h3>
                         <p class="text-muted small mb-0">
-                            Enter the 6-digit code sent for <strong>{{ resetResponse?.identifier || loginField }}</strong>
+                            {{ $t('auth.enter_code_sent_to') }} <strong>{{ resetResponse?.identifier || loginField }}</strong>
                         </p>
                     </div>
 
@@ -74,7 +74,7 @@
                         class="alert alert-info py-2 px-3 small rounded-3 mb-3 d-flex justify-content-between align-items-center"
                     >
                         <div>
-                            <span>⚡ <strong>Verification Code:</strong> </span>
+                            <span>⚡ <strong>{{ $t('auth.verification_code') }}:</strong> </span>
                             <code class="fs-6 fw-bold ms-1 text-dark">{{ resetResponse.debug_code }}</code>
                         </div>
                         <button
@@ -82,7 +82,7 @@
                             class="btn btn-sm btn-outline-primary py-0 px-2 extra-small rounded-pill"
                             @click="code = resetResponse.debug_code"
                         >
-                            Use Code
+                            {{ $t('auth.use_code') }}
                         </button>
                     </div>
 
@@ -90,7 +90,7 @@
                         <!-- Verification Code -->
                         <div class="mb-3">
                             <label class="form-label small fw-semibold text-muted text-uppercase">
-                                6-Digit Verification Code
+                                {{ $t('auth.verification_code_label') }}
                             </label>
                             <div class="input-group">
                                 <span class="input-group-text bg-light border-end-0">🔢</span>
@@ -108,14 +108,14 @@
 
                         <!-- New Password -->
                         <div class="mb-3">
-                            <label class="form-label small fw-semibold text-muted text-uppercase">New Password</label>
+                            <label class="form-label small fw-semibold text-muted text-uppercase">{{ $t('auth.new_password') }}</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-light border-end-0">🔒</span>
                                 <input
                                     v-model="newPassword"
                                     :type="showPassword ? 'text' : 'password'"
                                     class="form-control border-start-0 border-end-0"
-                                    placeholder="Min. 6 characters"
+                                    :placeholder="$t('auth.password_placeholder')"
                                     minlength="6"
                                     required
                                 />
@@ -131,14 +131,14 @@
 
                         <!-- Confirm New Password -->
                         <div class="mb-4">
-                            <label class="form-label small fw-semibold text-muted text-uppercase">Confirm New Password</label>
+                            <label class="form-label small fw-semibold text-muted text-uppercase">{{ $t('auth.confirm_new_password') }}</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-light border-end-0">🔒</span>
                                 <input
                                     v-model="confirmPassword"
                                     :type="showPassword ? 'text' : 'password'"
                                     class="form-control border-start-0"
-                                    placeholder="Re-enter new password"
+                                    :placeholder="$t('auth.password_placeholder')"
                                     minlength="6"
                                     required
                                 />
@@ -151,7 +151,7 @@
                             :disabled="loading"
                         >
                             <span v-if="loading" class="spinner-border spinner-border-sm" role="status"></span>
-                            <span>{{ loading ? 'Updating Password...' : 'Reset Password & Sign In' }}</span>
+                            <span>{{ loading ? $t('auth.updating_password') : $t('auth.reset_password') }}</span>
                         </button>
                     </form>
 
@@ -161,7 +161,7 @@
                             class="btn btn-link btn-sm text-decoration-none text-muted p-0"
                             @click="step = 1"
                         >
-                            ← Change email/phone
+                            ← {{ $t('auth.change_identifier') }}
                         </button>
                         <button
                             type="button"
@@ -170,7 +170,7 @@
                             @click="handleResendCode"
                         >
                             <span v-if="resending" class="spinner-border spinner-border-sm me-1" role="status"></span>
-                            Resend Code
+                            {{ $t('auth.resend_code') }}
                         </button>
                     </div>
                 </div>
@@ -180,16 +180,16 @@
                     <div class="icon-bubble bg-success-subtle text-success rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center">
                         <span class="fs-1">🎉</span>
                     </div>
-                    <h4 class="fw-bold mb-2 text-dark">Password Reset Successful!</h4>
+                    <h4 class="fw-bold mb-2 text-dark">{{ $t('auth.reset_successful') }}</h4>
                     <p class="text-muted small mb-4">
-                        Your account password has been updated and you are now signed in.
+                        {{ $t('auth.reset_successful_sub') }}
                     </p>
                     <button
                         type="button"
                         class="btn btn-primary rounded-pill px-4 fw-semibold"
                         @click="goToNext"
                     >
-                        Go to My Account →
+                        {{ $t('auth.go_to_account') }} →
                     </button>
                 </div>
 

@@ -6,10 +6,10 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
                 <h2 class="fw-bold mb-1">
-                    {{ isEdit ? 'Edit Product' : 'Add Product' }}
+                    {{ isEdit ? $t('products.edit_product') : $t('products.add_product') }}
                 </h2>
                 <p class="text-muted mb-0">
-                    Manage product information, pricing and images
+                    {{ $t('products.subtitle') }}
                 </p>
             </div>
 
@@ -18,7 +18,7 @@
                 class="btn btn-outline-secondary"
                 @click="goBack"
             >
-                Back to Products
+                &larr; {{ $t('common.back') }}
             </button>
         </div>
 
@@ -36,14 +36,14 @@
                     <!-- Basic Information -->
                     <div class="card border-0 shadow-sm mb-4">
                         <div class="card-header bg-white fw-bold py-3">
-                            Basic Information
+                            {{ $t('products.product_name') }} & {{ $t('products.category') }}
                         </div>
 
                         <div class="card-body">
 
                             <div class="mb-3">
                                 <label class="form-label">
-                                    Product Name
+                                    {{ $t('products.product_name') }}
                                     <span class="text-danger">*</span>
                                 </label>
 
@@ -51,7 +51,7 @@
                                     v-model.trim="form.name"
                                     type="text"
                                     class="form-control"
-                                    placeholder="Enter product name"
+                                    :placeholder="$t('products.product_name_placeholder')"
                                     required
                                 >
                             </div>
@@ -60,7 +60,7 @@
 
                                 <div class="col-md-4 mb-3">
                                     <label class="form-label">
-                                        Category
+                                        {{ $t('products.category') }}
                                         <span class="text-danger">*</span>
                                     </label>
 
@@ -69,7 +69,7 @@
                                         class="form-select"
                                         required
                                     >
-                                        <option value="">Select Category</option>
+                                        <option value="">{{ $t('products.select_category') }}</option>
 
                                         <option
                                             v-for="item in categories"
@@ -82,13 +82,13 @@
                                 </div>
 
                                 <div class="col-md-4 mb-3">
-                                    <label class="form-label">Brand</label>
+                                    <label class="form-label">{{ $t('products.brand') }}</label>
 
                                     <select
                                         v-model="form.brand_id"
                                         class="form-select"
                                     >
-                                        <option value="">Select Brand</option>
+                                        <option value="">{{ $t('products.select_brand') }}</option>
 
                                         <option
                                             v-for="item in brands"
@@ -102,7 +102,7 @@
 
                                 <div class="col-md-4 mb-3">
                                     <label class="form-label">
-                                        Unit
+                                        {{ $t('products.unit') }}
                                         <span class="text-danger">*</span>
                                     </label>
 
@@ -111,7 +111,7 @@
                                         class="form-select"
                                         required
                                     >
-                                        <option value="">Select Unit</option>
+                                        <option value="">{{ $t('products.select_unit') }}</option>
 
                                         <option
                                             v-for="item in units"
@@ -126,13 +126,13 @@
                             </div>
 
                             <div class="mb-0">
-                                <label class="form-label">Description</label>
+                                <label class="form-label">{{ $t('common.description') }}</label>
 
                                 <textarea
                                     v-model="form.description"
                                     class="form-control"
                                     rows="3"
-                                    placeholder="Enter product description"
+                                    :placeholder="$t('common.description')"
                                 ></textarea>
                             </div>
 
@@ -142,7 +142,7 @@
                     <!-- Pricing -->
                     <div class="card border-0 shadow-sm mb-4">
                         <div class="card-header bg-white fw-bold py-3">
-                            Pricing Information
+                            {{ $t('common.price') }}
                         </div>
 
                         <div class="card-body">
@@ -150,7 +150,7 @@
 
                                 <div class="col-md-4 mb-3">
                                     <label class="form-label">
-                                        Purchase Price (₹)
+                                        {{ $t('products.cost_price') }}
                                         <span class="text-danger">*</span>
                                     </label>
 
@@ -166,7 +166,7 @@
 
                                 <div class="col-md-4 mb-3">
                                     <label class="form-label">
-                                        Selling Price (₹)
+                                        {{ $t('products.selling_price') }}
                                         <span class="text-danger">*</span>
                                     </label>
 
@@ -182,7 +182,7 @@
 
                                 <div class="col-md-4 mb-3">
                                     <label class="form-label">
-                                        MRP (₹)
+                                        {{ $t('products.mrp') }}
                                         <span class="text-danger">*</span>
                                     </label>
 
@@ -197,7 +197,7 @@
                                 </div>
 
                                 <div class="col-md-4 mb-3">
-                                    <label class="form-label">Tax Rate (%)</label>
+                                    <label class="form-label">{{ $t('common.tax') }} (%)</label>
 
                                     <input
                                         v-model.number="form.tax_rate"
@@ -216,7 +216,7 @@
                     <!-- Inventory -->
                     <div class="card border-0 shadow-sm mb-4">
                         <div class="card-header bg-white fw-bold py-3">
-                            Inventory Settings
+                            {{ $t('nav.inventory') }}
                         </div>
 
                         <div class="card-body">
@@ -233,7 +233,7 @@
                                     class="form-check-label"
                                     for="trackInventory"
                                 >
-                                    Track Inventory
+                                    {{ $t('products.track_inventory') }}
                                 </label>
                             </div>
 
@@ -242,7 +242,7 @@
                                 class="col-md-6"
                             >
                                 <label class="form-label">
-                                    Low Stock Alert Quantity
+                                    {{ $t('products.low_stock_threshold') }}
                                 </label>
 
                                 <input
@@ -265,12 +265,12 @@
                     <!-- SKU & Barcode -->
                     <div class="card border-0 shadow-sm mb-4">
                         <div class="card-header bg-white fw-bold py-3">
-                            Product Identification
+                            {{ $t('products.sku') }} & {{ $t('common.barcode') }}
                         </div>
 
                         <div class="card-body">
 
-                            <label class="form-label">SKU</label>
+                            <label class="form-label">{{ $t('products.sku') }}</label>
 
                             <input
                                 :value="form.sku || (
@@ -283,18 +283,17 @@
                                 readonly
                             >
 
-                            <label class="form-label">Barcode</label>
+                            <label class="form-label">{{ $t('common.barcode') }}</label>
 
                             <input
                                 v-model.trim="form.barcode"
                                 type="text"
                                 class="form-control"
-                                placeholder="Enter or scan barcode"
+                                :placeholder="$t('common.barcode')"
                             >
 
                             <small class="text-muted">
-                                You can enter a barcode manually or use a
-                                USB barcode scanner.
+                                Barcode / USB Scanner input
                             </small>
 
                         </div>
@@ -303,7 +302,7 @@
                     <!-- Product Images -->
                     <div class="card border-0 shadow-sm mb-4">
                         <div class="card-header bg-white fw-bold py-3">
-                            Product Images
+                            {{ $t('products.product_images') }}
                         </div>
 
                         <div class="card-body">
@@ -317,7 +316,7 @@
                             >
 
                             <small class="text-muted d-block mt-2">
-                                JPG, PNG or WEBP. Maximum 2 MB per image.
+                                {{ $t('products.upload_hint') }}
                             </small>
 
                             <!-- Existing Images -->
@@ -326,7 +325,7 @@
                                 class="mt-3"
                             >
                                 <label class="form-label fw-semibold">
-                                    Uploaded Images
+                                    {{ $t('common.image') }}
                                 </label>
 
                                 <div class="row g-2">
@@ -362,7 +361,7 @@
                                 class="mt-3"
                             >
                                 <label class="form-label fw-semibold">
-                                    Selected Images
+                                    {{ $t('common.image') }} (New)
                                 </label>
 
                                 <div class="row g-2">
@@ -391,7 +390,7 @@
                     <!-- Status -->
                     <div class="card border-0 shadow-sm mb-4">
                         <div class="card-header bg-white fw-bold py-3">
-                            Product Status
+                            {{ $t('common.status') }}
                         </div>
 
                         <div class="card-body">
@@ -408,7 +407,7 @@
                                     class="form-check-label"
                                     for="productStatus"
                                 >
-                                    {{ form.status ? 'Active' : 'Inactive' }}
+                                    {{ form.status ? $t('common.active') : $t('common.inactive') }}
                                 </label>
 
                             </div>
@@ -426,11 +425,11 @@
                             >
                                 {{
                                     saving
-                                        ? 'Saving...'
+                                        ? $t('common.processing')
                                         : (
                                             isEdit
-                                                ? 'Update Product'
-                                                : 'Save Product'
+                                                ? $t('common.update')
+                                                : $t('common.save')
                                         )
                                 }}
                             </button>
@@ -441,7 +440,7 @@
                                 :disabled="saving"
                                 @click="goBack"
                             >
-                                Cancel
+                                {{ $t('common.cancel') }}
                             </button>
 
                         </div>

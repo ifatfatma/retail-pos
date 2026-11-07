@@ -296,8 +296,12 @@
 
 <script setup>
 import { ref, computed, watch, nextTick, onMounted, onBeforeUnmount } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { getCurrentLanguage, isRtl } from '../../i18n';
 import axios from 'axios';
 import JsBarcode from 'jsbarcode';
+
+const { t } = useI18n();
 
 const props = defineProps({
     isOpen: {
@@ -428,7 +432,7 @@ function closeModal() {
 }
 
 // Isolated print styles for the dedicated print iframe (no web page background bleed!)
-function getIframePrintStyles() {
+function getIframePrintStyles(rtl = false, currentLang = 'en') {
     let pageCss = '@page { size: 100mm 150mm; margin: 0; }';
     let cardWidth = '100mm';
     let cardMinHeight = '145mm';
@@ -457,7 +461,16 @@ function getIframePrintStyles() {
         cardFloat = 'left';
     }
 
+    const fontFamily = rtl
+        ? "'Noto Sans Arabic', Tahoma, Arial, sans-serif"
+        : (currentLang === 'hi'
+            ? "'Noto Sans Devanagari', 'Segoe UI', Arial, sans-serif"
+            : (currentLang === 'bn'
+                ? "'Noto Sans Bengali', 'Segoe UI', Arial, sans-serif"
+                : '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif'));
+
     return `
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700&family=Noto+Sans+Bengali:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap');
         ${pageCss}
         * {
             box-sizing: border-box;
@@ -469,14 +482,17 @@ function getIframePrintStyles() {
             padding: 0 !important;
             background: #ffffff !important;
             color: #000000 !important;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: ${fontFamily};
             font-size: 13px;
             line-height: 1.25;
+            direction: ${rtl ? 'rtl' : 'ltr'};
+            text-align: ${rtl ? 'right' : 'left'};
         }
         .printable-labels-wrapper {
             margin: 0 !important;
             padding: 0 !important;
             width: 100% !important;
+            direction: ${rtl ? 'rtl' : 'ltr'};
         }
         .shipping-label-card {
             background: #ffffff !important;
@@ -493,6 +509,8 @@ function getIframePrintStyles() {
             break-inside: avoid !important;
             overflow: hidden !important;
             box-sizing: border-box !important;
+            direction: ${rtl ? 'rtl' : 'ltr'};
+            text-align: ${rtl ? 'right' : 'left'};
         }
         .label-header {
             display: flex;
@@ -728,18 +746,20 @@ function triggerPrint() {
     document.body.appendChild(printFrame);
 
     const frameDoc = printFrame.contentWindow.document;
-    const styles = getIframePrintStyles();
+    const currentLang = getCurrentLanguage();
+    const rtl = isRtl(currentLang);
+    const styles = getIframePrintStyles(rtl, currentLang);
     const labelContent = container.innerHTML;
 
     frameDoc.open();
     frameDoc.write(`<!DOCTYPE html>
-<html>
+<html lang="${currentLang}" dir="${rtl ? 'rtl' : 'ltr'}">
 <head>
     <meta charset="utf-8">
-    <title>Shipping Label</title>
+    <title>${t('receipt.shipping_label')}</title>
     <style>${styles}</style>
 </head>
-<body class="format-${labelFormat.value}">
+<body class="format-${labelFormat.value}" dir="${rtl ? 'rtl' : 'ltr'}">
     <div class="printable-labels-wrapper">
         ${labelContent}
     </div>

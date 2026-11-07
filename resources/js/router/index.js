@@ -208,22 +208,20 @@ const router = createRouter({
 });
 
 // Navigation Guards
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, from) => {
     // 1. Admin Authentication Guards
     const adminToken = localStorage.getItem('admin_access_token');
     const isAdminRoute = to.path.startsWith('/admin');
     const isAdminLoginRoute = to.path === '/admin/login';
 
     if (isAdminRoute && !isAdminLoginRoute && !adminToken) {
-        next({
+        return {
             path: '/admin/login',
             query: { redirect: to.fullPath },
-        });
-        return;
+        };
     }
     if (isAdminLoginRoute && adminToken) {
-        next('/admin/dashboard');
-        return;
+        return '/admin/dashboard';
     }
 
     // 2. Customer Authentication Guards
@@ -232,18 +230,16 @@ router.beforeEach((to, from, next) => {
     const isCustomerAuthRoute = to.path === '/login' || to.path === '/register';
 
     if (isCustomerAccountRoute && !customerToken) {
-        next({
+        return {
             path: '/login',
             query: { redirect: to.fullPath },
-        });
-        return;
+        };
     }
     if (isCustomerAuthRoute && customerToken) {
-        next('/account');
-        return;
+        return '/account';
     }
 
-    next();
+    return true;
 });
 
 export default router;

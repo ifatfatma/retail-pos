@@ -4,9 +4,9 @@
         <!-- Page Header -->
         <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
             <div>
-                <h3 class="fw-bold mb-1">🏷️ Coupons & Discounts</h3>
+                <h3 class="fw-bold mb-1">🏷️ {{ $t('coupons.title') }}</h3>
                 <p class="text-muted mb-0">
-                    Advanced promotion engine with BXGY, Tiered Discounts, Scope Targeting, and POS QR Codes
+                    {{ $t('coupons.subtitle') }}
                 </p>
             </div>
 
@@ -15,17 +15,17 @@
                     class="btn btn-outline-secondary"
                     @click="loadCoupons(currentPage)"
                     :disabled="loading"
-                    title="Refresh"
+                    :title="$t('common.refresh')"
                 >
                     <span v-if="loading" class="spinner-border spinner-border-sm me-1"></span>
-                    Refresh
+                    {{ $t('common.refresh') }}
                 </button>
 
                 <button
                     class="btn btn-primary"
                     @click="openCreateModal"
                 >
-                    + Create New Coupon
+                    + {{ $t('coupons.add_coupon') }}
                 </button>
             </div>
         </div>
@@ -39,9 +39,9 @@
                             <span class="fs-4">🏷️</span>
                         </div>
                         <div>
-                            <div class="text-muted small fw-medium">Total Coupons</div>
+                            <div class="text-muted small fw-medium">{{ $t('coupons.title') }}</div>
                             <h4 class="fw-bold mb-0">{{ totalCouponsCount }}</h4>
-                            <div class="small text-muted mt-1">{{ activeCouponsCount }} currently active</div>
+                            <div class="small text-muted mt-1">{{ activeCouponsCount }} {{ $t('common.active') }}</div>
                         </div>
                     </div>
                 </div>
@@ -54,9 +54,9 @@
                             <span class="fs-4">✅</span>
                         </div>
                         <div>
-                            <div class="text-muted small fw-medium">Active Coupons</div>
+                            <div class="text-muted small fw-medium">{{ $t('common.active') }}</div>
                             <h4 class="fw-bold mb-0 text-success">{{ activeCouponsCount }}</h4>
-                            <div class="small text-muted mt-1">Ready for redemption</div>
+                            <div class="small text-muted mt-1">{{ $t('common.status') }}</div>
                         </div>
                     </div>
                 </div>
@@ -69,9 +69,9 @@
                             <span class="fs-4">🎯</span>
                         </div>
                         <div>
-                            <div class="text-muted small fw-medium">Total Redemptions</div>
+                            <div class="text-muted small fw-medium">{{ $t('coupons.usage_history') }}</div>
                             <h4 class="fw-bold mb-0">{{ totalRedemptionsCount }}</h4>
-                            <div class="small text-muted mt-1">Web Storefront & POS</div>
+                            <div class="small text-muted mt-1">Web & POS</div>
                         </div>
                     </div>
                 </div>
@@ -84,9 +84,9 @@
                             <span class="fs-4">⚡</span>
                         </div>
                         <div>
-                            <div class="text-muted small fw-medium">Supported Types</div>
-                            <h5 class="fw-bold mb-0">Flat, %, BXGY, Tiers</h5>
-                            <div class="small text-muted mt-1">Multi-channel rules</div>
+                            <div class="text-muted small fw-medium">{{ $t('coupons.discount_type') }}</div>
+                            <h5 class="fw-bold mb-0">{{ $t('coupons.percentage') }} / {{ $t('coupons.fixed') }}</h5>
+                            <div class="small text-muted mt-1">{{ $t('common.info') }}</div>
                         </div>
                     </div>
                 </div>
@@ -104,7 +104,7 @@
                             <input
                                 v-model="searchQuery"
                                 class="form-control border-start-0"
-                                placeholder="Search code or title..."
+                                :placeholder="$t('common.search') + '...'"
                                 @input="debouncedSearch"
                             />
                         </div>
@@ -113,7 +113,7 @@
                     <!-- Channel Filter -->
                     <div class="col-md-2">
                         <select v-model="channelFilter" class="form-select" @change="loadCoupons(1)">
-                            <option value="">All Channels</option>
+                            <option value="">-- {{ $t('orders.channel') }} ({{ $t('common.all') }}) --</option>
                             <option value="all">Universal (All)</option>
                             <option value="online_only">Web Online Only</option>
                             <option value="pos_only">In-Store POS Only</option>
@@ -123,21 +123,21 @@
                     <!-- Type Filter -->
                     <div class="col-md-2">
                         <select v-model="typeFilter" class="form-select" @change="loadCoupons(1)">
-                            <option value="">All Discount Types</option>
-                            <option value="percentage">Percentage (%)</option>
-                            <option value="fixed_cart">Fixed Cart (₹)</option>
-                            <option value="free_shipping">Free Shipping</option>
-                            <option value="buy_x_get_y">Buy X Get Y (BXGY)</option>
-                            <option value="tiered">Tiered Discount</option>
+                            <option value="">-- {{ $t('coupons.discount_type') }} ({{ $t('common.all') }}) --</option>
+                            <option value="percentage">{{ $t('coupons.percentage') }}</option>
+                            <option value="fixed_cart">{{ $t('coupons.fixed') }}</option>
+                            <option value="free_shipping">{{ $t('common.shipping') }}</option>
+                            <option value="buy_x_get_y">{{ $t('coupons.buy_x_get_y') }}</option>
+                            <option value="tiered">{{ $t('coupons.tiered') }}</option>
                         </select>
                     </div>
 
                     <!-- Expiry Status Filter -->
                     <div class="col-md-2">
                         <select v-model="expiryStatusFilter" class="form-select" @change="loadCoupons(1)">
-                            <option value="">All Expiry Statuses</option>
-                            <option value="active">Active & Running</option>
-                            <option value="expiring_soon">Expiring in 7 Days</option>
+                            <option value="">-- {{ $t('coupons.expiry_date') }} ({{ $t('common.all') }}) --</option>
+                            <option value="active">{{ $t('common.active') }}</option>
+                            <option value="expiring_soon">Expiring Soon</option>
                             <option value="expired">Expired</option>
                             <option value="upcoming">Upcoming</option>
                         </select>
@@ -146,9 +146,9 @@
                     <!-- Active/Inactive Status Filter -->
                     <div class="col-md-2">
                         <select v-model="statusFilter" class="form-select" @change="loadCoupons(1)">
-                            <option value="">All Statuses</option>
-                            <option value="1">Enabled Only</option>
-                            <option value="0">Disabled Only</option>
+                            <option value="">-- {{ $t('common.status') }} ({{ $t('common.all') }}) --</option>
+                            <option value="1">{{ $t('common.active') }}</option>
+                            <option value="0">{{ $t('common.inactive') }}</option>
                         </select>
                     </div>
 
@@ -157,7 +157,7 @@
                         <button
                             v-if="searchQuery || channelFilter || typeFilter || expiryStatusFilter || statusFilter || dateFromFilter || dateToFilter"
                             class="btn btn-outline-danger w-100 p-2"
-                            title="Reset all filters"
+                            :title="$t('common.reset')"
                             @click="clearFilters"
                         >
                             ✕
@@ -167,14 +167,14 @@
                     <!-- Date Range Filter Row -->
                     <div class="col-12 pt-2 border-top mt-2">
                         <div class="d-flex align-items-center gap-2 extra-small text-muted">
-                            <span class="fw-semibold">📅 Filter by Date Added:</span>
+                            <span class="fw-semibold">📅 {{ $t('common.filter') }}:</span>
                             <input
                                 v-model="dateFromFilter"
                                 type="date"
                                 class="form-control form-control-sm w-auto"
                                 @change="loadCoupons(1)"
                             />
-                            <span>to</span>
+                            <span>{{ $t('common.to') }}</span>
                             <input
                                 v-model="dateToFilter"
                                 type="date"
@@ -186,7 +186,7 @@
                                 class="btn btn-link btn-sm text-danger p-0 text-decoration-none"
                                 @click="dateFromFilter = ''; dateToFilter = ''; loadCoupons(1);"
                             >
-                                Clear dates
+                                {{ $t('common.clear') }}
                             </button>
                         </div>
                     </div>
@@ -200,31 +200,31 @@
                 <table class="table table-hover align-middle mb-0">
                     <thead class="table-light text-uppercase small text-muted">
                         <tr>
-                            <th scope="col" style="min-width: 140px;">Coupon Code</th>
-                            <th scope="col" style="min-width: 180px;">Promotion Title</th>
-                            <th scope="col" style="min-width: 150px;">Discount Structure</th>
-                            <th scope="col">Min Order</th>
-                            <th scope="col">Channel</th>
-                            <th scope="col">Scope</th>
-                            <th scope="col">Redemptions</th>
-                            <th scope="col" style="min-width: 140px;">Validity</th>
-                            <th scope="col" class="text-center">Status</th>
-                            <th scope="col" class="text-end" style="min-width: 170px;">Actions</th>
+                            <th scope="col" style="min-width: 140px;">{{ $t('coupons.code') }}</th>
+                            <th scope="col" style="min-width: 180px;">{{ $t('common.name') }}</th>
+                            <th scope="col" style="min-width: 150px;">{{ $t('coupons.discount_type') }}</th>
+                            <th scope="col">{{ $t('coupons.min_spend') }}</th>
+                            <th scope="col">{{ $t('orders.channel') }}</th>
+                            <th scope="col">{{ $t('coupons.usage_limit') }}</th>
+                            <th scope="col">{{ $t('coupons.usage_history') }}</th>
+                            <th scope="col" style="min-width: 140px;">{{ $t('coupons.expiry_date') }}</th>
+                            <th scope="col" class="text-center">{{ $t('common.status') }}</th>
+                            <th scope="col" class="text-end" style="min-width: 170px;">{{ $t('common.actions') }}</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-if="loading">
                             <td colspan="10" class="text-center py-5 text-muted">
                                 <div class="spinner-border spinner-border-sm me-2"></div>
-                                Loading coupons and discount promotions...
+                                {{ $t('common.loading') }}
                             </td>
                         </tr>
 
                         <tr v-else-if="coupons.length === 0">
                             <td colspan="10" class="text-center py-5 text-muted">
-                                <div>🏷️ No coupons found matching your criteria.</div>
+                                <div>🏷️ {{ $t('common.no_data') }}</div>
                                 <button class="btn btn-primary btn-sm mt-3" @click="openCreateModal">
-                                    + Create Your First Coupon
+                                    + {{ $t('coupons.add_coupon') }}
                                 </button>
                             </td>
                         </tr>

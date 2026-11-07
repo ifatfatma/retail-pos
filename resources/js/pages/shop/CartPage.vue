@@ -1,19 +1,19 @@
 <template>
     <div class="cart-page py-4">
         <div class="container">
-            <h3 class="fw-bold mb-4">🛒 Shopping Cart</h3>
+            <h3 class="fw-bold mb-4">🛒 {{ $t('cart.title') }}</h3>
 
             <!-- Empty Cart State -->
             <div v-if="cartItems.length === 0" class="mb-4">
                 <div class="card border-0 shadow-sm rounded-4 p-5 text-center bg-white mb-4">
                     <div class="fs-1 text-muted mb-3">🛍️</div>
-                    <h4 class="fw-bold mb-2">Your Cart is Empty</h4>
+                    <h4 class="fw-bold mb-2">{{ $t('cart.empty_cart') }}</h4>
                     <p class="text-muted small mb-4" style="max-width: 400px; margin: 0 auto;">
-                        Looks like you haven't added anything to your cart yet. Explore our wide range of products with live inventory!
+                        {{ $t('wishlist.empty_sub') }}
                     </p>
                     <div>
                         <router-link to="/shop" class="btn btn-primary rounded-pill px-4 py-2 fw-semibold">
-                            Start Shopping Now →
+                            {{ $t('cart.explore_catalog') }} &rarr;
                         </router-link>
                     </div>
                 </div>
@@ -23,10 +23,10 @@
                     <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
                         <h5 class="fw-bold mb-0 text-dark d-flex align-items-center gap-2">
                             <span>📌</span>
-                            <span>Saved for Later ({{ savedForLaterItems.length }} {{ savedForLaterItems.length === 1 ? 'item' : 'items' }})</span>
+                            <span>{{ $t('cart.saved_for_later') }} ({{ savedForLaterItems.length }})</span>
                         </h5>
                         <button class="btn btn-link text-danger p-0 extra-small text-decoration-none" @click="clearSaved">
-                            Clear All Saved
+                            {{ $t('common.clear_all') }}
                         </button>
                     </div>
 
@@ -50,14 +50,14 @@
                                             {{ item.name }}
                                         </router-link>
                                         <div class="extra-small text-muted">
-                                            Qty: {{ item.quantity }} | Unit: {{ item.unit_name }}
+                                            {{ $t('common.qty') }}: {{ item.quantity }} | {{ $t('products.unit') }}: {{ item.unit_name }}
                                         </div>
                                         <div class="extra-small mt-1">
                                             <span v-if="!item.track_inventory || item.available_stock > 0" class="text-success fw-semibold">
-                                                ● In Stock
+                                                ● {{ $t('common.in_stock') }}
                                             </span>
                                             <span v-else class="text-danger fw-semibold">
-                                                ● Out of Stock
+                                                ● {{ $t('common.out_of_stock') }}
                                             </span>
                                         </div>
                                     </td>
@@ -72,12 +72,12 @@
                                                 :disabled="item.track_inventory && item.available_stock <= 0"
                                                 @click="moveToCartFromSaved(item.product_variant_id)"
                                             >
-                                                Move to Cart
+                                                {{ $t('cart.move_to_cart') }}
                                             </button>
                                             <button
                                                 type="button"
                                                 class="btn btn-link text-danger p-0"
-                                                title="Remove from saved"
+                                                :title="$t('common.remove')"
                                                 @click="removeFromSaved(item.product_variant_id)"
                                             >
                                                 🗑️
@@ -121,10 +121,10 @@
                             <table class="table align-middle mb-0">
                                 <thead class="table-light small text-uppercase text-muted">
                                     <tr>
-                                        <th scope="col" style="min-width: 220px;">Product</th>
-                                        <th scope="col" class="text-center">Price</th>
-                                        <th scope="col" class="text-center" style="min-width: 130px;">Quantity</th>
-                                        <th scope="col" class="text-end">Subtotal</th>
+                                        <th scope="col" style="min-width: 220px;">{{ $t('products.product_name') }}</th>
+                                        <th scope="col" class="text-center">{{ $t('common.price') }}</th>
+                                        <th scope="col" class="text-center" style="min-width: 130px;">{{ $t('common.qty') }}</th>
+                                        <th scope="col" class="text-end">{{ $t('common.subtotal') }}</th>
                                         <th scope="col" class="text-center" style="width: 110px;"></th>
                                     </tr>
                                 </thead>
@@ -146,10 +146,10 @@
                                                         {{ item.name }}
                                                     </router-link>
                                                     <div class="extra-small text-muted">
-                                                        SKU: {{ item.sku }} | Unit: {{ item.unit_name }}
+                                                        {{ $t('products.sku') }}: {{ item.sku }} | {{ $t('products.unit') }}: {{ item.unit_name }}
                                                     </div>
                                                     <div v-if="item.track_inventory" class="extra-small text-success">
-                                                        In Stock: {{ item.available_stock }} available
+                                                        {{ $t('common.in_stock') }}: {{ item.available_stock }}
                                                     </div>
                                                 </div>
                                             </div>
@@ -195,7 +195,7 @@
                                             <div class="d-flex flex-column align-items-center gap-1">
                                                 <button
                                                     class="btn btn-link text-danger p-0"
-                                                    title="Remove item"
+                                                    :title="$t('common.remove')"
                                                     @click="removeFromCart(item.product_variant_id)"
                                                 >
                                                     🗑️
@@ -203,10 +203,10 @@
                                                 <button
                                                     type="button"
                                                     class="btn btn-link text-primary p-0 extra-small text-decoration-none"
-                                                    title="Save for Later"
+                                                    :title="$t('cart.save_for_later')"
                                                     @click="saveForLater(item.product_variant_id)"
                                                 >
-                                                    Save for later
+                                                    {{ $t('cart.save_for_later') }}
                                                 </button>
                                             </div>
                                         </td>
@@ -218,10 +218,10 @@
                         <!-- Bottom Cart Actions -->
                         <div class="d-flex justify-content-between align-items-center pt-3 mt-3 border-top">
                             <button class="btn btn-outline-danger btn-sm rounded-pill" @click="confirmClearCart">
-                                Clear Cart
+                                {{ $t('common.clear_all') }}
                             </button>
                             <router-link to="/shop" class="btn btn-link text-decoration-none small text-primary">
-                                ← Continue Shopping
+                                &larr; {{ $t('cart.explore_catalog') }}
                             </router-link>
                         </div>
                     </div>
@@ -304,11 +304,11 @@
                 <!-- Order Summary Column -->
                 <div class="col-lg-4">
                     <div class="card border-0 shadow-sm rounded-4 bg-white p-4 sticky-top" style="top: 80px;">
-                        <h5 class="fw-bold mb-3">Order Summary</h5>
+                        <h5 class="fw-bold mb-3">{{ $t('cart.order_summary') }}</h5>
 
                         <!-- Coupon Code Section -->
                         <div class="mb-3 pb-3 border-bottom">
-                            <label class="form-label extra-small fw-semibold text-uppercase text-muted mb-1">Promo / Coupon Code</label>
+                            <label class="form-label extra-small fw-semibold text-uppercase text-muted mb-1">{{ $t('cart.apply_coupon') }}</label>
 
                             <div v-if="appliedCoupon" class="p-2 rounded bg-success-subtle border border-success-subtle d-flex align-items-center justify-content-between">
                                 <div class="d-flex align-items-center gap-2">
@@ -318,8 +318,8 @@
                                         <div class="extra-small text-secondary">{{ appliedCoupon.name || 'Discount applied' }}</div>
                                     </div>
                                 </div>
-                                <button type="button" class="btn btn-sm btn-link text-danger p-0 text-decoration-none" title="Remove Coupon" @click="removeCoupon">
-                                    ✕ Remove
+                                <button type="button" class="btn btn-sm btn-link text-danger p-0 text-decoration-none" :title="$t('common.remove')" @click="removeCoupon">
+                                    ✕ {{ $t('common.remove') }}
                                 </button>
                             </div>
 
@@ -329,7 +329,7 @@
                                         v-model="couponInput"
                                         type="text"
                                         class="form-control text-uppercase font-monospace"
-                                        placeholder="e.g. WELCOME100"
+                                        :placeholder="$t('cart.coupon_placeholder')"
                                         :disabled="validatingCoupon"
                                         @input="couponInput = couponInput.toUpperCase()"
                                         @keydown.enter.prevent="handleApplyCoupon"
@@ -341,7 +341,7 @@
                                         @click="handleApplyCoupon"
                                     >
                                         <span v-if="validatingCoupon" class="spinner-border spinner-border-sm me-1"></span>
-                                        {{ validatingCoupon ? 'Checking...' : 'Apply' }}
+                                        {{ validatingCoupon ? $t('common.loading') : $t('cart.apply') }}
                                     </button>
                                 </div>
                                 <div v-if="couponError" class="extra-small text-danger mt-1">
@@ -351,22 +351,22 @@
                         </div>
 
                         <div class="d-flex justify-content-between small text-muted mb-2">
-                            <span>Subtotal ({{ cartCount }} items)</span>
+                            <span>{{ $t('common.subtotal') }} ({{ cartCount }} {{ $t('dashboard.items') }})</span>
                             <span class="fw-semibold text-dark">₹{{ formatMoney(cartSubtotal) }}</span>
                         </div>
 
                         <div class="d-flex justify-content-between small text-muted mb-2">
-                            <span>Estimated Tax (GST)</span>
+                            <span>{{ $t('common.tax') }}</span>
                             <span class="fw-semibold text-dark">₹{{ formatMoney(cartTaxTotal) }}</span>
                         </div>
 
                         <div v-if="appliedCoupon && couponDiscount > 0" class="d-flex justify-content-between small text-success mb-2">
-                            <span class="fw-medium">Coupon Savings ({{ appliedCoupon.code }})</span>
+                            <span class="fw-medium">{{ $t('common.discount') }} ({{ appliedCoupon.code }})</span>
                             <span class="fw-bold">-₹{{ formatMoney(couponDiscount) }}</span>
                         </div>
 
                         <div class="d-flex justify-content-between small text-muted mb-3 pb-3 border-bottom">
-                            <span>Delivery Charges</span>
+                            <span>{{ $t('common.shipping') }}</span>
                             <span v-if="cartShipping === 0" class="badge bg-success-subtle text-success">
                                 FREE
                             </span>
@@ -376,7 +376,7 @@
                         </div>
 
                         <div class="d-flex justify-content-between fs-5 fw-bold text-dark mb-4">
-                            <span>Total Payable</span>
+                            <span>{{ $t('common.grand_total') }}</span>
                             <span class="text-primary">₹{{ formatMoney(cartGrandTotal) }}</span>
                         </div>
 
@@ -384,8 +384,7 @@
                             to="/checkout"
                             class="btn btn-primary btn-lg w-100 fw-bold rounded-pill mb-3 shadow-sm d-flex align-items-center justify-content-center gap-2"
                         >
-                            <span>Proceed to Checkout</span>
-                            <span>→</span>
+                            <span>{{ $t('cart.proceed_to_checkout') }}</span>
                         </router-link>
 
                         <!-- Trust Highlights -->

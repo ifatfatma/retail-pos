@@ -18,9 +18,9 @@
                             ❤️
                         </div>
                         <div>
-                            <h3 class="fw-bold mb-1 text-dark">My Wishlist</h3>
+                            <h3 class="fw-bold mb-1 text-dark">{{ $t('wishlist.title') }}</h3>
                             <p class="text-muted small mb-0">
-                                {{ wishlistCount }} saved {{ wishlistCount === 1 ? 'item' : 'items' }} ready to purchase or track
+                                {{ wishlistCount }} {{ $t('wishlist.items_saved') }}
                             </p>
                         </div>
                     </div>
@@ -30,10 +30,10 @@
                         <button
                             class="btn btn-outline-secondary btn-sm rounded-pill px-3 d-flex align-items-center gap-2"
                             @click="shareWishlist"
-                            title="Share Wishlist Link"
+                            :title="$t('wishlist.share_wishlist')"
                         >
                             <span>🔗</span>
-                            <span>Share Wishlist</span>
+                            <span>{{ $t('wishlist.share_wishlist') }}</span>
                         </button>
                         <button
                             class="btn btn-outline-primary btn-sm rounded-pill px-3 d-flex align-items-center gap-2"
@@ -41,13 +41,13 @@
                             :disabled="wishlistMeta.in_stock_count === 0"
                         >
                             <span>🛒</span>
-                            <span>Add Available to Cart ({{ wishlistMeta.in_stock_count }})</span>
+                            <span>{{ $t('wishlist.add_all_to_cart') }} ({{ wishlistMeta.in_stock_count }})</span>
                         </button>
                         <button
                             class="btn btn-outline-danger btn-sm rounded-pill px-3"
                             @click="confirmClearWishlist"
                         >
-                            🗑️ Clear All
+                            🗑️ {{ $t('common.clear_all') }}
                         </button>
                     </div>
                 </div>
@@ -56,25 +56,25 @@
                 <div class="row g-3 mt-3 pt-3 border-top" v-if="wishlistCount > 0">
                     <div class="col-6 col-md-3">
                         <div class="p-2 rounded-3 bg-light text-center">
-                            <span class="text-muted extra-small text-uppercase fw-semibold d-block">Total Saved</span>
+                            <span class="text-muted extra-small text-uppercase fw-semibold d-block">{{ $t('common.total') }}</span>
                             <span class="fs-5 fw-bold text-dark">{{ wishlistCount }}</span>
                         </div>
                     </div>
                     <div class="col-6 col-md-3">
                         <div class="p-2 rounded-3 bg-success-subtle text-center">
-                            <span class="text-success extra-small text-uppercase fw-semibold d-block">In Stock</span>
+                            <span class="text-success extra-small text-uppercase fw-semibold d-block">{{ $t('common.in_stock') }}</span>
                             <span class="fs-5 fw-bold text-success">{{ wishlistMeta.in_stock_count }}</span>
                         </div>
                     </div>
                     <div class="col-6 col-md-3">
                         <div class="p-2 rounded-3 bg-danger-subtle text-center">
-                            <span class="text-danger extra-small text-uppercase fw-semibold d-block">Out of Stock</span>
+                            <span class="text-danger extra-small text-uppercase fw-semibold d-block">{{ $t('common.out_of_stock') }}</span>
                             <span class="fs-5 fw-bold text-danger">{{ wishlistMeta.out_of_stock_count }}</span>
                         </div>
                     </div>
                     <div class="col-6 col-md-3">
                         <div class="p-2 rounded-3 bg-warning-subtle text-center">
-                            <span class="text-warning-emphasis extra-small text-uppercase fw-semibold d-block">Price Drops</span>
+                            <span class="text-warning-emphasis extra-small text-uppercase fw-semibold d-block">{{ $t('wishlist.price_drop_badge') }}</span>
                             <span class="fs-5 fw-bold text-warning-emphasis">{{ wishlistMeta.price_drop_count || 0 }}</span>
                         </div>
                     </div>
@@ -84,7 +84,7 @@
             <!-- Loading Spinner -->
             <div v-if="loading" class="text-center py-5">
                 <div class="spinner-border text-danger" role="status"></div>
-                <p class="text-muted small mt-2">Loading your wishlist items...</p>
+                <p class="text-muted small mt-2">{{ $t('common.loading') }}</p>
             </div>
 
             <!-- Empty State -->
@@ -92,16 +92,16 @@
                 <div class="empty-icon-wrap mb-3 mx-auto d-flex align-items-center justify-content-center bg-light rounded-circle">
                     <span style="font-size: 3rem;">🤍</span>
                 </div>
-                <h4 class="fw-bold text-dark mb-2">Your Wishlist is Empty</h4>
+                <h4 class="fw-bold text-dark mb-2">{{ $t('wishlist.empty_title') }}</h4>
                 <p class="text-muted mx-auto mb-4" style="max-width: 480px;">
-                    Explore our vast catalog of stationery, desk organizers, school essentials, and art supplies. Click the heart icon on any product to save it here for later!
+                    {{ $t('wishlist.empty_sub') }}
                 </p>
                 <div class="d-flex justify-content-center gap-3">
                     <router-link to="/shop" class="btn btn-primary rounded-pill px-4 fw-semibold">
-                        🛍️ Explore Shop Catalog
+                        🛍️ {{ $t('cart.explore_catalog') }}
                     </router-link>
                     <router-link to="/" class="btn btn-outline-secondary rounded-pill px-4">
-                        Home
+                        {{ $t('storefront.home') }}
                     </router-link>
                 </div>
             </div>

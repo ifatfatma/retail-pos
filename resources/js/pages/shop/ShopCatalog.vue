@@ -4,8 +4,8 @@
             <!-- Breadcrumbs -->
             <nav aria-label="breadcrumb" class="mb-3">
                 <ol class="breadcrumb small">
-                    <li class="breadcrumb-item"><router-link to="/" class="text-decoration-none">Home</router-link></li>
-                    <li class="breadcrumb-item active" aria-current="page">Shop Catalog</li>
+                    <li class="breadcrumb-item"><router-link to="/" class="text-decoration-none">{{ $t('storefront.home') }}</router-link></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ $t('storefront.catalog') }}</li>
                 </ol>
             </nav>
 
@@ -14,25 +14,25 @@
                 <aside class="col-lg-3">
                     <div class="card border-0 shadow-sm rounded-3 p-3 sticky-top" style="top: 80px; z-index: 10;">
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h5 class="fw-bold mb-0">Filters</h5>
+                            <h5 class="fw-bold mb-0">{{ $t('storefront.filters') }}</h5>
                             <button
                                 v-if="selectedCategory || searchQuery || sortBy !== 'newest'"
                                 @click="resetFilters"
                                 class="btn btn-link btn-sm text-danger text-decoration-none p-0"
                             >
-                                Reset All
+                                {{ $t('common.reset_all') }}
                             </button>
                         </div>
 
                         <!-- Search within catalog -->
                         <div class="mb-4">
-                            <label class="form-label small fw-semibold text-muted text-uppercase">Search</label>
+                            <label class="form-label small fw-semibold text-muted text-uppercase">{{ $t('common.search') }}</label>
                             <div class="input-group input-group-sm">
                                 <input
                                     v-model="searchQuery"
                                     type="text"
                                     class="form-control"
-                                    placeholder="Search catalog..."
+                                    :placeholder="$t('storefront.search_catalog')"
                                     @keyup.enter="applyFilters"
                                 />
                                 <button class="btn btn-outline-primary" @click="applyFilters">
@@ -43,7 +43,7 @@
 
                         <!-- Categories -->
                         <div class="mb-4">
-                            <label class="form-label small fw-semibold text-muted text-uppercase">Categories</label>
+                            <label class="form-label small fw-semibold text-muted text-uppercase">{{ $t('nav.categories') }}</label>
                             <div class="list-group list-group-flush small">
                                 <button
                                     type="button"
@@ -51,7 +51,7 @@
                                     :class="{ 'active fw-bold': !selectedCategory }"
                                     @click="selectCategory(null)"
                                 >
-                                    <span>All Products</span>
+                                    <span>{{ $t('storefront.all_products') }}</span>
                                 </button>
                                 <button
                                     v-for="cat in categories"
@@ -71,11 +71,11 @@
 
                         <!-- Sort Order -->
                         <div class="mb-3">
-                            <label class="form-label small fw-semibold text-muted text-uppercase">Sort By</label>
+                            <label class="form-label small fw-semibold text-muted text-uppercase">{{ $t('storefront.sort_by') }}</label>
                             <select v-model="sortBy" class="form-select form-select-sm" @change="applyFilters">
-                                <option value="newest">Newest Arrivals</option>
-                                <option value="price_low">Price: Low to High</option>
-                                <option value="price_high">Price: High to Low</option>
+                                <option value="newest">{{ $t('storefront.sort_newest') }}</option>
+                                <option value="price_low">{{ $t('storefront.sort_price_low') }}</option>
+                                <option value="price_high">{{ $t('storefront.sort_price_high') }}</option>
                             </select>
                         </div>
                     </div>
@@ -91,17 +91,17 @@
                                     {{ currentCategoryName }}
                                 </h4>
                                 <span class="text-muted small">
-                                    Showing {{ pagination.total }} items in stock
+                                    {{ $t('storefront.showing_items') }} ({{ pagination.total }})
                                 </span>
                             </div>
 
                             <!-- Mobile Quick Sort -->
                             <div class="d-flex align-items-center gap-2">
-                                <span class="small text-muted d-none d-sm-inline">Sort:</span>
+                                <span class="small text-muted d-none d-sm-inline">{{ $t('storefront.sort_by') }}:</span>
                                 <select v-model="sortBy" class="form-select form-select-sm" style="width: auto;" @change="applyFilters">
-                                    <option value="newest">Newest</option>
-                                    <option value="price_low">Price: Low to High</option>
-                                    <option value="price_high">Price: High to Low</option>
+                                    <option value="newest">{{ $t('storefront.sort_newest') }}</option>
+                                    <option value="price_low">{{ $t('storefront.sort_price_low') }}</option>
+                                    <option value="price_high">{{ $t('storefront.sort_price_high') }}</option>
                                 </select>
                             </div>
                         </div>
@@ -109,7 +109,7 @@
                         <!-- Active Filter Pills -->
                         <div v-if="searchQuery" class="mt-2 d-flex gap-2 align-items-center flex-wrap">
                             <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1">
-                                Search: "{{ searchQuery }}"
+                                {{ $t('common.search') }}: "{{ searchQuery }}"
                                 <button type="button" class="btn-close btn-close-xs ms-1" style="font-size: 0.5rem;" @click="clearSearch"></button>
                             </span>
                         </div>
@@ -118,7 +118,7 @@
                     <!-- Loading State -->
                     <div v-if="loading" class="text-center py-5">
                         <div class="spinner-border text-primary" role="status"></div>
-                        <p class="text-muted mt-2">Loading catalog...</p>
+                        <p class="text-muted mt-2">{{ $t('storefront.loading_catalog') }}</p>
                     </div>
 
                     <!-- Products Grid -->
@@ -135,7 +135,7 @@
                                     class="btn btn-sm position-absolute top-0 end-0 m-2 rounded-circle p-1 d-flex align-items-center justify-content-center shadow-sm wishlist-btn"
                                     :class="isInWishlist(product.id) ? 'btn-danger text-white' : 'btn-light text-muted'"
                                     style="z-index: 3; width: 34px; height: 34px;"
-                                    :title="isInWishlist(product.id) ? 'Remove from Wishlist' : 'Add to Wishlist'"
+                                    :title="isInWishlist(product.id) ? $t('wishlist.title') : $t('storefront.add_to_wishlist')"
                                     @click.prevent.stop="toggleWishlist(product)"
                                 >
                                     <span style="font-size: 15px;">{{ isInWishlist(product.id) ? '❤️' : '🤍' }}</span>
@@ -147,7 +147,7 @@
                                     class="position-absolute top-0 start-0 m-2 badge bg-danger text-white rounded-pill px-2 py-1 shadow-sm"
                                     style="z-index: 2;"
                                 >
-                                    Out of Stock
+                                    {{ $t('common.out_of_stock') }}
                                 </div>
                                 <!-- Discount badge -->
                                 <div
@@ -185,10 +185,10 @@
                                     <!-- Stock info -->
                                     <div class="small mb-3">
                                         <span v-if="!product.track_inventory || product.stock > 0" class="text-success fw-medium">
-                                            ● In Stock ({{ product.stock }} {{ product.unit?.short_name || 'units' }})
+                                            ● {{ $t('common.in_stock') }} ({{ product.stock }} {{ product.unit?.short_name || 'units' }})
                                         </span>
                                         <span v-else class="text-danger fw-medium">
-                                            ● Out of Stock
+                                            ● {{ $t('common.out_of_stock') }}
                                         </span>
                                     </div>
 
@@ -211,7 +211,7 @@
                                             :disabled="product.track_inventory && product.stock <= 0"
                                             @click="handleAddToCart(product)"
                                         >
-                                            + Add
+                                            {{ $t('storefront.add') }}
                                         </button>
                                     </div>
                                 </div>
@@ -222,13 +222,13 @@
                     <!-- Empty State -->
                     <div v-else class="card border-0 shadow-sm rounded-3 text-center py-5">
                         <div class="fs-1 mb-2">🔍</div>
-                        <h5 class="fw-bold">No Products Found</h5>
+                        <h5 class="fw-bold">{{ $t('storefront.no_products_found') }}</h5>
                         <p class="text-muted small mb-3">
-                            We couldn't find any products matching your selected filters.
+                            {{ $t('storefront.no_products_sub') }}
                         </p>
                         <div>
                             <button class="btn btn-primary btn-sm rounded-pill px-4" @click="resetFilters">
-                                Reset Filters
+                                {{ $t('common.reset_filters') }}
                             </button>
                         </div>
                     </div>
@@ -239,7 +239,7 @@
                             <ul class="pagination pagination-sm mb-0">
                                 <li class="page-item" :class="{ disabled: pagination.current_page <= 1 }">
                                     <button class="page-link" @click="changePage(pagination.current_page - 1)">
-                                        « Prev
+                                        « {{ $t('common.previous') }}
                                     </button>
                                 </li>
                                 <li
@@ -254,7 +254,7 @@
                                 </li>
                                 <li class="page-item" :class="{ disabled: pagination.current_page >= pagination.last_page }">
                                     <button class="page-link" @click="changePage(pagination.current_page + 1)">
-                                        Next »
+                                        {{ $t('common.next') }} »
                                     </button>
                                 </li>
                             </ul>

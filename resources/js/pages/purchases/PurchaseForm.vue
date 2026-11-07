@@ -4,12 +4,12 @@
         <!-- Top Header -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                <h3 class="fw-bold mb-1">Create Purchase</h3>
-                <p class="text-muted mb-0">Record a new purchase order and receive product stock</p>
+                <h3 class="fw-bold mb-1">{{ $t('purchases.new_purchase') }}</h3>
+                <p class="text-muted mb-0">{{ $t('purchases.subtitle') }}</p>
             </div>
 
             <router-link to="/admin/purchases" class="btn btn-outline-secondary">
-                &larr; Back to Purchases
+                &larr; {{ $t('common.back') }}
             </router-link>
         </div>
 
@@ -27,7 +27,7 @@
                     <!-- Basic Info Card -->
                     <div class="card border-0 shadow-sm mb-4">
                         <div class="card-header bg-white fw-bold py-3">
-                            Purchase & Supplier Information
+                            {{ $t('purchases.title') }} & {{ $t('purchases.supplier_name') }}
                         </div>
 
                         <div class="card-body">
@@ -35,7 +35,7 @@
                                 <!-- Supplier Selection -->
                                 <div class="col-md-6">
                                     <label class="form-label fw-semibold">
-                                        Supplier <span class="text-danger">*</span>
+                                        {{ $t('purchases.supplier_name') }} <span class="text-danger">*</span>
                                     </label>
                                     <div class="input-group">
                                         <select
@@ -43,7 +43,7 @@
                                             class="form-select"
                                             required
                                         >
-                                            <option value="">-- Select Supplier --</option>
+                                            <option value="">-- {{ $t('purchases.supplier_name') }} --</option>
                                             <option
                                                 v-for="sup in suppliers"
                                                 :key="sup.id"
@@ -58,7 +58,7 @@
                                             @click="openQuickSupplierModal"
                                             title="Add new supplier"
                                         >
-                                            + New
+                                            + {{ $t('common.add') }}
                                         </button>
                                     </div>
                                 </div>
@@ -66,7 +66,7 @@
                                 <!-- Purchase Date -->
                                 <div class="col-md-3">
                                     <label class="form-label fw-semibold">
-                                        Purchase Date <span class="text-danger">*</span>
+                                        {{ $t('purchases.purchase_date') }} <span class="text-danger">*</span>
                                     </label>
                                     <input
                                         v-model="form.purchase_date"
@@ -79,18 +79,18 @@
                                 <!-- Purchase Status -->
                                 <div class="col-md-3">
                                     <label class="form-label fw-semibold">
-                                        Status <span class="text-danger">*</span>
+                                        {{ $t('common.status') }} <span class="text-danger">*</span>
                                     </label>
                                     <select v-model="form.status" class="form-select" required>
-                                        <option value="received">Received (Add to Stock)</option>
-                                        <option value="pending">Pending (Order Draft)</option>
-                                        <option value="ordered">Ordered</option>
+                                        <option value="received">{{ $t('common.completed') }}</option>
+                                        <option value="pending">{{ $t('common.pending') }}</option>
+                                        <option value="ordered">{{ $t('orders.title') }}</option>
                                     </select>
                                 </div>
 
                                 <!-- Reference / Supplier Bill No -->
                                 <div class="col-md-6">
-                                    <label class="form-label">Supplier Bill / Invoice #</label>
+                                    <label class="form-label">{{ $t('purchases.purchase_number') }}</label>
                                     <input
                                         v-model="form.reference_no"
                                         type="text"
@@ -105,19 +105,19 @@
                     <!-- Items Card -->
                     <div class="card border-0 shadow-sm mb-4">
                         <div class="card-header bg-white fw-bold py-3 d-flex justify-content-between align-items-center">
-                            <span>Purchase Items ({{ form.items.length }})</span>
+                            <span>{{ $t('purchases.items_purchased') }} ({{ form.items.length }})</span>
                         </div>
 
                         <div class="card-body">
                             <!-- Product Search Bar -->
                             <div class="mb-3">
-                                <label class="form-label fw-semibold">Search & Add Products</label>
+                                <label class="form-label fw-semibold">{{ $t('products.add_product') }}</label>
                                 <div class="input-group">
                                     <input
                                         v-model="productSearch"
                                         type="text"
                                         class="form-control"
-                                        placeholder="Search by product name, SKU or barcode to add..."
+                                        :placeholder="$t('products.search_placeholder')"
                                         @input="debouncedSearchProducts"
                                     />
                                     <button
@@ -125,7 +125,7 @@
                                         class="btn btn-primary"
                                         @click="searchProductsNow"
                                     >
-                                        Search
+                                        {{ $t('common.search') }}
                                     </button>
                                 </div>
 
@@ -147,14 +147,14 @@
                                                 {{ p.default_variant?.sku || '-' }}
                                             </span>
                                             <small class="text-muted ms-2">
-                                                Category: {{ p.category || '-' }}
+                                                {{ p.category || '-' }}
                                             </small>
                                         </div>
                                         <div class="text-end">
                                             <span class="text-muted small me-2">
-                                                Cost: ₹{{ p.default_variant?.purchase_price || 0 }}
+                                                {{ $t('products.purchase_price') }}: ₹{{ p.default_variant?.purchase_price || 0 }}
                                             </span>
-                                            <span class="badge bg-primary">+ Add</span>
+                                            <span class="badge bg-primary">+ {{ $t('common.add') }}</span>
                                         </div>
                                     </button>
                                 </div>
@@ -166,11 +166,11 @@
                                     <thead class="table-light small">
                                         <tr>
                                             <th>#</th>
-                                            <th>Product Name</th>
-                                            <th width="140">Qty</th>
-                                            <th width="140">Unit Cost (₹)</th>
-                                            <th width="100">Tax (%)</th>
-                                            <th width="130" class="text-end">Total (₹)</th>
+                                            <th>{{ $t('products.product_name') }}</th>
+                                            <th width="140">{{ $t('common.qty') }}</th>
+                                            <th width="140">{{ $t('products.cost_price') }}</th>
+                                            <th width="100">{{ $t('common.tax') }} (%)</th>
+                                            <th width="130" class="text-end">{{ $t('common.total') }}</th>
                                             <th width="50" class="text-center"></th>
                                         </tr>
                                     </thead>
@@ -178,7 +178,7 @@
                                     <tbody>
                                         <tr v-if="form.items.length === 0">
                                             <td colspan="7" class="text-center py-5 text-muted">
-                                                No items added yet. Search and click "+ Add" above.
+                                                {{ $t('common.no_data') }}
                                             </td>
                                         </tr>
 
@@ -187,7 +187,7 @@
 
                                             <td>
                                                 <div class="fw-semibold">{{ item.product_name }}</div>
-                                                <small class="text-muted">SKU: {{ item.sku }}</small>
+                                                <small class="text-muted">{{ $t('products.sku') }}: {{ item.sku }}</small>
                                             </td>
 
                                             <td>
@@ -252,12 +252,12 @@
                     <!-- Notes Card -->
                     <div class="card border-0 shadow-sm mb-4">
                         <div class="card-body">
-                            <label class="form-label fw-semibold">Notes / Remarks</label>
+                            <label class="form-label fw-semibold">{{ $t('common.notes') }}</label>
                             <textarea
                                 v-model="form.notes"
                                 class="form-control"
                                 rows="3"
-                                placeholder="Any additional notes or instructions for this purchase order..."
+                                :placeholder="$t('common.notes')"
                             ></textarea>
                         </div>
                     </div>
@@ -269,26 +269,26 @@
 
                     <div class="card border-0 shadow-sm mb-4 sticky-top" style="top: 20px;">
                         <div class="card-header bg-white fw-bold py-3">
-                            Order Summary & Payment
+                            {{ $t('cart.order_summary') }}
                         </div>
 
                         <div class="card-body">
                             <!-- Subtotal -->
                             <div class="d-flex justify-content-between mb-2">
-                                <span class="text-muted">Subtotal:</span>
+                                <span class="text-muted">{{ $t('common.subtotal') }}:</span>
                                 <span class="fw-semibold">₹{{ subtotal.toFixed(2) }}</span>
                             </div>
 
                             <!-- Tax -->
                             <div class="d-flex justify-content-between mb-2">
-                                <span class="text-muted">Total Tax:</span>
+                                <span class="text-muted">{{ $t('common.tax') }}:</span>
                                 <span>+ ₹{{ taxTotal.toFixed(2) }}</span>
                             </div>
 
                             <!-- Discount Input -->
                             <div class="mb-2">
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <span class="text-muted">Order Discount:</span>
+                                    <span class="text-muted">{{ $t('common.discount') }}:</span>
                                     <div class="input-group input-group-sm w-50">
                                         <span class="input-group-text">₹</span>
                                         <input
@@ -305,7 +305,7 @@
                             <!-- Shipping Cost Input -->
                             <div class="mb-3">
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <span class="text-muted">Shipping Charges:</span>
+                                    <span class="text-muted">{{ $t('common.shipping') }}:</span>
                                     <div class="input-group input-group-sm w-50">
                                         <span class="input-group-text">₹</span>
                                         <input
@@ -321,19 +321,19 @@
 
                             <!-- Grand Total -->
                             <div class="d-flex justify-content-between border-top border-bottom py-3 mb-3 fw-bold fs-5">
-                                <span>Grand Total:</span>
+                                <span>{{ $t('common.grand_total') }}:</span>
                                 <span class="text-primary">₹{{ grandTotal.toFixed(2) }}</span>
                             </div>
 
                             <!-- Payment Method -->
                             <div class="mb-3">
-                                <label class="form-label fw-semibold">Payment Method *</label>
+                                <label class="form-label fw-semibold">{{ $t('pos.payment_method') }} *</label>
                                 <select v-model="form.payment_method" class="form-select" required>
-                                    <option value="cash">Cash</option>
+                                    <option value="cash">{{ $t('pos.cash') }}</option>
+                                    <option value="upi">{{ $t('pos.upi_qr') }}</option>
+                                    <option value="card">{{ $t('pos.card') }}</option>
                                     <option value="bank_transfer">Bank Transfer / NEFT</option>
-                                    <option value="upi">UPI / GPay / PhonePe</option>
                                     <option value="cheque">Cheque</option>
-                                    <option value="card">Debit / Credit Card</option>
                                     <option value="other">Other</option>
                                 </select>
                             </div>
@@ -341,13 +341,13 @@
                             <!-- Paid Amount -->
                             <div class="mb-3">
                                 <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <label class="form-label fw-semibold mb-0">Paid Amount (₹) *</label>
+                                    <label class="form-label fw-semibold mb-0">{{ $t('common.paid') }} (₹) *</label>
                                     <button
                                         type="button"
                                         class="btn btn-sm btn-link p-0 text-decoration-none"
                                         @click="form.paid_amount = grandTotal"
                                     >
-                                        Pay Full
+                                        {{ $t('common.all') }}
                                     </button>
                                 </div>
                                 <input
@@ -362,7 +362,7 @@
 
                             <!-- Due Amount Display -->
                             <div class="d-flex justify-content-between mb-4">
-                                <span class="text-muted">Due Balance:</span>
+                                <span class="text-muted">{{ $t('reports.supplier_payables') }}:</span>
                                 <span
                                     class="fw-bold"
                                     :class="dueAmount > 0 ? 'text-danger' : 'text-success'"
@@ -378,7 +378,7 @@
                                 :disabled="submitting || form.items.length === 0"
                             >
                                 <span v-if="submitting" class="spinner-border spinner-border-sm me-2"></span>
-                                {{ form.status === 'received' ? 'Save & Receive Stock' : 'Save Purchase Order' }}
+                                {{ form.status === 'received' ? $t('common.save') : $t('purchases.new_purchase') }}
                             </button>
                         </div>
                     </div>

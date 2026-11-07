@@ -4,8 +4,8 @@
             <!-- Breadcrumbs -->
             <nav aria-label="breadcrumb" class="mb-4">
                 <ol class="breadcrumb small">
-                    <li class="breadcrumb-item"><router-link to="/" class="text-decoration-none">Home</router-link></li>
-                    <li class="breadcrumb-item"><router-link to="/shop" class="text-decoration-none">Shop</router-link></li>
+                    <li class="breadcrumb-item"><router-link to="/" class="text-decoration-none">{{ $t('storefront.home') }}</router-link></li>
+                    <li class="breadcrumb-item"><router-link to="/shop" class="text-decoration-none">{{ $t('storefront.catalog') }}</router-link></li>
                     <li class="breadcrumb-item" v-if="product?.category_name">
                         <router-link :to="{ path: '/shop', query: { category_id: product.category_id } }" class="text-decoration-none">
                             {{ product.category_name }}
@@ -20,17 +20,17 @@
             <!-- Loading Spinner -->
             <div v-if="loading" class="text-center py-5">
                 <div class="spinner-border text-primary" role="status"></div>
-                <p class="text-muted mt-2">Loading product details...</p>
+                <p class="text-muted mt-2">{{ $t('storefront.loading_details') }}</p>
             </div>
 
             <!-- Error State -->
             <div v-else-if="error" class="card border-0 shadow-sm p-5 text-center">
                 <div class="fs-1 text-danger mb-2">⚠️</div>
-                <h4 class="fw-bold">Product Not Found</h4>
+                <h4 class="fw-bold">{{ $t('storefront.product_not_found') }}</h4>
                 <p class="text-muted small mb-3">{{ error }}</p>
                 <div>
                     <router-link to="/shop" class="btn btn-primary rounded-pill px-4">
-                        Back to Shop
+                        {{ $t('storefront.back_to_shop') }}
                     </router-link>
                 </div>
             </div>
@@ -47,7 +47,7 @@
                                 :alt="product.name"
                                 class="main-image img-fluid"
                             />
-                            <div v-else class="fs-1 text-muted py-5">📦 No Image Available</div>
+                            <div v-else class="fs-1 text-muted py-5">📦 {{ $t('storefront.no_image') }}</div>
                         </div>
                     </div>
 
@@ -72,7 +72,7 @@
                             {{ product.category_name }}
                         </span>
                         <span v-if="product.brand_name" class="badge bg-secondary-subtle text-secondary px-2 py-1">
-                            Brand: {{ product.brand_name }}
+                            {{ $t('products.brand') }}: {{ product.brand_name }}
                         </span>
                     </div>
 
@@ -90,7 +90,7 @@
                                 ₹{{ formatMoney(product.variant?.selling_price) }}
                             </div>
                             <div class="extra-small text-muted">
-                                Inclusive of all taxes ({{ product.variant?.tax_rate || 0 }}% GST)
+                                {{ $t('storefront.inclusive_tax') }} ({{ product.variant?.tax_rate || 0 }}% GST)
                             </div>
                         </div>
 
@@ -99,7 +99,7 @@
                                 MRP: ₹{{ formatMoney(product.variant.mrp) }}
                             </div>
                             <span class="badge bg-success text-white rounded-pill px-2 py-1">
-                                Save {{ calcDiscount(product.variant.selling_price, product.variant.mrp) }}%
+                                {{ $t('storefront.save_discount') }} {{ calcDiscount(product.variant.selling_price, product.variant.mrp) }}%
                             </span>
                         </div>
                     </div>
@@ -109,7 +109,7 @@
                         <div v-if="!product.track_inventory || product.stock > 0" class="d-flex align-items-center gap-2 text-success">
                             <span class="fs-5">✔</span>
                             <span class="fw-bold">
-                                In Stock & Ready to Dispatch
+                                {{ $t('storefront.in_stock_ready') }}
                             </span>
                             <span class="badge bg-success-subtle text-success small">
                                 {{ product.stock }} {{ product.unit?.short_name || 'units' }} available
@@ -117,16 +117,16 @@
                         </div>
                         <div v-else class="d-flex align-items-center gap-2 text-danger">
                             <span class="fs-5">✖</span>
-                            <span class="fw-bold">Currently Out of Stock</span>
+                            <span class="fw-bold">{{ $t('storefront.currently_out_of_stock') }}</span>
                             <span class="badge bg-danger-subtle text-danger small">
-                                Check back soon
+                                {{ $t('storefront.check_back_soon') }}
                             </span>
                         </div>
                     </div>
 
                     <!-- Quantity Stepper & Buttons -->
                     <div class="mb-4" v-if="!product.track_inventory || product.stock > 0">
-                        <label class="form-label small fw-semibold text-muted text-uppercase mb-2">Quantity</label>
+                        <label class="form-label small fw-semibold text-muted text-uppercase mb-2">{{ $t('common.quantity') }}</label>
                         <div class="d-flex align-items-center gap-3">
                             <div class="input-group" style="width: 140px;">
                                 <button
@@ -155,7 +155,7 @@
                                 </button>
                             </div>
                             <span class="small text-muted">
-                                Unit: {{ product.unit?.name || 'Piece' }}
+                                {{ $t('products.unit') }}: {{ product.unit?.name || 'Piece' }}
                             </span>
                         </div>
                     </div>
@@ -167,14 +167,14 @@
                             :disabled="product.track_inventory && product.stock <= 0"
                             @click="handleAddToCart"
                         >
-                            🛒 Add to Cart
+                            🛒 {{ $t('storefront.add_to_cart') }}
                         </button>
                         <button
                             class="btn btn-primary btn-lg px-4 flex-grow-1 fw-bold rounded-pill"
                             :disabled="product.track_inventory && product.stock <= 0"
                             @click="handleBuyNow"
                         >
-                            ⚡ Buy Now
+                            ⚡ {{ $t('storefront.buy_now') }}
                         </button>
                         <button
                             type="button"
@@ -183,7 +183,7 @@
                             @click="toggleWishlist(product)"
                         >
                             <span style="font-size: 1.2rem;">{{ isInWishlist(product.id) ? '❤️' : '🤍' }}</span>
-                            <span>{{ isInWishlist(product.id) ? 'Saved in Wishlist' : 'Add to Wishlist' }}</span>
+                            <span>{{ isInWishlist(product.id) ? $t('storefront.saved_in_wishlist') : $t('storefront.add_to_wishlist') }}</span>
                         </button>
                     </div>
 
@@ -191,25 +191,25 @@
                     <div class="card border-0 bg-light-subtle rounded-3 p-3 mb-4">
                         <div class="row g-2 text-muted small">
                             <div class="col-6 d-flex align-items-center gap-2">
-                                <span>🚚</span> Free Delivery over ₹500
+                                <span>🚚</span> {{ $t('storefront.free_delivery') }}
                             </div>
                             <div class="col-6 d-flex align-items-center gap-2">
-                                <span>💵</span> Cash on Delivery (COD)
+                                <span>💵</span> {{ $t('checkout.cash_on_delivery') }}
                             </div>
                             <div class="col-6 d-flex align-items-center gap-2">
-                                <span>⚡</span> Direct Warehouse Stock
+                                <span>⚡</span> {{ $t('storefront.direct_stock') }}
                             </div>
                             <div class="col-6 d-flex align-items-center gap-2">
-                                <span>🛡️</span> 100% Secure Checkout
+                                <span>🛡️</span> {{ $t('storefront.secure_checkout') }}
                             </div>
                         </div>
                     </div>
 
                     <!-- Description -->
                     <div class="card border-0 shadow-sm rounded-3 p-4">
-                        <h5 class="fw-bold mb-3">Product Description</h5>
+                        <h5 class="fw-bold mb-3">{{ $t('storefront.product_description') }}</h5>
                         <p class="text-secondary mb-0" style="white-space: pre-line;">
-                            {{ product.description || 'No description provided for this product.' }}
+                            {{ product.description || $t('storefront.no_description') }}
                         </p>
                     </div>
                 </div>

@@ -4,9 +4,9 @@
         <!-- Page Header -->
         <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
             <div>
-                <h3 class="fw-bold mb-1">Purchases</h3>
+                <h3 class="fw-bold mb-1">{{ $t('purchases.title') }}</h3>
                 <p class="text-muted mb-0">
-                    Manage supplier purchase orders, track received inventory and payments
+                    {{ $t('purchases.subtitle') }}
                 </p>
             </div>
 
@@ -15,24 +15,24 @@
                     class="btn btn-outline-secondary"
                     @click="openSuppliersModal"
                 >
-                    Suppliers
+                    {{ $t('purchases.supplier_name') }}
                 </button>
 
                 <button
                     class="btn btn-outline-secondary"
                     @click="refreshData"
                     :disabled="loading"
-                    title="Refresh"
+                    :title="$t('common.refresh')"
                 >
                     <span v-if="loading" class="spinner-border spinner-border-sm me-1"></span>
-                    Refresh
+                    {{ $t('common.refresh') }}
                 </button>
 
                 <router-link
                     to="/admin/purchases/create"
                     class="btn btn-primary"
                 >
-                    + New Purchase
+                    + {{ $t('purchases.new_purchase') }}
                 </router-link>
             </div>
         </div>
@@ -48,9 +48,9 @@
                             </svg>
                         </div>
                         <div>
-                            <div class="text-muted small fw-medium">Total Purchase Value</div>
+                            <div class="text-muted small fw-medium">{{ $t('reports.stock_purchases') }}</div>
                             <h4 class="fw-bold mb-0">₹{{ Number(summary.total_amount).toLocaleString() }}</h4>
-                            <div class="small text-muted mt-1">{{ summary.invoice_count }} total orders</div>
+                            <div class="small text-muted mt-1">{{ summary.invoice_count }} {{ $t('common.total') }}</div>
                         </div>
                     </div>
                 </div>
@@ -65,9 +65,9 @@
                             </svg>
                         </div>
                         <div>
-                            <div class="text-muted small fw-medium">Total Paid</div>
+                            <div class="text-muted small fw-medium">{{ $t('common.paid') }}</div>
                             <h4 class="fw-bold text-success mb-0">₹{{ Number(summary.total_paid).toLocaleString() }}</h4>
-                            <div class="small text-muted mt-1">Settled payments</div>
+                            <div class="small text-muted mt-1">{{ $t('common.completed') }}</div>
                         </div>
                     </div>
                 </div>
@@ -83,9 +83,9 @@
                             </svg>
                         </div>
                         <div>
-                            <div class="text-muted small fw-medium">Outstanding Due</div>
+                            <div class="text-muted small fw-medium">{{ $t('reports.supplier_payables') }}</div>
                             <h4 class="fw-bold text-danger mb-0">₹{{ Number(summary.total_due).toLocaleString() }}</h4>
-                            <div class="small text-muted mt-1">Payable to suppliers</div>
+                            <div class="small text-muted mt-1">{{ $t('common.unpaid') }}</div>
                         </div>
                     </div>
                 </div>
@@ -100,9 +100,9 @@
                             </svg>
                         </div>
                         <div>
-                            <div class="text-muted small fw-medium">Total Invoices</div>
+                            <div class="text-muted small fw-medium">{{ $t('dashboard.sales_overview') }}</div>
                             <h4 class="fw-bold mb-0">{{ summary.invoice_count }}</h4>
-                            <div class="small text-muted mt-1">Recorded purchases</div>
+                            <div class="small text-muted mt-1">{{ $t('common.total') }}</div>
                         </div>
                     </div>
                 </div>
@@ -118,7 +118,7 @@
                             v-model="search"
                             type="text"
                             class="form-control"
-                            placeholder="Search by invoice #, reference, or supplier..."
+                            :placeholder="$t('common.search') + '...'"
                             @input="debouncedLoad"
                         />
                     </div>
@@ -129,7 +129,7 @@
                             class="form-select"
                             @change="loadPurchases(1)"
                         >
-                            <option value="">All Suppliers</option>
+                            <option value="">-- {{ $t('purchases.supplier_name') }} ({{ $t('common.all') }}) --</option>
                             <option
                                 v-for="sup in suppliersList"
                                 :key="sup.id"
@@ -146,11 +146,11 @@
                             class="form-select"
                             @change="loadPurchases(1)"
                         >
-                            <option value="">All Status</option>
-                            <option value="received">Received</option>
-                            <option value="pending">Pending</option>
-                            <option value="ordered">Ordered</option>
-                            <option value="cancelled">Cancelled</option>
+                            <option value="">-- {{ $t('common.status') }} ({{ $t('common.all') }}) --</option>
+                            <option value="received">{{ $t('common.completed') }}</option>
+                            <option value="pending">{{ $t('common.pending') }}</option>
+                            <option value="ordered">{{ $t('orders.title') }}</option>
+                            <option value="cancelled">{{ $t('common.cancelled') }}</option>
                         </select>
                     </div>
 
@@ -160,16 +160,16 @@
                             class="form-select"
                             @change="loadPurchases(1)"
                         >
-                            <option value="">All Payments</option>
-                            <option value="paid">Paid</option>
-                            <option value="partial">Partial</option>
-                            <option value="unpaid">Unpaid</option>
+                            <option value="">-- {{ $t('orders.payment_status') }} ({{ $t('common.all') }}) --</option>
+                            <option value="paid">{{ $t('common.paid') }}</option>
+                            <option value="partial">{{ $t('common.partial') }}</option>
+                            <option value="unpaid">{{ $t('common.unpaid') }}</option>
                         </select>
                     </div>
 
                     <div class="col-md-1">
-                        <button class="btn btn-light w-100" @click="resetFilters" title="Clear filters">
-                            Clear
+                        <button class="btn btn-light w-100" @click="resetFilters" :title="$t('common.clear')">
+                            {{ $t('common.clear') }}
                         </button>
                     </div>
                 </div>
@@ -183,15 +183,15 @@
                     <thead class="table-light">
                         <tr>
                             <th width="60">#</th>
-                            <th>Date</th>
-                            <th>Purchase #</th>
-                            <th>Supplier</th>
-                            <th>Status</th>
-                            <th>Payment</th>
-                            <th class="text-end">Grand Total</th>
-                            <th class="text-end">Paid</th>
-                            <th class="text-end">Due</th>
-                            <th class="text-center" width="160">Actions</th>
+                            <th>{{ $t('common.date') }}</th>
+                            <th>{{ $t('purchases.purchase_number') }}</th>
+                            <th>{{ $t('purchases.supplier_name') }}</th>
+                            <th>{{ $t('common.status') }}</th>
+                            <th>{{ $t('orders.payment_status') }}</th>
+                            <th class="text-end">{{ $t('common.grand_total') }}</th>
+                            <th class="text-end">{{ $t('common.paid') }}</th>
+                            <th class="text-end">{{ $t('reports.supplier_payables') }}</th>
+                            <th class="text-center" width="160">{{ $t('common.actions') }}</th>
                         </tr>
                     </thead>
 
@@ -199,13 +199,13 @@
                         <tr v-if="loading">
                             <td colspan="10" class="text-center py-5 text-muted">
                                 <div class="spinner-border spinner-border-sm me-2"></div>
-                                Loading purchases...
+                                {{ $t('common.loading') }}
                             </td>
                         </tr>
 
                         <tr v-else-if="purchases.length === 0">
                             <td colspan="10" class="text-center py-5 text-muted">
-                                No purchase orders found.
+                                {{ $t('common.no_data') }}
                             </td>
                         </tr>
 
@@ -227,7 +227,7 @@
 
                             <td>
                                 <div class="fw-medium text-dark">
-                                    {{ purchase.supplier?.name || 'Walk-in / Cash' }}
+                                    {{ purchase.supplier?.name || '-' }}
                                 </div>
                                 <small class="text-muted" v-if="purchase.supplier?.company_name">
                                     {{ purchase.supplier.company_name }}
@@ -263,17 +263,17 @@
                                     <button
                                         class="btn btn-outline-primary"
                                         @click="viewInvoice(purchase.id)"
-                                        title="View Invoice"
+                                        :title="$t('common.view')"
                                     >
-                                        View
+                                        {{ $t('common.view') }}
                                     </button>
 
                                     <button
                                         class="btn btn-outline-danger"
                                         @click="deletePurchase(purchase)"
-                                        title="Delete Purchase"
+                                        :title="$t('common.delete')"
                                     >
-                                        Delete
+                                        {{ $t('common.delete') }}
                                     </button>
                                 </div>
                             </td>
@@ -285,7 +285,7 @@
             <!-- Pagination -->
             <div class="card-footer bg-white d-flex justify-content-between align-items-center py-3">
                 <span class="text-muted small">
-                    Showing {{ purchases.length }} of {{ totalPurchases }} purchases
+                    {{ $t('common.showing') }} {{ purchases.length }} {{ $t('common.of') }} {{ totalPurchases }}
                 </span>
 
                 <div v-if="lastPage > 1">
@@ -294,7 +294,7 @@
                         :disabled="currentPage <= 1 || loading"
                         @click="loadPurchases(currentPage - 1)"
                     >
-                        &laquo; Prev
+                        &laquo; {{ $t('common.previous') }}
                     </button>
 
                     <span class="px-2 small text-muted">
@@ -318,18 +318,18 @@
         <div class="modal fade" id="invoiceModal" tabindex="-1">
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content border-0 shadow">
-                    <div class="modal-header border-bottom-0 pb-0">
+                    <div class="modal-header border-bottom-0 pb-0 d-print-none">
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
 
-                    <div class="modal-body p-4" v-if="currentInvoice">
+                    <div class="modal-body p-4" id="printablePurchaseInvoice" v-if="currentInvoice">
                         <!-- Invoice Header -->
                         <div class="d-flex justify-content-between align-items-start border-bottom pb-3 mb-4">
                             <div>
-                                <h4 class="fw-bold text-primary mb-1">PURCHASE INVOICE</h4>
+                                <h4 class="fw-bold text-primary mb-1">{{ $t('receipt.purchase_invoice') }}</h4>
                                 <div class="fs-6 fw-semibold">{{ currentInvoice.purchase_number }}</div>
                                 <div class="small text-muted" v-if="currentInvoice.reference_no">
-                                    Supplier Ref: {{ currentInvoice.reference_no }}
+                                    {{ $t('receipt.supplier_ref') }}: {{ currentInvoice.reference_no }}
                                 </div>
                             </div>
 
@@ -343,7 +343,7 @@
                                     </span>
                                 </div>
                                 <div class="small text-muted">
-                                    Date: <strong>{{ formatDate(currentInvoice.purchase_date) }}</strong>
+                                    {{ $t('common.date') }}: <strong>{{ formatDate(currentInvoice.purchase_date) }}</strong>
                                 </div>
                             </div>
                         </div>
@@ -351,13 +351,13 @@
                         <!-- Supplier & Store details -->
                         <div class="row mb-4">
                             <div class="col-sm-6">
-                                <div class="text-muted small text-uppercase fw-bold mb-1">Supplier Details</div>
+                                <div class="text-muted small text-uppercase fw-bold mb-1">{{ $t('receipt.supplier_details') }}</div>
                                 <div class="fw-bold fs-6">{{ currentInvoice.supplier?.name || 'Walk-in / Cash Supplier' }}</div>
                                 <div class="text-muted small" v-if="currentInvoice.supplier?.company_name">
                                     {{ currentInvoice.supplier.company_name }}
                                 </div>
                                 <div class="text-muted small" v-if="currentInvoice.supplier?.phone">
-                                    Phone: {{ currentInvoice.supplier.phone }}
+                                    {{ $t('checkout.phone') }}: {{ currentInvoice.supplier.phone }}
                                 </div>
                                 <div class="text-muted small" v-if="currentInvoice.supplier?.gst_number">
                                     GST/Tax ID: {{ currentInvoice.supplier.gst_number }}
@@ -365,10 +365,10 @@
                             </div>
 
                             <div class="col-sm-6 text-sm-end mt-3 mt-sm-0">
-                                <div class="text-muted small text-uppercase fw-bold mb-1">Payment Method</div>
+                                <div class="text-muted small text-uppercase fw-bold mb-1">{{ $t('receipt.payment_mode') }}</div>
                                 <div class="fw-semibold">{{ formatPaymentMethod(currentInvoice.payment_method) }}</div>
                                 <div class="text-muted small" v-if="currentInvoice.creator">
-                                    Recorded by: {{ currentInvoice.creator.name }}
+                                    {{ $t('receipt.recorded_by') }}: {{ currentInvoice.creator.name }}
                                 </div>
                             </div>
                         </div>
@@ -379,12 +379,12 @@
                                 <thead class="table-light small">
                                     <tr>
                                         <th>#</th>
-                                        <th>Product Name</th>
-                                        <th>SKU</th>
-                                        <th class="text-end">Unit Cost</th>
-                                        <th class="text-center">Qty</th>
-                                        <th class="text-end">Tax</th>
-                                        <th class="text-end">Total</th>
+                                        <th>{{ $t('products.product_name') }}</th>
+                                        <th>{{ $t('common.sku') }}</th>
+                                        <th class="text-end">{{ $t('products.purchase_price') }}</th>
+                                        <th class="text-center">{{ $t('receipt.qty') }}</th>
+                                        <th class="text-end">{{ $t('common.tax') }}</th>
+                                        <th class="text-end">{{ $t('common.total') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -411,37 +411,37 @@
                         <div class="row justify-content-end">
                             <div class="col-md-5">
                                 <div class="d-flex justify-content-between mb-1">
-                                    <span class="text-muted">Subtotal:</span>
+                                    <span class="text-muted">{{ $t('common.subtotal') }}:</span>
                                     <span>₹{{ Number(currentInvoice.subtotal).toFixed(2) }}</span>
                                 </div>
 
                                 <div class="d-flex justify-content-between mb-1" v-if="Number(currentInvoice.tax_amount) > 0">
-                                    <span class="text-muted">Tax Amount:</span>
+                                    <span class="text-muted">{{ $t('common.tax') }}:</span>
                                     <span>+ ₹{{ Number(currentInvoice.tax_amount).toFixed(2) }}</span>
                                 </div>
 
                                 <div class="d-flex justify-content-between mb-1" v-if="Number(currentInvoice.shipping_cost) > 0">
-                                    <span class="text-muted">Shipping:</span>
+                                    <span class="text-muted">{{ $t('receipt.shipping_charges') }}:</span>
                                     <span>+ ₹{{ Number(currentInvoice.shipping_cost).toFixed(2) }}</span>
                                 </div>
 
                                 <div class="d-flex justify-content-between mb-2" v-if="Number(currentInvoice.discount_amount) > 0">
-                                    <span class="text-muted">Discount:</span>
+                                    <span class="text-muted">{{ $t('common.discount') }}:</span>
                                     <span class="text-danger">- ₹{{ Number(currentInvoice.discount_amount).toFixed(2) }}</span>
                                 </div>
 
                                 <div class="d-flex justify-content-between border-top pt-2 mb-2 fw-bold fs-5">
-                                    <span>Grand Total:</span>
+                                    <span>{{ $t('common.grand_total') }}:</span>
                                     <span class="text-primary">₹{{ Number(currentInvoice.total_amount).toFixed(2) }}</span>
                                 </div>
 
                                 <div class="d-flex justify-content-between text-success mb-1">
-                                    <span>Paid Amount:</span>
+                                    <span>{{ $t('receipt.amount_tendered') }}:</span>
                                     <span class="fw-semibold">₹{{ Number(currentInvoice.paid_amount).toFixed(2) }}</span>
                                 </div>
 
                                 <div class="d-flex justify-content-between" :class="Number(currentInvoice.due_amount) > 0 ? 'text-danger fw-bold' : 'text-muted'">
-                                    <span>Balance Due:</span>
+                                    <span>{{ $t('purchases.due_amount') || 'Balance Due' }}:</span>
                                     <span>₹{{ Number(currentInvoice.due_amount).toFixed(2) }}</span>
                                 </div>
                             </div>
@@ -449,16 +449,16 @@
 
                         <!-- Notes -->
                         <div class="alert alert-light border mt-4 mb-0 small" v-if="currentInvoice.notes">
-                            <strong>Notes / Remarks:</strong> {{ currentInvoice.notes }}
+                            <strong>{{ $t('receipt.notes_remarks') }}:</strong> {{ currentInvoice.notes }}
                         </div>
                     </div>
 
-                    <div class="modal-footer">
+                    <div class="modal-footer d-print-none">
                         <button type="button" class="btn btn-outline-secondary" @click="printInvoice">
-                            Print
+                            🖨️ {{ $t('receipt.print_invoice') }}
                         </button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                            Close
+                            {{ $t('common.close') }}
                         </button>
                     </div>
                 </div>
@@ -601,8 +601,11 @@
 
 <script setup>
 import { ref, reactive, onMounted, onBeforeUnmount } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { Modal } from 'bootstrap';
 import api from '../../services/api';
+
+const { t } = useI18n();
 
 // Purchases state
 const purchases = ref([]);
@@ -731,7 +734,11 @@ async function viewInvoice(id) {
 }
 
 function printInvoice() {
+    document.body.classList.add('printing-purchase-invoice');
     window.print();
+    setTimeout(() => {
+        document.body.classList.remove('printing-purchase-invoice');
+    }, 1500);
 }
 
 async function deletePurchase(purchase) {
@@ -880,6 +887,39 @@ onBeforeUnmount(() => {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+/* Printable Purchase Invoice */
+@media print {
+    body.printing-purchase-invoice * {
+        visibility: hidden !important;
+    }
+    body.printing-purchase-invoice #printablePurchaseInvoice,
+    body.printing-purchase-invoice #printablePurchaseInvoice * {
+        visibility: visible !important;
+    }
+    body.printing-purchase-invoice #printablePurchaseInvoice {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        background: #ffffff !important;
+    }
+    html[dir="rtl"] body.printing-purchase-invoice #printablePurchaseInvoice {
+        direction: rtl !important;
+        text-align: right !important;
+        font-family: 'Noto Sans Arabic', Tahoma, sans-serif !important;
+    }
+    html[dir="rtl"] body.printing-purchase-invoice #printablePurchaseInvoice table th,
+    html[dir="rtl"] body.printing-purchase-invoice #printablePurchaseInvoice table td {
+        text-align: right !important;
+    }
+    html[dir="rtl"] body.printing-purchase-invoice #printablePurchaseInvoice table th.text-end,
+    html[dir="rtl"] body.printing-purchase-invoice #printablePurchaseInvoice table td.text-end {
+        text-align: left !important;
+    }
 }
 </style>
 

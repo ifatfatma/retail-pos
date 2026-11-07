@@ -4,14 +4,14 @@
             <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white">
                 <div class="text-center mb-4">
                     <span class="fs-1">🛍️</span>
-                    <h3 class="fw-bold mb-1">Create Customer Account</h3>
-                    <p class="text-muted small">Join us for seamless order tracking and instant checkout</p>
+                    <h3 class="fw-bold mb-1">{{ $t('auth.create_customer_account') }}</h3>
+                    <p class="text-muted small">{{ $t('auth.register_sub') }}</p>
                 </div>
 
                 <form @submit.prevent="handleRegister">
                     <div class="row g-3 mb-3">
                         <div class="col-12">
-                            <label class="form-label small fw-semibold text-muted text-uppercase">Full Name <span class="text-danger">*</span></label>
+                            <label class="form-label small fw-semibold text-muted text-uppercase">{{ $t('checkout.full_name') }} <span class="text-danger">*</span></label>
                             <input
                                 v-model="form.name"
                                 type="text"
@@ -22,35 +22,35 @@
                         </div>
 
                         <div class="col-md-6">
-                            <label class="form-label small fw-semibold text-muted text-uppercase">Email Address <span class="text-danger">*</span></label>
+                            <label class="form-label small fw-semibold text-muted text-uppercase">{{ $t('checkout.email') }} <span class="text-danger">*</span></label>
                             <input
                                 v-model="form.email"
                                 type="email"
                                 class="form-control"
-                                placeholder="e.g. rahul@example.com"
+                                placeholder="name@example.com"
                                 required
                             />
                         </div>
 
                         <div class="col-md-6">
-                            <label class="form-label small fw-semibold text-muted text-uppercase">Phone Number <span class="text-danger">*</span></label>
+                            <label class="form-label small fw-semibold text-muted text-uppercase">{{ $t('checkout.phone') }} <span class="text-danger">*</span></label>
                             <input
                                 v-model="form.phone"
                                 type="tel"
                                 class="form-control"
-                                placeholder="e.g. 9876543210"
+                                placeholder="9876543210"
                                 required
                             />
                         </div>
 
                         <div class="col-md-6">
-                            <label class="form-label small fw-semibold text-muted text-uppercase">Password <span class="text-danger">*</span></label>
+                            <label class="form-label small fw-semibold text-muted text-uppercase">{{ $t('auth.password') }} <span class="text-danger">*</span></label>
                             <div class="input-group">
                                 <input
                                     v-model="form.password"
                                     :type="showPassword ? 'text' : 'password'"
                                     class="form-control border-end-0"
-                                    placeholder="Min. 6 characters"
+                                    placeholder="••••••"
                                     required
                                     minlength="6"
                                 />
@@ -65,12 +65,12 @@
                         </div>
 
                         <div class="col-md-6">
-                            <label class="form-label small fw-semibold text-muted text-uppercase">Confirm Password <span class="text-danger">*</span></label>
+                            <label class="form-label small fw-semibold text-muted text-uppercase">{{ $t('auth.confirm_password') }} <span class="text-danger">*</span></label>
                             <input
                                 v-model="form.password_confirmation"
                                 type="password"
                                 class="form-control"
-                                placeholder="Repeat password"
+                                placeholder="••••••"
                                 required
                                 minlength="6"
                             />
@@ -78,12 +78,12 @@
 
                         <!-- Address fields -->
                         <div class="col-12 pt-2 border-top">
-                            <div class="fw-semibold small text-muted text-uppercase mb-2">Default Delivery Address (Optional)</div>
+                            <div class="fw-semibold small text-muted text-uppercase mb-2">{{ $t('auth.default_delivery_address') }}</div>
                             <input
                                 v-model="form.address"
                                 type="text"
                                 class="form-control mb-2"
-                                placeholder="House / Flat No., Street, Landmark"
+                                :placeholder="$t('checkout.delivery_address')"
                             />
                         </div>
 
@@ -92,7 +92,7 @@
                                 v-model="form.city"
                                 type="text"
                                 class="form-control"
-                                placeholder="City"
+                                :placeholder="$t('checkout.city')"
                             />
                         </div>
 
@@ -101,7 +101,7 @@
                                 v-model="form.state"
                                 type="text"
                                 class="form-control"
-                                placeholder="State"
+                                :placeholder="$t('checkout.state')"
                             />
                         </div>
 
@@ -110,7 +110,7 @@
                                 v-model="form.pincode"
                                 type="text"
                                 class="form-control"
-                                placeholder="Pincode"
+                                :placeholder="$t('checkout.pincode')"
                             />
                         </div>
                     </div>
@@ -121,14 +121,14 @@
                         :disabled="loading"
                     >
                         <span v-if="loading" class="spinner-border spinner-border-sm" role="status"></span>
-                        <span>{{ loading ? 'Creating Account...' : 'Complete Registration' }}</span>
+                        <span>{{ loading ? $t('auth.creating_account') : $t('auth.complete_registration') }}</span>
                     </button>
                 </form>
 
                 <div class="text-center pt-3 border-top small">
-                    <span class="text-muted">Already have an account? </span>
+                    <span class="text-muted">{{ $t('auth.already_registered') }} </span>
                     <router-link :to="{ path: '/login', query: route.query }" class="fw-bold text-primary text-decoration-none">
-                        Sign In Here →
+                        {{ $t('auth.sign_in_here') }} →
                     </router-link>
                 </div>
             </div>

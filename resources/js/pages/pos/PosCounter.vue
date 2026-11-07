@@ -5,10 +5,10 @@
         <div class="pos-header bg-white border-bottom px-3 py-2 d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center gap-3">
                 <h5 class="fw-bold mb-0 text-primary">
-                    <span class="me-1">🛒</span> POS Counter
+                    <span class="me-1">🛒</span> {{ $t('pos.title') }}
                 </h5>
                 <span class="badge bg-light text-secondary border">
-                    Cash Register Active
+                    {{ $t('common.active') }}
                 </span>
             </div>
 
@@ -19,7 +19,7 @@
                     class="btn btn-sm btn-outline-warning"
                     @click="openHeldBillsModal"
                 >
-                    Held Bills ({{ heldBills.length }})
+                    {{ $t('pos.recall_bill') }} ({{ heldBills.length }})
                 </button>
 
                 <!-- Today's Recent Sales History -->
@@ -27,8 +27,11 @@
                     class="btn btn-sm btn-outline-secondary"
                     @click="openHistoryModal"
                 >
-                    Today's Sales
+                    {{ $t('dashboard.today_sales') }}
                 </button>
+
+                <!-- Theme Toggle (Dark / Light) -->
+                <ThemeToggle theme="auto" size="sm" />
 
                 <!-- Fullscreen toggle -->
                 <button
@@ -36,7 +39,7 @@
                     @click="toggleFullscreen"
                     title="Toggle Fullscreen"
                 >
-                    {{ isFullscreen ? 'Exit Fullscreen' : 'Fullscreen' }}
+                    {{ isFullscreen ? $t('common.close') : 'Fullscreen' }}
                 </button>
             </div>
         </div>
@@ -63,7 +66,7 @@
                                 v-model="searchQuery"
                                 type="text"
                                 class="form-control border-start-0 py-2"
-                                placeholder="Scan barcode or type product name / SKU (Press Enter)..."
+                                :placeholder="$t('pos.search_products')"
                                 @input="debouncedSearch"
                                 @keydown.enter.prevent="onSearchEnter"
                             />
@@ -73,7 +76,7 @@
                                 type="button"
                                 @click="clearSearch"
                             >
-                                Clear
+                                {{ $t('common.clear') }}
                             </button>
                         </div>
                     </div>
@@ -86,7 +89,7 @@
                         :class="selectedCategory === '' ? 'btn-primary' : 'btn-outline-secondary'"
                         @click="selectCategory('')"
                     >
-                        All Items
+                        {{ $t('storefront.all_products') }}
                     </button>
 
                     <button
@@ -104,11 +107,11 @@
                 <div class="product-grid-container">
                     <div v-if="loadingProducts" class="text-center py-5 text-muted">
                         <div class="spinner-border spinner-border-sm me-2"></div>
-                        Loading catalog...
+                        {{ $t('common.loading') }}
                     </div>
 
                     <div v-else-if="products.length === 0" class="text-center py-5 text-muted">
-                        No products match your search or category filter.
+                        {{ $t('common.no_data') }}
                     </div>
 
                     <div v-else class="row row-cols-2 row-cols-sm-3 row-cols-md-3 row-cols-xl-4 g-3">
@@ -200,12 +203,12 @@
                 <!-- Customer Selection Header -->
                 <div class="p-3 border-bottom bg-light-subtle">
                     <div class="d-flex justify-content-between align-items-center mb-1">
-                        <label class="form-label fw-bold small text-muted text-uppercase mb-0">Customer</label>
+                        <label class="form-label fw-bold small text-muted text-uppercase mb-0">{{ $t('dashboard.customer') }}</label>
                         <button
                             class="btn btn-link btn-sm p-0 text-decoration-none"
                             @click="openQuickCustomerModal"
                         >
-                            + Quick Add
+                            {{ $t('pos.quick_add') }}
                         </button>
                     </div>
 
@@ -224,18 +227,18 @@
                 <div class="cart-items-wrap flex-grow-1 p-3">
                     <div v-if="cart.length === 0" class="text-center py-5 text-muted">
                         <div class="fs-1 mb-2">🛒</div>
-                        <div class="fw-semibold">Register Cart is Empty</div>
-                        <small>Click products or scan barcodes to begin bill.</small>
+                        <div class="fw-semibold">{{ $t('pos.cart_empty') }}</div>
+                        <small>{{ $t('pos.cart_empty_sub') }}</small>
                     </div>
 
                     <div v-else class="cart-list">
                         <div
-                            class="cart-row mb-2 p-2 rounded border bg-light d-flex justify-content-between align-items-center"
+                            class="cart-row mb-2 p-2 rounded-3 border bg-white shadow-xs d-flex justify-content-between align-items-center"
                             v-for="(item, idx) in cart"
                             :key="item.variant_id"
                         >
                             <!-- Item Image Thumbnail -->
-                            <div class="cart-item-thumb-box me-2 flex-shrink-0 rounded border bg-white overflow-hidden d-flex align-items-center justify-content-center">
+                            <div class="cart-item-thumb-box me-2 flex-shrink-0 rounded border bg-light overflow-hidden d-flex align-items-center justify-content-center">
                                 <img
                                     v-if="item.image_url"
                                     :src="item.image_url"
@@ -246,23 +249,23 @@
                                 <span v-else class="cart-item-thumb-icon">📦</span>
                             </div>
 
-                            <div class="flex-grow-1 me-2 overflow-hidden">
-                                <div class="fw-semibold text-truncate small" :title="item.name">
+                            <div class="flex-grow-1 me-2 overflow-hidden min-w-0">
+                                <div class="fw-semibold text-truncate small text-dark" :title="item.name">
                                     {{ item.name }}
                                 </div>
-                                <div class="d-flex align-items-center text-muted small">
+                                <div class="d-flex align-items-center text-muted extra-small">
                                     <span>₹{{ Number(item.unit_price).toFixed(2) }}</span>
                                     <span class="mx-1">&times;</span>
-                                    <span class="badge bg-white text-dark border py-0 px-1">
+                                    <span class="badge bg-light text-secondary border py-0 px-1">
                                         {{ item.unit_name }}
                                     </span>
                                 </div>
                             </div>
 
                             <!-- Quantity Stepper -->
-                            <div class="d-flex align-items-center me-2">
+                            <div class="d-flex align-items-center me-2 flex-shrink-0">
                                 <button
-                                    class="btn btn-sm btn-white border px-2 py-0 fw-bold"
+                                    class="btn btn-sm btn-light border px-2 py-0 fw-bold stepper-btn"
                                     type="button"
                                     @click="decreaseQty(idx)"
                                 >
@@ -277,7 +280,7 @@
                                     @change="validateQty(idx)"
                                 />
                                 <button
-                                    class="btn btn-sm btn-white border px-2 py-0 fw-bold"
+                                    class="btn btn-sm btn-light border px-2 py-0 fw-bold stepper-btn"
                                     type="button"
                                     @click="increaseQty(idx)"
                                 >
@@ -286,12 +289,12 @@
                             </div>
 
                             <!-- Row Total & Remove -->
-                            <div class="text-end">
-                                <div class="fw-bold small">
+                            <div class="text-end flex-shrink-0 d-flex flex-column align-items-end" style="min-width: 65px;">
+                                <div class="fw-bold small text-primary">
                                     ₹{{ getItemTotal(item).toFixed(2) }}
                                 </div>
                                 <button
-                                    class="btn btn-link text-danger p-0 small text-decoration-none"
+                                    class="btn btn-link text-danger p-0 extra-small text-decoration-none remove-item-btn"
                                     @click="removeFromCart(idx)"
                                     title="Remove item"
                                 >
@@ -312,16 +315,16 @@
                         <button
                             class="btn btn-outline-warning"
                             @click="holdCurrentBill"
-                            title="Pause bill to serve next customer"
+                            :title="$t('pos.hold_bill')"
                         >
-                            ⏸️ Hold
+                            ⏸️ {{ $t('pos.hold_bill') }}
                         </button>
                         <button
                             class="btn btn-outline-danger"
                             @click="clearCart"
-                            title="Clear entire cart"
+                            :title="$t('pos.clear_cart')"
                         >
-                            🗑️ Clear
+                            🗑️ {{ $t('common.clear') }}
                         </button>
                     </div>
                 </div>
@@ -329,26 +332,26 @@
                 <!-- Financial Totals Box -->
                 <div class="p-3 border-bottom bg-white">
                     <div class="d-flex justify-content-between small text-muted mb-1">
-                        <span>Subtotal:</span>
+                        <span>{{ $t('common.subtotal') }}:</span>
                         <span>₹{{ cartSubtotal.toFixed(2) }}</span>
                     </div>
 
                     <div class="d-flex justify-content-between small text-muted mb-1" v-if="cartTaxTotal > 0">
-                        <span>Tax:</span>
+                        <span>{{ $t('common.tax') }}:</span>
                         <span>+ ₹{{ cartTaxTotal.toFixed(2) }}</span>
                     </div>
 
                     <!-- Coupon Code Input -->
                     <div class="mb-2">
                         <div class="d-flex justify-content-between align-items-center mb-1">
-                            <span class="small text-muted">Coupon / Promo:</span>
+                            <span class="small text-muted">{{ $t('coupons.title') }}:</span>
                             <button
                                 v-if="appliedCoupon"
                                 type="button"
                                 class="btn btn-link btn-sm p-0 text-danger text-decoration-none extra-small"
                                 @click="removePosCoupon"
                             >
-                                ✕ Remove
+                                ✕ {{ $t('common.remove') }}
                             </button>
                         </div>
                         <div class="input-group input-group-sm">
@@ -357,7 +360,7 @@
                                 v-model="posCouponCode"
                                 type="text"
                                 class="form-control text-uppercase"
-                                placeholder="Enter code (e.g. POS10)"
+                                :placeholder="$t('cart.coupon_placeholder')"
                                 :disabled="applyingCoupon || !!appliedCoupon"
                                 @input="posCouponCode = posCouponCode.toUpperCase()"
                                 @keydown.enter.prevent="applyPosCoupon"
@@ -369,7 +372,7 @@
                                 @click="applyPosCoupon"
                             >
                                 <span v-if="applyingCoupon" class="spinner-border spinner-border-sm"></span>
-                                <span v-else>Apply</span>
+                                <span v-else>{{ $t('cart.apply') }}</span>
                             </button>
                         </div>
                         <div v-if="appliedCoupon" class="extra-small text-success mt-1 fw-semibold">
@@ -381,7 +384,7 @@
                     </div>
 
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="small text-muted">Manual Discount:</span>
+                        <span class="small text-muted">{{ $t('common.discount') }}:</span>
                         <div class="input-group input-group-sm w-50">
                             <span class="input-group-text">₹</span>
                             <input
@@ -396,7 +399,7 @@
                     </div>
 
                     <div class="d-flex justify-content-between align-items-center border-top pt-2">
-                        <span class="fw-bold fs-6">Grand Total:</span>
+                        <span class="fw-bold fs-6">{{ $t('common.grand_total') }}:</span>
                         <span class="fw-bold fs-4 text-primary">₹{{ cartGrandTotal.toFixed(2) }}</span>
                     </div>
                 </div>
@@ -414,7 +417,7 @@
                             v-model="paymentMethod"
                         />
                         <label class="btn btn-sm btn-outline-primary" for="payCash">
-                            💵 Cash
+                            💵 {{ $t('pos.cash') }}
                         </label>
 
                         <input
@@ -426,7 +429,7 @@
                             v-model="paymentMethod"
                         />
                         <label class="btn btn-sm btn-outline-primary" for="payUPI">
-                            📱 UPI / QR
+                            📱 {{ $t('pos.upi_qr') }}
                         </label>
 
                         <input
@@ -438,7 +441,7 @@
                             v-model="paymentMethod"
                         />
                         <label class="btn btn-sm btn-outline-primary" for="payCard">
-                            💳 Card
+                            💳 {{ $t('pos.card') }}
                         </label>
                     </div>
 
@@ -454,7 +457,7 @@
                                     class="btn btn-sm btn-light border py-1 flex-grow-1 small"
                                     @click="paidAmount = cartGrandTotal"
                                 >
-                                    Exact
+                                    {{ $t('common.all') }}
                                 </button>
                                 <button
                                     type="button"
@@ -490,7 +493,7 @@
                         <!-- Tendered Cash & Return Amount -->
                         <div class="row g-2 mb-3">
                             <div class="col-6">
-                                <label class="form-label small text-muted mb-1">Tendered (₹)</label>
+                                <label class="form-label small text-muted mb-1">{{ $t('pos.tendered') }} (₹)</label>
                                 <input
                                     v-model.number="paidAmount"
                                     type="number"
@@ -501,7 +504,7 @@
                             </div>
 
                             <div class="col-6">
-                                <label class="form-label small text-muted mb-1">Change Return (₹)</label>
+                                <label class="form-label small text-muted mb-1">{{ $t('pos.change_return') }} (₹)</label>
                                 <div class="form-control form-control-sm text-end fw-bold bg-success-subtle text-success border-success-subtle">
                                     ₹{{ changeDue.toFixed(2) }}
                                 </div>
@@ -517,7 +520,7 @@
                         >
                             <span v-if="checkingOut" class="spinner-border spinner-border-sm"></span>
                             <span v-else>💵</span>
-                            <span>{{ checkingOut ? 'Processing...' : `Receive Cash & Print (₹${cartGrandTotal.toFixed(2)})` }}</span>
+                            <span>{{ checkingOut ? $t('common.processing') : `${$t('pos.pay_and_print')} (₹${cartGrandTotal.toFixed(2)})` }}</span>
                         </button>
                     </div>
 
@@ -728,19 +731,19 @@
                     <div class="modal-header bg-dark text-white py-2 px-3 d-flex justify-content-between align-items-center">
                         <div class="d-flex align-items-center gap-2">
                             <span>🧾</span>
-                            <span class="fw-bold small text-uppercase">Receipt Preview</span>
+                            <span class="fw-bold small text-uppercase">{{ $t('receipt.receipt_preview') }}</span>
                         </div>
-                        <span class="badge bg-secondary">80mm / 3" Thermal Roll</span>
+                        <span class="badge bg-secondary">{{ $t('receipt.thermal_roll') }}</span>
                     </div>
 
                     <div class="modal-body p-3 bg-light" id="printableThermalReceipt">
-                        <div class="pos-receipt-paper bg-white p-3 mx-auto shadow-sm text-start font-monospace">
+                        <div class="pos-receipt-paper bg-white p-3 mx-auto shadow-sm text-start font-monospace" :dir="isRtl(getCurrentLanguage()) ? 'rtl' : 'ltr'">
                             <!-- Store Header -->
                             <div class="text-center mb-2 pb-2 border-bottom border-dark">
                                 <h5 class="fw-bold mb-0 text-uppercase tracking-wider">
                                     {{ storeSettings.site_name || 'Retail POS Store' }}
                                 </h5>
-                                <div class="small fw-semibold text-muted text-uppercase">Tax Invoice / Cash Receipt</div>
+                                <div class="small fw-semibold text-muted text-uppercase">{{ $t('receipt.tax_invoice_receipt') }}</div>
                                 <div class="extra-small text-secondary" v-if="storeSettings.contact_address">
                                     {{ storeSettings.contact_address }}
                                 </div>
@@ -752,14 +755,14 @@
                             <!-- Invoice & Sale Metadata -->
                             <div class="receipt-meta small border-bottom border-dark border-dashed pb-2 mb-2">
                                 <div class="d-flex justify-content-between">
-                                    <span><strong>Inv #:</strong> {{ lastSale?.invoice_number }}</span>
-                                    <span><strong>Mode:</strong> {{ lastSale?.payment_method?.toUpperCase() }}</span>
+                                    <span><strong>{{ $t('receipt.inv_no') }}:</strong> {{ lastSale?.invoice_number }}</span>
+                                    <span><strong>{{ $t('receipt.mode') }}:</strong> {{ lastSale?.payment_method?.toUpperCase() }}</span>
                                 </div>
                                 <div class="d-flex justify-content-between">
-                                    <span><strong>Date:</strong> {{ formatDateTime(lastSale?.sale_date) }}</span>
+                                    <span><strong>{{ $t('common.date') }}:</strong> {{ formatDateTime(lastSale?.sale_date) }}</span>
                                 </div>
                                 <div class="d-flex justify-content-between" v-if="lastSale?.customer?.name">
-                                    <span><strong>Customer:</strong> {{ lastSale?.customer?.name }}</span>
+                                    <span><strong>{{ $t('orders.customer') }}:</strong> {{ lastSale?.customer?.name }}</span>
                                     <span v-if="lastSale?.customer?.phone">{{ lastSale?.customer?.phone }}</span>
                                 </div>
                             </div>
@@ -768,15 +771,15 @@
                             <table class="receipt-table w-100 mb-2">
                                 <thead>
                                     <tr class="border-top border-bottom border-dark border-dashed">
-                                        <th class="py-1 text-start">Item</th>
-                                        <th class="py-1 text-center" style="width: 45px;">Qty</th>
-                                        <th class="py-1 text-end" style="width: 65px;">Rate</th>
-                                        <th class="py-1 text-end" style="width: 75px;">Amt</th>
+                                        <th class="py-1 text-start">{{ $t('receipt.item') }}</th>
+                                        <th class="py-1 text-center" style="width: 45px;">{{ $t('receipt.qty') }}</th>
+                                        <th class="py-1 text-end" style="width: 65px;">{{ $t('receipt.rate') }}</th>
+                                        <th class="py-1 text-end" style="width: 75px;">{{ $t('receipt.amount') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="item in lastSale?.items" :key="item.id" class="border-bottom border-light">
-                                        <td class="py-1">
+                                        <td class="py-1 text-start">
                                             <div class="fw-semibold text-truncate" style="max-width: 140px;" :title="item.product?.name || item.name">
                                                 {{ item.product?.name || item.name || '-' }}
                                             </div>
@@ -794,41 +797,41 @@
                             <!-- Totals & Calculations -->
                             <div class="border-top border-dark border-dashed pt-2 small">
                                 <div class="d-flex justify-content-between py-0">
-                                    <span class="text-muted">Total Items:</span>
-                                    <span>{{ lastSale?.items?.length || 0 }} (Qty: {{ totalReceiptQty }})</span>
+                                    <span class="text-muted">{{ $t('receipt.total_items') }}:</span>
+                                    <span>{{ lastSale?.items?.length || 0 }} ({{ $t('receipt.qty') }}: {{ totalReceiptQty }})</span>
                                 </div>
                                 <div class="d-flex justify-content-between py-0">
-                                    <span>Subtotal:</span>
+                                    <span>{{ $t('common.subtotal') }}:</span>
                                     <span>₹{{ Number(lastSale?.subtotal || 0).toFixed(2) }}</span>
                                 </div>
                                 <div class="d-flex justify-content-between py-0" v-if="Number(lastSale?.tax_amount) > 0">
-                                    <span>Tax / GST:</span>
+                                    <span>{{ $t('common.tax') }}:</span>
                                     <span>+ ₹{{ Number(lastSale?.tax_amount).toFixed(2) }}</span>
                                 </div>
                                 <div class="d-flex justify-content-between py-0" v-if="Number(lastSale?.discount_amount) > 0">
-                                    <span>Discount{{ lastSale?.coupon_code ? ` (${lastSale.coupon_code})` : '' }}:</span>
+                                    <span>{{ $t('common.discount') }}{{ lastSale?.coupon_code ? ` (${lastSale.coupon_code})` : '' }}:</span>
                                     <span>- ₹{{ Number(lastSale?.discount_amount).toFixed(2) }}</span>
                                 </div>
 
                                 <div class="d-flex justify-content-between fw-bold fs-6 border-top border-bottom border-dark border-dashed my-1 py-1">
-                                    <span>NET PAYABLE:</span>
+                                    <span>{{ $t('receipt.net_payable') }}:</span>
                                     <span>₹{{ Number(lastSale?.total_amount || 0).toFixed(2) }}</span>
                                 </div>
 
                                 <div class="d-flex justify-content-between py-0">
-                                    <span>Payment Mode:</span>
+                                    <span>{{ $t('receipt.payment_mode') }}:</span>
                                     <span class="fw-bold">{{ lastSale?.payment_method?.toUpperCase() }}</span>
                                 </div>
                                 <div class="d-flex justify-content-between py-0" v-if="lastSale?.payment_method === 'cash'">
-                                    <span>Amount Tendered:</span>
+                                    <span>{{ $t('receipt.amount_tendered') }}:</span>
                                     <span>₹{{ Number(lastSale?.paid_amount || 0).toFixed(2) }}</span>
                                 </div>
                                 <div class="d-flex justify-content-between fw-bold text-success" v-if="lastSale?.payment_method === 'cash' && Number(lastSale?.change_amount) > 0">
-                                    <span>Change Returned:</span>
+                                    <span>{{ $t('receipt.change_returned') }}:</span>
                                     <span>₹{{ Number(lastSale?.change_amount).toFixed(2) }}</span>
                                 </div>
                                 <div class="d-flex justify-content-between py-0 extra-small" v-if="lastSale?.notes">
-                                    <span class="text-muted">Ref / Txn:</span>
+                                    <span class="text-muted">{{ $t('receipt.ref_txn') }}:</span>
                                     <span class="fw-semibold text-dark">{{ lastSale.notes }}</span>
                                 </div>
                             </div>
@@ -840,9 +843,9 @@
 
                             <!-- Footer Thank You -->
                             <div class="text-center border-top border-dark border-dashed pt-2 extra-small text-muted">
-                                <div class="fw-bold text-dark mb-1">*** THANK YOU FOR SHOPPING! ***</div>
-                                <div>Please retain this receipt for warranty or returns.</div>
-                                <div>Computer Generated POS Invoice</div>
+                                <div class="fw-bold text-dark mb-1">{{ $t('receipt.thank_you_shopping') }}</div>
+                                <div>{{ $t('receipt.retain_receipt') }}</div>
+                                <div>{{ $t('receipt.computer_generated') }}</div>
                             </div>
                         </div>
                     </div>
@@ -850,10 +853,10 @@
                     <div class="modal-footer p-2 justify-content-between bg-light">
                         <button type="button" class="btn btn-sm btn-primary px-3 fw-bold shadow-sm d-flex align-items-center gap-1" @click="printReceipt">
                             <span>🖨️</span>
-                            <span>Print Receipt</span>
+                            <span>{{ $t('receipt.print_receipt') }}</span>
                         </button>
                         <button type="button" class="btn btn-sm btn-outline-secondary px-3" @click="closeReceiptAndReset">
-                            New Sale
+                            {{ $t('receipt.new_sale') }}
                         </button>
                     </div>
                 </div>
@@ -1101,10 +1104,15 @@
 
 <script setup>
 import { ref, reactive, computed, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { getCurrentLanguage, isRtl } from '../../i18n';
 import { Modal } from 'bootstrap';
 import api from '../../services/api';
 import JsBarcode from 'jsbarcode';
 import QRCode from 'qrcode';
+import ThemeToggle from '../../components/common/ThemeToggle.vue';
+
+const { t } = useI18n();
 
 // Store Settings
 const storeSettings = ref({
@@ -1698,7 +1706,7 @@ async function reprintHistorySale(sale) {
     }
 }
 
-// Clean isolated iframe printing - eliminates any background web page leaking
+// Clean isolated iframe printing - multilingual & RTL compliant
 function printReceipt() {
     const container = document.getElementById('printableThermalReceipt');
     if (!container) return;
@@ -1721,8 +1729,19 @@ function printReceipt() {
     document.body.appendChild(printFrame);
 
     const frameDoc = printFrame.contentWindow.document;
+    const currentLang = getCurrentLanguage();
+    const rtl = isRtl(currentLang);
+
+    const fontFamily = rtl
+        ? "'Noto Sans Arabic', Tahoma, Arial, sans-serif"
+        : (currentLang === 'hi'
+            ? "'Noto Sans Devanagari', 'Segoe UI', Arial, sans-serif"
+            : (currentLang === 'bn'
+                ? "'Noto Sans Bengali', 'Segoe UI', Arial, sans-serif"
+                : "'Courier New', Courier, monospace, 'SFMono-Regular', Menlo, Monaco, Consolas, sans-serif"));
 
     const styles = `
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700&family=Noto+Sans+Bengali:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap');
         @page {
             size: 80mm auto;
             margin: 0;
@@ -1737,10 +1756,12 @@ function printReceipt() {
             padding: 0 !important;
             background: #ffffff !important;
             color: #000000 !important;
-            font-family: 'Courier New', Courier, monospace, 'SFMono-Regular', Menlo, Monaco, Consolas, sans-serif;
+            font-family: ${fontFamily};
             font-size: 11px;
             line-height: 1.35;
             width: 80mm;
+            direction: ${rtl ? 'rtl' : 'ltr'};
+            text-align: ${rtl ? 'right' : 'left'};
         }
         .pos-receipt-paper {
             width: 76mm;
@@ -1748,10 +1769,12 @@ function printReceipt() {
             padding: 4mm 1.5mm;
             background: #ffffff !important;
             color: #000000 !important;
+            direction: ${rtl ? 'rtl' : 'ltr'};
+            text-align: ${rtl ? 'right' : 'left'};
         }
-        .text-center { text-align: center; }
-        .text-start { text-align: left; }
-        .text-end { text-align: right; }
+        .text-center { text-align: center !important; }
+        .text-start { text-align: ${rtl ? 'right' : 'left'} !important; }
+        .text-end { text-align: ${rtl ? 'left' : 'right'} !important; }
         .fw-bold { font-weight: bold; }
         .fw-semibold { font-weight: 600; }
         .text-uppercase { text-transform: uppercase; }
@@ -1784,10 +1807,16 @@ function printReceipt() {
             padding: 3px 1px;
             font-weight: bold;
             text-transform: uppercase;
+            text-align: ${rtl ? 'right' : 'left'};
         }
+        .receipt-table th.text-center { text-align: center !important; }
+        .receipt-table th.text-end { text-align: ${rtl ? 'left' : 'right'} !important; }
         .receipt-table td {
             padding: 2.5px 1px;
+            text-align: ${rtl ? 'right' : 'left'};
         }
+        .receipt-table td.text-center { text-align: center !important; }
+        .receipt-table td.text-end { text-align: ${rtl ? 'left' : 'right'} !important; }
         .receipt-barcode {
             max-width: 90%;
             height: 36px;
@@ -1808,13 +1837,13 @@ function printReceipt() {
 
     frameDoc.open();
     frameDoc.write(`<!DOCTYPE html>
-<html>
+<html lang="${currentLang}" dir="${rtl ? 'rtl' : 'ltr'}">
 <head>
     <meta charset="utf-8">
-    <title>Receipt - ${lastSale.value?.invoice_number || 'Sale'}</title>
+    <title>${t('receipt.tax_invoice_receipt')} - ${lastSale.value?.invoice_number || 'Sale'}</title>
     <style>${styles}</style>
 </head>
-<body>
+<body dir="${rtl ? 'rtl' : 'ltr'}">
     ${receiptHtml}
 </body>
 </html>`);
@@ -1994,7 +2023,10 @@ onBeforeUnmount(() => {
 
 .pos-checkout {
     height: 100%;
+    display: flex;
+    flex-direction: column;
     overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .category-pills-wrap {
@@ -2080,7 +2112,50 @@ onBeforeUnmount(() => {
 
 .cart-items-wrap {
     overflow-y: auto;
-    max-height: 320px;
+    overflow-x: hidden;
+    flex: 1 1 auto;
+    min-height: 150px;
+    max-height: 300px;
+}
+
+.cart-row {
+    min-height: 52px;
+    border: 1px solid #e2e8f0 !important;
+    background: #ffffff !important;
+    transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.cart-row:hover {
+    background: #f8fafc !important;
+    border-color: #cbd5e1 !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.stepper-btn {
+    width: 26px;
+    height: 26px;
+    padding: 0 !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    font-size: 13px;
+    line-height: 1;
+}
+
+.stepper-btn:hover {
+    background-color: #e2e8f0;
+}
+
+.remove-item-btn {
+    font-size: 16px;
+    line-height: 1;
+    opacity: 0.6;
+    transition: opacity 0.15s ease;
+}
+
+.remove-item-btn:hover {
+    opacity: 1;
 }
 
 .cart-qty-input {
@@ -2128,7 +2203,7 @@ onBeforeUnmount(() => {
 
 /* Receipt Print Styling: isolate and prevent web page bleed */
 @media print {
-    body {
+    body.pos-printing-receipt {
         visibility: hidden !important;
     }
 }

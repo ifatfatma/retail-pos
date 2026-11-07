@@ -32,10 +32,10 @@
                                     v-model="heroSearch"
                                     type="text"
                                     class="form-control border-0 shadow-none ps-1"
-                                    placeholder="Search by product name, barcode, brand..."
+                                    :placeholder="$t('storefront.search_placeholder')"
                                 />
                                 <button type="submit" class="btn btn-primary px-4 py-2 rounded-pill fw-bold">
-                                    Search
+                                    {{ $t('common.search') }}
                                 </button>
                             </form>
                         </div>
@@ -43,13 +43,13 @@
                         <!-- Highlights Pills -->
                         <div class="d-flex flex-wrap gap-3 small text-white-50">
                             <span class="d-flex align-items-center gap-1 text-light">
-                                <span class="text-success">✔</span> Free delivery over ₹500
+                                <span class="text-success">✔</span> {{ $t('storefront.free_delivery') }}
                             </span>
                             <span class="d-flex align-items-center gap-1 text-light">
-                                <span class="text-success">✔</span> Cash on Delivery & UPI
+                                <span class="text-success">✔</span> {{ $t('storefront.cod_available') }}
                             </span>
                             <span class="d-flex align-items-center gap-1 text-light">
-                                <span class="text-success">✔</span> Instant Inventory Reserve
+                                <span class="text-success">✔</span> {{ $t('storefront.live_inventory') }}
                             </span>
                         </div>
                     </div>
@@ -70,10 +70,10 @@
                             </p>
                             <div class="d-flex gap-2">
                                 <router-link to="/shop" class="btn btn-outline-primary btn-sm rounded-pill px-3">
-                                    Browse All Products →
+                                    {{ $t('storefront.browse_all') }} →
                                 </router-link>
                                 <router-link to="/track-order" class="btn btn-outline-secondary btn-sm rounded-pill px-3">
-                                    Track Order
+                                    {{ $t('nav.track_order') }}
                                 </router-link>
                             </div>
                         </div>
@@ -90,8 +90,8 @@
                         <div class="d-flex align-items-center justify-content-center gap-2">
                             <div class="fs-2 text-primary">🚚</div>
                             <div class="text-start">
-                                <div class="fw-bold small">Fast Delivery</div>
-                                <div class="text-muted extra-small">Free for orders > ₹500</div>
+                                <div class="fw-bold small">{{ $t('storefront.fast_delivery') }}</div>
+                                <div class="text-muted extra-small">{{ $t('storefront.free_delivery_sub') }}</div>
                             </div>
                         </div>
                     </div>
@@ -99,8 +99,8 @@
                         <div class="d-flex align-items-center justify-content-center gap-2">
                             <div class="fs-2 text-success">💵</div>
                             <div class="text-start">
-                                <div class="fw-bold small">COD Available</div>
-                                <div class="text-muted extra-small">Pay upon receiving</div>
+                                <div class="fw-bold small">{{ $t('storefront.cod_available') }}</div>
+                                <div class="text-muted extra-small">{{ $t('storefront.cod_sub') }}</div>
                             </div>
                         </div>
                     </div>
@@ -108,8 +108,8 @@
                         <div class="d-flex align-items-center justify-content-center gap-2">
                             <div class="fs-2 text-warning">⚡</div>
                             <div class="text-start">
-                                <div class="fw-bold small">Live Inventory</div>
-                                <div class="text-muted extra-small">Accurate counter stock</div>
+                                <div class="fw-bold small">{{ $t('storefront.live_inventory') }}</div>
+                                <div class="text-muted extra-small">{{ $t('storefront.live_inventory_sub') }}</div>
                             </div>
                         </div>
                     </div>
@@ -117,8 +117,8 @@
                         <div class="d-flex align-items-center justify-content-center gap-2">
                             <div class="fs-2 text-info">🛡️</div>
                             <div class="text-start">
-                                <div class="fw-bold small">Verified Quality</div>
-                                <div class="text-muted extra-small">100% Genuine items</div>
+                                <div class="fw-bold small">{{ $t('storefront.verified_quality') }}</div>
+                                <div class="text-muted extra-small">{{ $t('storefront.genuine_items_sub') }}</div>
                             </div>
                         </div>
                     </div>
@@ -131,11 +131,11 @@
             <div class="container">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <div>
-                        <h3 class="fw-bold mb-1">Browse by Categories</h3>
-                        <p class="text-muted small mb-0">Explore our curated collections of items</p>
+                        <h3 class="fw-bold mb-1">{{ $t('storefront.browse_categories') }}</h3>
+                        <p class="text-muted small mb-0">{{ $t('storefront.browse_categories_sub') }}</p>
                     </div>
                     <router-link to="/shop" class="btn btn-outline-primary btn-sm rounded-pill px-3">
-                        View All
+                        {{ $t('common.view_all') }}
                     </router-link>
                 </div>
 
@@ -165,18 +165,18 @@
             <div class="container">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <div>
-                        <h3 class="fw-bold mb-1">Featured Products</h3>
-                        <p class="text-muted small mb-0">Live counter stock ready for immediate delivery</p>
+                        <h3 class="fw-bold mb-1">{{ $t('storefront.featured_products') }}</h3>
+                        <p class="text-muted small mb-0">{{ $t('storefront.featured_products_sub') }}</p>
                     </div>
                     <router-link to="/shop" class="btn btn-primary btn-sm rounded-pill px-3">
-                        Shop All Products →
+                        {{ $t('storefront.shop_all_products') }} →
                     </router-link>
                 </div>
 
                 <!-- Loading State -->
                 <div v-if="loading" class="text-center py-5">
                     <div class="spinner-border text-primary" role="status"></div>
-                    <p class="text-muted mt-2">Loading products catalog...</p>
+                    <p class="text-muted mt-2">{{ $t('storefront.loading_catalog') }}</p>
                 </div>
 
                 <!-- Products Grid -->
@@ -193,7 +193,7 @@
                                 class="btn btn-sm position-absolute top-0 end-0 m-2 rounded-circle p-1 d-flex align-items-center justify-content-center shadow-sm wishlist-btn"
                                 :class="isInWishlist(product.id) ? 'btn-danger text-white' : 'btn-light text-muted'"
                                 style="z-index: 3; width: 34px; height: 34px;"
-                                :title="isInWishlist(product.id) ? 'Remove from Wishlist' : 'Add to Wishlist'"
+                                :title="isInWishlist(product.id) ? $t('wishlist.title') : $t('storefront.add_to_wishlist')"
                                 @click.prevent.stop="toggleWishlist(product)"
                             >
                                 <span style="font-size: 15px;">{{ isInWishlist(product.id) ? '❤️' : '🤍' }}</span>
@@ -205,7 +205,7 @@
                                 class="position-absolute top-0 start-0 m-2 badge bg-danger text-white rounded-pill px-2 py-1 shadow-sm"
                                 style="z-index: 2;"
                             >
-                                Out of Stock
+                                {{ $t('common.out_of_stock') }}
                             </div>
 
                             <!-- Discount badge if MRP > selling_price -->
@@ -244,10 +244,10 @@
                                 <!-- Stock status -->
                                 <div class="small mb-3">
                                     <span v-if="!product.track_inventory || product.stock > 0" class="text-success fw-medium">
-                                        ● In Stock ({{ product.stock }} {{ product.unit?.short_name || 'units' }})
+                                        ● {{ $t('common.in_stock') }} ({{ product.stock }} {{ product.unit?.short_name || 'units' }})
                                     </span>
                                     <span v-else class="text-danger fw-medium">
-                                        ● Sold Out
+                                        ● {{ $t('storefront.sold_out') }}
                                     </span>
                                 </div>
 
@@ -270,7 +270,7 @@
                                         :disabled="product.track_inventory && product.stock <= 0"
                                         @click="handleAddToCart(product)"
                                     >
-                                        <span>+ Add</span>
+                                        <span>{{ $t('storefront.add') }}</span>
                                     </button>
                                 </div>
                             </div>
@@ -280,9 +280,9 @@
 
                 <!-- Empty State -->
                 <div v-else class="text-center py-5 bg-white rounded-3 shadow-sm">
-                    <p class="text-muted mb-3 fs-5">No products available at the moment.</p>
+                    <p class="text-muted mb-3 fs-5">{{ $t('storefront.no_products_home') }}</p>
                     <router-link to="/shop" class="btn btn-primary rounded-pill">
-                        Browse All Categories
+                        {{ $t('storefront.browse_all_categories') }}
                     </router-link>
                 </div>
             </div>
@@ -296,16 +296,16 @@
         <!-- CTA Callout Banner -->
         <section class="py-5 bg-primary text-white">
             <div class="container text-center py-3">
-                <h2 class="fw-bold mb-3">Need Something Delivered Right Away?</h2>
+                <h2 class="fw-bold mb-3">{{ $t('storefront.cta_title') }}</h2>
                 <p class="lead mb-4 text-white-50" style="max-width: 600px; margin: 0 auto;">
-                    Order online and our store staff will pack and prepare your parcel immediately. Track every step from order confirmation to doorstep delivery.
+                    {{ $t('storefront.cta_desc') }}
                 </p>
                 <div class="d-flex justify-content-center gap-3">
                     <router-link to="/shop" class="btn btn-warning btn-lg fw-bold px-4 rounded-pill">
-                        Start Shopping Now
+                        {{ $t('storefront.start_shopping_now') }}
                     </router-link>
                     <router-link to="/track-order" class="btn btn-outline-light btn-lg px-4 rounded-pill">
-                        Track An Existing Order
+                        {{ $t('storefront.track_existing_order') }}
                     </router-link>
                 </div>
             </div>

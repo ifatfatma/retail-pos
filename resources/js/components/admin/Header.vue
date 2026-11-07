@@ -4,16 +4,22 @@
         <div class="d-flex align-items-center gap-3">
             <router-link to="/admin/dashboard" class="navbar-brand fw-bold mb-0 text-white text-decoration-none d-flex align-items-center gap-2">
                 <span>🏪</span>
-                <span class="d-none d-sm-inline">Retail POS Management</span>
-                <span class="d-sm-none">POS Portal</span>
+                <span class="d-none d-sm-inline">{{ $t('header.portal_title') }}</span>
+                <span class="d-sm-none">{{ $t('header.portal_short') }}</span>
             </router-link>
             <span class="badge bg-secondary d-none d-md-inline">
-                Admin Panel
+                {{ $t('header.admin_panel') }}
             </span>
         </div>
 
         <!-- Right: Actions & User Dropdown -->
         <div class="d-flex align-items-center gap-2 gap-md-3 position-relative">
+            <!-- Theme Toggle (Dark / Light) -->
+            <ThemeToggle theme="dark" size="sm" />
+
+            <!-- Language Selector -->
+            <LanguageSelector theme="dark" />
+
             <!-- View Online Store Button -->
             <router-link
                 to="/"
@@ -21,7 +27,7 @@
                 class="btn btn-outline-warning btn-sm fw-medium d-flex align-items-center gap-1 shadow-sm px-2 px-md-3"
             >
                 <span>🌐</span>
-                <span class="d-none d-sm-inline">View Online Store</span>
+                <span class="d-none d-sm-inline">{{ $t('header.view_store') }}</span>
             </router-link>
 
             <!-- User Profile Dropdown Button -->
@@ -44,8 +50,7 @@
                 <!-- Dropdown Menu Box -->
                 <div
                     v-if="showDropdown"
-                    class="dropdown-menu dropdown-menu-end show shadow-lg border-0 rounded-3 mt-2 py-2"
-                    style="position: absolute; right: 0; min-width: 220px; z-index: 1050;"
+                    class="dropdown-menu dropdown-menu-end show shadow-lg border-0 rounded-3 mt-2 py-2 header-user-dropdown"
                 >
                     <div class="px-3 py-2 border-bottom mb-1">
                         <div class="fw-bold text-dark text-truncate">{{ userName }}</div>
@@ -59,7 +64,7 @@
                         @click="showDropdown = false"
                     >
                         <span>👤</span>
-                        <span>Edit Profile</span>
+                        <span>{{ $t('profile.personal_info') }}</span>
                     </router-link>
 
                     <router-link
@@ -68,7 +73,7 @@
                         @click="showDropdown = false"
                     >
                         <span>🔑</span>
-                        <span>Change Password</span>
+                        <span>{{ $t('profile.security') }}</span>
                     </router-link>
 
                     <router-link
@@ -77,7 +82,7 @@
                         @click="showDropdown = false"
                     >
                         <span>⚙️</span>
-                        <span>Website CMS & SEO</span>
+                        <span>{{ $t('nav.website_settings') }}</span>
                     </router-link>
 
                     <a
@@ -87,7 +92,7 @@
                         @click="showDropdown = false"
                     >
                         <span>🌐</span>
-                        <span>Visit Website</span>
+                        <span>{{ $t('nav.visit_website') }}</span>
                     </a>
 
                     <div class="dropdown-divider my-1"></div>
@@ -98,7 +103,7 @@
                         @click="onLogoutClick"
                     >
                         <span>🚪</span>
-                        <span class="fw-semibold">Sign Out / Logout</span>
+                        <span class="fw-semibold">{{ $t('nav.logout') }}</span>
                     </button>
                 </div>
             </div>
@@ -110,6 +115,8 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useAuth } from '../../composables/useAuth';
 import { useNotification } from '../../composables/useNotification';
+import LanguageSelector from '../common/LanguageSelector.vue';
+import ThemeToggle from '../common/ThemeToggle.vue';
 
 const { userName, userEmail, userRole, fetchProfile, logout } = useAuth();
 const { confirmDialog } = useNotification();
@@ -164,5 +171,18 @@ onBeforeUnmount(() => {
     width: 28px;
     height: 28px;
     font-size: 0.75rem;
+}
+
+.header-user-dropdown {
+    position: absolute;
+    right: 0;
+    left: auto;
+    min-width: 220px;
+    z-index: 1050;
+}
+
+:global(html[dir="rtl"]) .header-user-dropdown {
+    right: auto !important;
+    left: 0 !important;
 }
 </style>

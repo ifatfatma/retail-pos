@@ -20,6 +20,9 @@ class Customer extends Authenticatable
         'city',
         'state',
         'pincode',
+        'birthday',
+        'loyalty_tier',
+        'last_active_at',
         'gst_number',
         'total_spent',
         'total_orders',
@@ -36,6 +39,8 @@ class Customer extends Authenticatable
         'total_spent' => 'decimal:2',
         'total_orders' => 'integer',
         'status' => 'boolean',
+        'birthday' => 'date',
+        'last_active_at' => 'datetime',
     ];
 
     public function sales()
@@ -46,5 +51,20 @@ class Customer extends Authenticatable
     public function wishlists()
     {
         return $this->hasMany(Wishlist::class);
+    }
+
+    public function notifications()
+    {
+        return $this->hasMany(CustomerNotification::class)->latest('id');
+    }
+
+    public function notificationPreference()
+    {
+        return $this->hasOne(CustomerNotificationPreference::class);
+    }
+
+    public function notificationLogs()
+    {
+        return $this->hasMany(NotificationLog::class)->latest('id');
     }
 }

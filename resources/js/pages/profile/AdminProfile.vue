@@ -3,14 +3,14 @@
         <!-- Page Header -->
         <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
             <div>
-                <h3 class="fw-bold mb-1">👤 Admin Profile & Security</h3>
-                <p class="text-muted mb-0">Manage your administrator account details, email address, and login credentials</p>
+                <h3 class="fw-bold mb-1">👤 {{ $t('profile.title') }}</h3>
+                <p class="text-muted mb-0">{{ $t('profile.subtitle') }}</p>
             </div>
 
             <div>
                 <button class="btn btn-outline-danger btn-sm rounded-pill px-3 d-flex align-items-center gap-1" @click="handleLogout">
                     <span>🚪</span>
-                    <span>Sign Out</span>
+                    <span>{{ $t('nav.logout') }}</span>
                 </button>
             </div>
         </div>
@@ -36,28 +36,28 @@
 
                     <div class="text-start small">
                         <div class="d-flex justify-content-between py-2 border-bottom">
-                            <span class="text-muted">Account Status:</span>
-                            <span class="text-success fw-bold">Active</span>
+                            <span class="text-muted">{{ $t('common.status') }}:</span>
+                            <span class="text-success fw-bold">{{ $t('common.active') }}</span>
                         </div>
                         <div class="d-flex justify-content-between py-2 border-bottom">
                             <span class="text-muted">System Role:</span>
                             <span class="fw-semibold text-dark">{{ user?.role || 'Super Admin' }}</span>
                         </div>
                         <div class="d-flex justify-content-between py-2">
-                            <span class="text-muted">Registered Since:</span>
-                            <span class="text-dark">{{ user?.created_at || 'Recent' }}</span>
+                            <span class="text-muted">{{ $t('common.date') }}:</span>
+                            <span class="text-dark">{{ user?.created_at || '-' }}</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Session & Quick Logout Card -->
                 <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
-                    <h6 class="fw-bold mb-2">🔐 Active Session</h6>
+                    <h6 class="fw-bold mb-2">🔐 {{ $t('profile.security') }}</h6>
                     <p class="text-muted extra-small mb-3">
                         You are currently authenticated with administrative privileges across the Retail POS counter, inventory stock, and orders.
                     </p>
                     <button class="btn btn-outline-danger w-100 rounded-pill fw-semibold" @click="handleLogout">
-                        Sign Out of Session
+                        {{ $t('nav.logout') }}
                     </button>
                 </div>
             </div>
@@ -68,24 +68,24 @@
                 <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
                     <div class="d-flex align-items-center gap-2 mb-3">
                         <span class="fs-4">✏️</span>
-                        <h5 class="fw-bold mb-0">Edit Profile Information</h5>
+                        <h5 class="fw-bold mb-0">{{ $t('profile.personal_info') }}</h5>
                     </div>
 
                     <!-- Profile Alerts -->
                     <div v-if="profileSuccess" class="alert alert-success alert-dismissible fade show small rounded-3 mb-3" role="alert">
-                        <strong>Success:</strong> {{ profileSuccess }}
+                        <strong>{{ $t('common.success') }}:</strong> {{ profileSuccess }}
                         <button type="button" class="btn-close" @click="profileSuccess = ''"></button>
                     </div>
 
                     <div v-if="profileError" class="alert alert-danger alert-dismissible fade show small rounded-3 mb-3" role="alert">
-                        <strong>Error:</strong> {{ profileError }}
+                        <strong>{{ $t('common.error') }}:</strong> {{ profileError }}
                         <button type="button" class="btn-close" @click="profileError = ''"></button>
                     </div>
 
                     <form @submit.prevent="submitProfile">
                         <div class="row g-3 mb-3">
                             <div class="col-md-6">
-                                <label class="form-label small fw-semibold text-muted text-uppercase">Full Name <span class="text-danger">*</span></label>
+                                <label class="form-label small fw-semibold text-muted text-uppercase">{{ $t('common.name') }} <span class="text-danger">*</span></label>
                                 <input
                                     v-model="profileForm.name"
                                     type="text"
@@ -96,7 +96,7 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label small fw-semibold text-muted text-uppercase">Email Address <span class="text-danger">*</span></label>
+                                <label class="form-label small fw-semibold text-muted text-uppercase">{{ $t('common.email') }} <span class="text-danger">*</span></label>
                                 <input
                                     v-model="profileForm.email"
                                     type="email"
@@ -107,7 +107,7 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label small fw-semibold text-muted text-uppercase">Assigned Role</label>
+                                <label class="form-label small fw-semibold text-muted text-uppercase">Role</label>
                                 <input
                                     type="text"
                                     class="form-control bg-light"
@@ -115,7 +115,6 @@
                                     disabled
                                     readonly
                                 />
-                                <div class="extra-small text-muted mt-1">Role assignments can be configured in Roles & Permissions.</div>
                             </div>
                         </div>
 
@@ -126,7 +125,7 @@
                                 :disabled="savingProfile"
                             >
                                 <span v-if="savingProfile" class="spinner-border spinner-border-sm me-1" role="status"></span>
-                                {{ savingProfile ? 'Saving Changes...' : 'Save Profile Changes' }}
+                                {{ savingProfile ? $t('common.processing') : $t('profile.update_profile') }}
                             </button>
                         </div>
                     </form>
@@ -136,23 +135,23 @@
                 <div class="card border-0 shadow-sm rounded-4 p-4 bg-white" id="password-section">
                     <div class="d-flex align-items-center gap-2 mb-3">
                         <span class="fs-4">🔑</span>
-                        <h5 class="fw-bold mb-0">Change Security Password</h5>
+                        <h5 class="fw-bold mb-0">{{ $t('profile.security') }}</h5>
                     </div>
 
                     <!-- Password Alerts -->
                     <div v-if="passwordSuccess" class="alert alert-success alert-dismissible fade show small rounded-3 mb-3" role="alert">
-                        <strong>Success:</strong> {{ passwordSuccess }}
+                        <strong>{{ $t('common.success') }}:</strong> {{ passwordSuccess }}
                         <button type="button" class="btn-close" @click="passwordSuccess = ''"></button>
                     </div>
 
                     <div v-if="passwordError" class="alert alert-danger alert-dismissible fade show small rounded-3 mb-3" role="alert">
-                        <strong>Error:</strong> {{ passwordError }}
+                        <strong>{{ $t('common.error') }}:</strong> {{ passwordError }}
                         <button type="button" class="btn-close" @click="passwordError = ''"></button>
                     </div>
 
                     <form @submit.prevent="submitPassword">
                         <div class="mb-3">
-                            <label class="form-label small fw-semibold text-muted text-uppercase">Current Password <span class="text-danger">*</span></label>
+                            <label class="form-label small fw-semibold text-muted text-uppercase">{{ $t('profile.current_password') }} <span class="text-danger">*</span></label>
                             <div class="input-group">
                                 <input
                                     v-model="passwordForm.current_password"
@@ -173,7 +172,7 @@
 
                         <div class="row g-3 mb-3">
                             <div class="col-md-6">
-                                <label class="form-label small fw-semibold text-muted text-uppercase">New Password <span class="text-danger">*</span></label>
+                                <label class="form-label small fw-semibold text-muted text-uppercase">{{ $t('profile.new_password') }} <span class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <input
                                         v-model="passwordForm.password"
@@ -194,7 +193,7 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label small fw-semibold text-muted text-uppercase">Confirm New Password <span class="text-danger">*</span></label>
+                                <label class="form-label small fw-semibold text-muted text-uppercase">{{ $t('profile.confirm_password') }} <span class="text-danger">*</span></label>
                                 <input
                                     v-model="passwordForm.password_confirmation"
                                     type="password"
@@ -209,11 +208,11 @@
                         <div class="text-end">
                             <button
                                 type="submit"
-                                class="btn btn-warning px-4 rounded-pill fw-semibold text-dark"
+                                class="btn btn-warning px-4 rounded-pill fw-semibold text-dark shadow-sm"
                                 :disabled="savingPassword"
                             >
                                 <span v-if="savingPassword" class="spinner-border spinner-border-sm me-1" role="status"></span>
-                                {{ savingPassword ? 'Updating Password...' : 'Update Password' }}
+                                {{ savingPassword ? $t('common.processing') : $t('profile.update_password') }}
                             </button>
                         </div>
                     </form>

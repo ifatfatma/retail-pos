@@ -1,18 +1,17 @@
-
 <template>
     <div class="container-fluid py-4">
 
         <!-- Header -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                <h3 class="fw-bold mb-1">Categories</h3>
+                <h3 class="fw-bold mb-1">{{ $t('categories.title') }}</h3>
                 <p class="text-muted mb-0">
-                    Manage your product categories
+                    {{ $t('categories.subtitle') }}
                 </p>
             </div>
 
             <button class="btn btn-primary" @click="openModal()">
-                + Add Category
+                + {{ $t('categories.add_category') }}
             </button>
         </div>
 
@@ -23,7 +22,7 @@
                     v-model="search"
                     type="text"
                     class="form-control"
-                    placeholder="Search category..."
+                    :placeholder="$t('common.search') + '...'"
                     @input="loadCategories"
                 />
             </div>
@@ -37,24 +36,24 @@
                     <thead class="table-light">
                         <tr>
                             <th>#</th>
-                            <th>Category Name</th>
-                            <th>Parent Category</th>
-                            <th>Slug</th>
-                            <th>Status</th>
-                            <th width="150">Action</th>
+                            <th>{{ $t('categories.category_name') }}</th>
+                            <th>{{ $t('categories.category_name') }} (Parent)</th>
+                            <th>{{ $t('categories.category_slug') }}</th>
+                            <th>{{ $t('common.status') }}</th>
+                            <th width="150">{{ $t('common.actions') }}</th>
                         </tr>
                     </thead>
 
                     <tbody>
                         <tr v-if="loading">
                             <td colspan="6" class="text-center py-4">
-                                Loading...
+                                {{ $t('common.loading') }}
                             </td>
                         </tr>
 
                         <tr v-else-if="categories.length === 0">
                             <td colspan="6" class="text-center py-4">
-                                No categories found.
+                                {{ $t('common.no_data') }}
                             </td>
                         </tr>
 
@@ -83,8 +82,8 @@
                                         : 'bg-secondary'">
 
                                     {{ category.status
-                                        ? 'Active'
-                                        : 'Inactive' }}
+                                        ? $t('common.active')
+                                        : $t('common.inactive') }}
                                 </span>
                             </td>
 
@@ -92,13 +91,13 @@
                                 <button
                                     class="btn btn-sm btn-outline-primary me-2"
                                     @click="openModal(category)">
-                                    Edit
+                                    {{ $t('common.edit') }}
                                 </button>
 
                                 <button
                                     class="btn btn-sm btn-outline-danger"
                                     @click="deleteCategory(category.id)">
-                                    Delete
+                                    {{ $t('common.delete') }}
                                 </button>
                             </td>
 
@@ -112,7 +111,7 @@
             <div class="card-body d-flex justify-content-between">
 
                 <span class="text-muted small">
-                    Total: {{ totalCategories }} categories
+                    {{ $t('common.total') }}: {{ totalCategories }}
                 </span>
 
                 <div>
@@ -120,14 +119,14 @@
                         class="btn btn-sm btn-outline-secondary me-2"
                         :disabled="currentPage <= 1"
                         @click="changePage(currentPage - 1)">
-                        Previous
+                        {{ $t('common.previous') }}
                     </button>
 
                     <button
                         class="btn btn-sm btn-outline-secondary"
                         :disabled="currentPage >= lastPage"
                         @click="changePage(currentPage + 1)">
-                        Next
+                        {{ $t('common.next') }}
                     </button>
                 </div>
 
@@ -148,8 +147,8 @@
                         <div class="modal-header">
                             <h5 class="modal-title">
                                 {{ editingId
-                                    ? 'Edit Category'
-                                    : 'Add Category' }}
+                                    ? $t('categories.edit_category')
+                                    : $t('categories.add_category') }}
                             </h5>
 
                             <button
@@ -163,7 +162,7 @@
 
                             <div class="mb-3">
                                 <label class="form-label">
-                                    Category Name *
+                                    {{ $t('categories.category_name') }} *
                                 </label>
 
                                 <input
@@ -176,7 +175,7 @@
 
                             <div class="mb-3">
                                 <label class="form-label">
-                                    Parent Category
+                                    {{ $t('categories.category_name') }} (Parent)
                                 </label>
 
                                 <select
@@ -184,7 +183,7 @@
                                     class="form-select">
 
                                     <option :value="null">
-                                        Main Category
+                                        -- {{ $t('common.all') }} --
                                     </option>
 
                                     <option
@@ -202,7 +201,7 @@
 
                             <div class="mb-3">
                                 <label class="form-label">
-                                    Description
+                                    {{ $t('common.description') }}
                                 </label>
 
                                 <textarea
@@ -222,7 +221,7 @@
                                 <label
                                     class="form-check-label"
                                     for="categoryStatus">
-                                    Active
+                                    {{ $t('common.active') }}
                                 </label>
                             </div>
 
@@ -239,7 +238,7 @@
                                 type="button"
                                 class="btn btn-light"
                                 data-bs-dismiss="modal">
-                                Cancel
+                                {{ $t('common.cancel') }}
                             </button>
 
                             <button
@@ -247,7 +246,7 @@
                                 class="btn btn-primary"
                                 :disabled="saving">
 
-                                {{ saving ? 'Saving...' : 'Save Category' }}
+                                {{ saving ? $t('common.processing') : $t('common.save') }}
                             </button>
                         </div>
 
@@ -262,8 +261,11 @@
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { Modal } from 'bootstrap';
 import api from '../../services/api';
+
+const { t } = useI18n();
 
 const categories = ref([]);
 const search = ref('');
@@ -304,7 +306,7 @@ async function loadCategories(page = 1) {
 
     } catch (error) {
         console.error(error);
-        alert('Unable to load categories.');
+        alert(t('common.error') + ': ' + (error.response?.data?.message || 'Unable to load categories.'));
     } finally {
         loading.value = false;
     }
@@ -366,14 +368,14 @@ async function saveCategory() {
 
         await loadCategories(currentPage.value);
 
-        alert('Category saved successfully.');
+        alert(t('common.saved_successfully'));
 
     } catch (error) {
         const errors = error.response?.data?.errors;
 
         errorMessage.value = errors
             ? Object.values(errors).flat().join(', ')
-            : error.response?.data?.message || 'Something went wrong.';
+            : error.response?.data?.message || t('common.error');
 
     } finally {
         saving.value = false;
@@ -381,7 +383,7 @@ async function saveCategory() {
 }
 
 async function deleteCategory(id) {
-    if (!confirm('Are you sure you want to delete this category?')) {
+    if (!confirm(t('categories.delete_confirm'))) {
         return;
     }
 
@@ -390,12 +392,12 @@ async function deleteCategory(id) {
 
         await loadCategories(currentPage.value);
 
-        alert('Category deleted successfully.');
+        alert(t('common.deleted_successfully'));
 
     } catch (error) {
         alert(
             error.response?.data?.message ||
-            'Unable to delete category.'
+            t('common.error')
         );
     }
 }

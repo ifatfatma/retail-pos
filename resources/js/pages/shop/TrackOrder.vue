@@ -1,25 +1,25 @@
 <template>
     <div class="track-order-page py-4">
         <div class="container" style="max-width: 800px;">
-            <div class="text-center mb-4">
+            <div class="text-center mb-4 d-print-none">
                 <span class="fs-1">📍</span>
-                <h3 class="fw-bold mb-1">Track Your Order</h3>
-                <p class="text-muted small">Enter your order or invoice number to see real-time fulfillment status</p>
+                <h3 class="fw-bold mb-1">{{ $t('nav.track_order') }}</h3>
+                <p class="text-muted small">{{ $t('storefront.track_sub') }}</p>
             </div>
 
             <!-- Search Card -->
-            <div class="card border-0 shadow-sm rounded-4 p-3 bg-white mb-4">
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-white mb-4 d-print-none">
                 <form @submit.prevent="lookupOrder" class="d-flex gap-2">
                     <input
                         v-model="orderInput"
                         type="text"
                         class="form-control"
-                        placeholder="Enter Order ID (e.g. ORD-20261104-0001)"
+                        :placeholder="$t('storefront.track_placeholder')"
                         required
                     />
                     <button type="submit" class="btn btn-primary px-4 fw-semibold rounded-pill flex-shrink-0" :disabled="loading">
                         <span v-if="loading" class="spinner-border spinner-border-sm me-1" role="status"></span>
-                        Track
+                        {{ $t('common.track') }}
                     </button>
                 </form>
             </div>
@@ -27,7 +27,7 @@
             <!-- Loading -->
             <div v-if="loading" class="text-center py-5">
                 <div class="spinner-border text-primary" role="status"></div>
-                <p class="text-muted mt-2">Locating order record...</p>
+                <p class="text-muted mt-2">{{ $t('storefront.locating_order') }}</p>
             </div>
 
             <!-- Error State -->
@@ -40,19 +40,19 @@
                 <!-- Header with Order Number & Date -->
                 <div class="d-flex flex-wrap justify-content-between align-items-center pb-3 border-bottom mb-4">
                     <div>
-                        <div class="extra-small text-muted text-uppercase fw-semibold">Order Number</div>
+                        <div class="extra-small text-muted text-uppercase fw-semibold">{{ $t('orders.order_number') }}</div>
                         <h4 class="fw-bold text-primary mb-0">{{ order.order_number }}</h4>
                     </div>
                     <div class="text-end">
-                        <div class="extra-small text-muted">Placed On</div>
+                        <div class="extra-small text-muted">{{ $t('storefront.placed_on') }}</div>
                         <div class="fw-semibold text-dark">{{ order.sale_date }}</div>
                     </div>
                 </div>
 
                 <!-- Cancelled Alert -->
                 <div v-if="order.status === 'cancelled'" class="alert alert-danger rounded-3 mb-4 text-center">
-                    <strong>Order Status: Cancelled</strong><br>
-                    <small>This order was cancelled and inventory was restored.</small>
+                    <strong>{{ $t('storefront.order_cancelled') }}</strong><br>
+                    <small>{{ $t('storefront.order_cancelled_sub') }}</small>
                 </div>
 
                 <!-- Stepper Progress Bar (for non-cancelled orders) -->
@@ -66,7 +66,7 @@
                             <div class="step-circle" :class="{ 'completed': isStepCompleted(1), 'active': currentStepIndex === 1 }">
                                 ✓
                             </div>
-                            <div class="step-label small fw-semibold mt-2">Order Placed</div>
+                            <div class="step-label small fw-semibold mt-2">{{ $t('storefront.order_placed') }}</div>
                             <div class="extra-small text-muted">Pending</div>
                         </div>
 
@@ -75,7 +75,7 @@
                             <div class="step-circle" :class="{ 'completed': isStepCompleted(2), 'active': currentStepIndex === 2 }">
                                 2
                             </div>
-                            <div class="step-label small fw-semibold mt-2">Confirmed</div>
+                            <div class="step-label small fw-semibold mt-2">{{ $t('storefront.confirmed') }}</div>
                             <div class="extra-small text-muted">Accepted</div>
                         </div>
 
@@ -84,7 +84,7 @@
                             <div class="step-circle" :class="{ 'completed': isStepCompleted(3), 'active': currentStepIndex === 3 }">
                                 3
                             </div>
-                            <div class="step-label small fw-semibold mt-2">Processing</div>
+                            <div class="step-label small fw-semibold mt-2">{{ $t('storefront.processing') }}</div>
                             <div class="extra-small text-muted">Packed</div>
                         </div>
 
@@ -93,7 +93,7 @@
                             <div class="step-circle" :class="{ 'completed': isStepCompleted(4), 'active': currentStepIndex === 4 }">
                                 4
                             </div>
-                            <div class="step-label small fw-semibold mt-2">Shipped</div>
+                            <div class="step-label small fw-semibold mt-2">{{ $t('common.shipped') }}</div>
                             <div class="extra-small text-muted">In Transit</div>
                         </div>
 
@@ -102,7 +102,7 @@
                             <div class="step-circle" :class="{ 'completed': isStepCompleted(5), 'active': currentStepIndex === 5 }">
                                 5
                             </div>
-                            <div class="step-label small fw-semibold mt-2">Delivered</div>
+                            <div class="step-label small fw-semibold mt-2">{{ $t('common.delivered') }}</div>
                             <div class="extra-small text-muted">Fulfilled</div>
                         </div>
                     </div>
@@ -111,27 +111,27 @@
                 <!-- Delivery & Shipping Details -->
                 <div class="row g-3 bg-light-subtle rounded-3 p-3 mb-4 small border">
                     <div class="col-md-6">
-                        <div class="text-muted extra-small text-uppercase">Recipient Information</div>
+                        <div class="text-muted extra-small text-uppercase">{{ $t('storefront.recipient_info') }}</div>
                         <div class="fw-bold text-dark">{{ order.customer?.name }}</div>
                         <div class="text-muted">{{ order.customer?.phone }}</div>
                         <div class="text-dark mt-1">{{ order.shipping_address }}</div>
                     </div>
                     <div class="col-md-6 border-start-md ps-md-3">
-                        <div class="text-muted extra-small text-uppercase">Logistics & Tracking</div>
+                        <div class="text-muted extra-small text-uppercase">{{ $t('storefront.logistics_tracking') }}</div>
                         <div>
-                            Delivery Partner:
+                            {{ $t('storefront.delivery_partner') }}:
                             <strong class="text-dark">{{ order.delivery_partner || 'Store Express Dispatch' }}</strong>
                         </div>
                         <div v-if="order.tracking_number">
-                            Courier Tracking #:
+                            {{ $t('storefront.courier_tracking_num') }}:
                             <strong class="text-primary">{{ order.tracking_number }}</strong>
                         </div>
                         <div v-if="order.estimated_delivery_date">
-                            Estimated Delivery:
+                            {{ $t('storefront.estimated_delivery') }}:
                             <strong class="text-success">{{ order.estimated_delivery_date }}</strong>
                         </div>
                         <div class="mt-2">
-                            Payment:
+                            {{ $t('account.payment') }}:
                             <span class="badge bg-secondary-subtle text-secondary text-uppercase me-1">{{ order.payment_method }}</span>
                             <span class="badge" :class="order.payment_status === 'paid' ? 'bg-success' : 'bg-warning text-dark'">
                                 {{ order.payment_status }}
@@ -141,16 +141,16 @@
                 </div>
 
                 <!-- Ordered Items Table -->
-                <h6 class="fw-bold mb-3">Items in this Order</h6>
+                <h6 class="fw-bold mb-3">{{ $t('storefront.items_in_order') }}</h6>
                 <div class="table-responsive mb-4">
                     <table class="table table-sm align-middle mb-0">
                         <thead class="table-light small text-muted">
                             <tr>
-                                <th>Item</th>
-                                <th class="text-center">SKU</th>
-                                <th class="text-center">Qty</th>
-                                <th class="text-end">Price</th>
-                                <th class="text-end">Total</th>
+                                <th>{{ $t('orders.item') }}</th>
+                                <th class="text-center">{{ $t('common.sku') }}</th>
+                                <th class="text-center">{{ $t('common.qty') }}</th>
+                                <th class="text-end">{{ $t('common.price') }}</th>
+                                <th class="text-end">{{ $t('common.total') }}</th>
                             </tr>
                         </thead>
                         <tbody class="small">
@@ -164,17 +164,24 @@
                         </tbody>
                         <tfoot class="border-top">
                             <tr class="fw-bold text-dark">
-                                <td colspan="4" class="text-end">Grand Total:</td>
+                                <td colspan="4" class="text-end">{{ $t('common.grand_total') }}:</td>
                                 <td class="text-end text-primary fs-6">₹{{ formatMoney(order.total_amount) }}</td>
                             </tr>
                         </tfoot>
                     </table>
                 </div>
 
-                <!-- Back to Shop -->
-                <div class="text-center pt-2">
+                <!-- Back to Shop & Print Invoice -->
+                <div class="d-flex justify-content-center gap-2 pt-2 d-print-none">
+                    <button
+                        type="button"
+                        class="btn btn-outline-secondary rounded-pill px-4 btn-sm fw-semibold"
+                        @click="printOrderInvoice"
+                    >
+                        🖨️ {{ $t('receipt.print_invoice') }}
+                    </button>
                     <router-link to="/shop" class="btn btn-outline-primary rounded-pill px-4 btn-sm">
-                        ← Back to Shopping
+                        ← {{ $t('storefront.back_to_shopping') }}
                     </router-link>
                 </div>
             </div>
@@ -242,6 +249,10 @@ async function lookupOrder() {
     }
 }
 
+function printOrderInvoice() {
+    window.print();
+}
+
 onMounted(() => {
     if (orderInput.value.trim()) {
         lookupOrder();
@@ -252,6 +263,31 @@ onMounted(() => {
 <style scoped>
 .extra-small {
     font-size: 0.75rem;
+}
+
+@media print {
+    .track-order-page {
+        padding: 0 !important;
+    }
+    .status-stepper {
+        display: none !important;
+    }
+    .card {
+        border: 1px solid #ccc !important;
+        box-shadow: none !important;
+    }
+    html[dir="rtl"] table th,
+    html[dir="rtl"] table td {
+        text-align: right !important;
+    }
+    html[dir="rtl"] table th.text-end,
+    html[dir="rtl"] table td.text-end {
+        text-align: left !important;
+    }
+    html[dir="rtl"] table th.text-center,
+    html[dir="rtl"] table td.text-center {
+        text-align: center !important;
+    }
 }
 
 .status-stepper {

@@ -4,9 +4,9 @@
         <!-- Page Header -->
         <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
             <div>
-                <h3 class="fw-bold mb-1">Stock Management</h3>
+                <h3 class="fw-bold mb-1">{{ $t('inventory.title') }}</h3>
                 <p class="text-muted mb-0">
-                    Monitor inventory levels, adjust stock, and review audit history
+                    {{ $t('inventory.subtitle') }}
                 </p>
             </div>
 
@@ -15,17 +15,17 @@
                     class="btn btn-outline-secondary"
                     @click="refreshData"
                     :disabled="loading"
-                    title="Refresh data"
+                    :title="$t('common.refresh')"
                 >
                     <span v-if="loading" class="spinner-border spinner-border-sm me-1"></span>
-                    Refresh
+                    {{ $t('common.refresh') }}
                 </button>
 
                 <button
                     class="btn btn-primary"
                     @click="openQuickAdjustModal"
                 >
-                    + Adjust Stock
+                    + {{ $t('inventory.adjust_stock') }}
                 </button>
             </div>
         </div>
@@ -41,9 +41,9 @@
                             </svg>
                         </div>
                         <div>
-                            <div class="text-muted small fw-medium">Total Tracked Items</div>
+                            <div class="text-muted small fw-medium">{{ $t('inventory.total_stock_units') }}</div>
                             <h4 class="fw-bold mb-0">{{ summary.total_items }}</h4>
-                            <div class="small text-muted mt-1">Total Qty: {{ summary.total_quantity }}</div>
+                            <div class="small text-muted mt-1">{{ $t('common.qty') }}: {{ summary.total_quantity }}</div>
                         </div>
                     </div>
                 </div>
@@ -62,9 +62,9 @@
                             </svg>
                         </div>
                         <div>
-                            <div class="text-muted small fw-medium">Healthy Stock</div>
+                            <div class="text-muted small fw-medium">{{ $t('common.in_stock') }}</div>
                             <h4 class="fw-bold text-success mb-0">{{ summary.in_stock }}</h4>
-                            <div class="small text-muted mt-1">Above threshold</div>
+                            <div class="small text-muted mt-1">{{ $t('common.active') }}</div>
                         </div>
                     </div>
                 </div>
@@ -83,9 +83,9 @@
                             </svg>
                         </div>
                         <div>
-                            <div class="text-muted small fw-medium">Low Stock Alerts</div>
+                            <div class="text-muted small fw-medium">{{ $t('common.low_stock') }}</div>
                             <h4 class="fw-bold text-warning mb-0">{{ summary.low_stock }}</h4>
-                            <div class="small text-muted mt-1">Reorder soon</div>
+                            <div class="small text-muted mt-1">{{ $t('common.warning') }}</div>
                         </div>
                     </div>
                 </div>
@@ -105,9 +105,9 @@
                             </svg>
                         </div>
                         <div>
-                            <div class="text-muted small fw-medium">Out of Stock</div>
+                            <div class="text-muted small fw-medium">{{ $t('common.out_of_stock') }}</div>
                             <h4 class="fw-bold text-danger mb-0">{{ summary.out_of_stock }}</h4>
-                            <div class="small text-muted mt-1">Zero inventory</div>
+                            <div class="small text-muted mt-1">0 {{ $t('products.current_stock') }}</div>
                         </div>
                     </div>
                 </div>
@@ -122,7 +122,7 @@
                     :class="{ 'active': activeTab === 'inventory' }"
                     @click="activeTab = 'inventory'"
                 >
-                    Inventory Status
+                    {{ $t('inventory.title') }}
                 </button>
             </li>
             <li class="nav-item">
@@ -131,7 +131,7 @@
                     :class="{ 'active': activeTab === 'transactions' }"
                     @click="switchTab('transactions')"
                 >
-                    Stock Audit Trail
+                    {{ $t('inventory.history') }}
                 </button>
             </li>
         </ul>
@@ -147,7 +147,7 @@
                                 v-model="search"
                                 type="text"
                                 class="form-control"
-                                placeholder="Search by product name, SKU or barcode..."
+                                :placeholder="$t('products.search_placeholder')"
                                 @input="debouncedLoad"
                             />
                         </div>
@@ -158,7 +158,7 @@
                                 class="form-select"
                                 @change="loadInventory(1)"
                             >
-                                <option value="">All Categories</option>
+                                <option value="">{{ $t('products.all_categories') }}</option>
                                 <option
                                     v-for="cat in categories"
                                     :key="cat.id"
@@ -175,10 +175,10 @@
                                 class="form-select"
                                 @change="loadInventory(1)"
                             >
-                                <option value="all">All Stock Statuses</option>
-                                <option value="in_stock">In Stock (Healthy)</option>
-                                <option value="low_stock">Low Stock Alerts</option>
-                                <option value="out_of_stock">Out of Stock</option>
+                                <option value="all">-- {{ $t('common.all') }} --</option>
+                                <option value="in_stock">{{ $t('common.in_stock') }}</option>
+                                <option value="low_stock">{{ $t('common.low_stock') }}</option>
+                                <option value="out_of_stock">{{ $t('common.out_of_stock') }}</option>
                             </select>
                         </div>
 
@@ -186,9 +186,9 @@
                             <button
                                 class="btn btn-light w-100"
                                 @click="resetFilters"
-                                title="Reset filters"
+                                :title="$t('common.clear')"
                             >
-                                Clear
+                                {{ $t('common.clear') }}
                             </button>
                         </div>
                     </div>
@@ -202,13 +202,13 @@
                         <thead class="table-light">
                             <tr>
                                 <th width="60">#</th>
-                                <th>Product Name</th>
-                                <th>Category</th>
-                                <th>SKU / Barcode</th>
-                                <th class="text-end">Current Stock</th>
-                                <th class="text-end">Low Alert Level</th>
-                                <th class="text-center">Stock Status</th>
-                                <th class="text-center" width="220">Actions</th>
+                                <th>{{ $t('products.product_name') }}</th>
+                                <th>{{ $t('products.category') }}</th>
+                                <th>{{ $t('products.sku') }} / {{ $t('common.barcode') }}</th>
+                                <th class="text-end">{{ $t('products.current_stock') }}</th>
+                                <th class="text-end">{{ $t('products.low_stock_threshold') }}</th>
+                                <th class="text-center">{{ $t('common.status') }}</th>
+                                <th class="text-center" width="220">{{ $t('common.actions') }}</th>
                             </tr>
                         </thead>
 
@@ -216,13 +216,13 @@
                             <tr v-if="loading">
                                 <td colspan="8" class="text-center py-5 text-muted">
                                     <div class="spinner-border spinner-border-sm me-2" role="status"></div>
-                                    Loading inventory items...
+                                    {{ $t('common.loading') }}
                                 </td>
                             </tr>
 
                             <tr v-else-if="items.length === 0">
                                 <td colspan="8" class="text-center py-5 text-muted">
-                                    No products found matching the criteria.
+                                    {{ $t('common.no_data') }}
                                 </td>
                             </tr>
 
@@ -232,7 +232,7 @@
                                 <td>
                                     <div class="fw-semibold text-dark">{{ item.name }}</div>
                                     <small class="text-muted" v-if="item.brand && item.brand !== '-'">
-                                        Brand: {{ item.brand }}
+                                        {{ $t('products.brand') }}: {{ item.brand }}
                                     </small>
                                 </td>
 
@@ -247,7 +247,7 @@
                                         {{ item.default_variant?.sku || '-' }}
                                     </div>
                                     <small class="text-muted" v-if="item.default_variant?.barcode">
-                                        Barcode: {{ item.default_variant.barcode }}
+                                        {{ item.default_variant.barcode }}
                                     </small>
                                 </td>
 
@@ -280,14 +280,14 @@
                                             class="btn btn-outline-primary"
                                             @click="openAdjustModal(item)"
                                         >
-                                            Adjust
+                                            {{ $t('inventory.adjust_stock') }}
                                         </button>
 
                                         <button
                                             class="btn btn-outline-secondary"
                                             @click="openHistoryModal(item)"
                                         >
-                                            History
+                                            {{ $t('inventory.history') }}
                                         </button>
                                     </div>
                                 </td>
@@ -299,7 +299,7 @@
                 <!-- Pagination -->
                 <div class="card-footer bg-white d-flex justify-content-between align-items-center py-3">
                     <span class="text-muted small">
-                        Showing {{ items.length }} of {{ totalItems }} items
+                        {{ $t('common.showing') }} {{ items.length }} {{ $t('common.of') }} {{ totalItems }}
                     </span>
 
                     <div v-if="lastPage > 1">
@@ -308,11 +308,11 @@
                             :disabled="currentPage <= 1 || loading"
                             @click="loadInventory(currentPage - 1)"
                         >
-                            &laquo; Prev
+                            &laquo; {{ $t('common.previous') }}
                         </button>
 
                         <span class="px-2 small text-muted">
-                            Page {{ currentPage }} of {{ lastPage }}
+                            {{ $t('common.page') }} {{ currentPage }} {{ $t('common.of') }} {{ lastPage }}
                         </span>
 
                         <button
@@ -320,7 +320,7 @@
                             :disabled="currentPage >= lastPage || loading"
                             @click="loadInventory(currentPage + 1)"
                         >
-                            Next &raquo;
+                            {{ $t('common.next') }} &raquo;
                         </button>
                     </div>
                 </div>
@@ -337,7 +337,7 @@
                                 v-model="txSearch"
                                 type="text"
                                 class="form-control"
-                                placeholder="Search transaction by product name or SKU..."
+                                :placeholder="$t('products.search_placeholder')"
                                 @input="debouncedLoadTx"
                             />
                         </div>
@@ -348,10 +348,10 @@
                                 class="form-select"
                                 @change="loadTransactions(1)"
                             >
-                                <option value="">All Movement Types</option>
-                                <option value="in">Stock In (+ Addition)</option>
-                                <option value="out">Stock Out (- Deduction)</option>
-                                <option value="adjustment">Stock Reconciliation (= Set)</option>
+                                <option value="">-- {{ $t('common.all') }} --</option>
+                                <option value="in">{{ $t('inventory.add_stock') }}</option>
+                                <option value="out">{{ $t('inventory.subtract_stock') }}</option>
+                                <option value="adjustment">{{ $t('inventory.audit_correction') }}</option>
                             </select>
                         </div>
 
@@ -360,7 +360,7 @@
                                 class="btn btn-light w-100"
                                 @click="resetTxFilters"
                             >
-                                Reset
+                                {{ $t('common.reset') }}
                             </button>
                         </div>
                     </div>
@@ -372,14 +372,14 @@
                     <table class="table table-hover align-middle mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th>Date & Time</th>
-                                <th>Product</th>
-                                <th>SKU</th>
-                                <th>Movement Type</th>
-                                <th class="text-end">Qty Change</th>
-                                <th class="text-end">Balance After</th>
-                                <th>Reason</th>
-                                <th>Notes</th>
+                                <th>{{ $t('common.date') }} & {{ $t('common.time') }}</th>
+                                <th>{{ $t('products.product_name') }}</th>
+                                <th>{{ $t('products.sku') }}</th>
+                                <th>{{ $t('inventory.adjustment_type') }}</th>
+                                <th class="text-end">{{ $t('inventory.quantity_adjusted') }}</th>
+                                <th class="text-end">{{ $t('inventory.stock_after') }}</th>
+                                <th>{{ $t('inventory.adjustment_reason') }}</th>
+                                <th>{{ $t('common.notes') }}</th>
                             </tr>
                         </thead>
 
@@ -387,13 +387,13 @@
                             <tr v-if="txLoading">
                                 <td colspan="8" class="text-center py-5 text-muted">
                                     <div class="spinner-border spinner-border-sm me-2"></div>
-                                    Loading transaction logs...
+                                    {{ $t('common.loading') }}
                                 </td>
                             </tr>
 
                             <tr v-else-if="transactions.length === 0">
                                 <td colspan="8" class="text-center py-5 text-muted">
-                                    No stock transactions recorded yet.
+                                    {{ $t('common.no_data') }}
                                 </td>
                             </tr>
 
@@ -447,7 +447,7 @@
                 <!-- Pagination for transactions -->
                 <div class="card-footer bg-white d-flex justify-content-between align-items-center py-3">
                     <span class="text-muted small">
-                        Showing {{ transactions.length }} of {{ txTotal }} movements
+                        {{ $t('common.showing') }} {{ transactions.length }} {{ $t('common.of') }} {{ txTotal }}
                     </span>
 
                     <div v-if="txLastPage > 1">
@@ -456,11 +456,11 @@
                             :disabled="txCurrentPage <= 1 || txLoading"
                             @click="loadTransactions(txCurrentPage - 1)"
                         >
-                            &laquo; Prev
+                            &laquo; {{ $t('common.previous') }}
                         </button>
 
                         <span class="px-2 small text-muted">
-                            Page {{ txCurrentPage }} of {{ txLastPage }}
+                            {{ $t('common.page') }} {{ txCurrentPage }} {{ $t('common.of') }} {{ txLastPage }}
                         </span>
 
                         <button
@@ -468,7 +468,7 @@
                             :disabled="txCurrentPage >= txLastPage || txLoading"
                             @click="loadTransactions(txCurrentPage + 1)"
                         >
-                            Next &raquo;
+                            {{ $t('common.next') }} &raquo;
                         </button>
                     </div>
                 </div>
@@ -484,7 +484,7 @@
                     <form @submit.prevent="submitAdjustment">
                         <div class="modal-header">
                             <div>
-                                <h5 class="modal-title fw-bold">Adjust Product Stock</h5>
+                                <h5 class="modal-title fw-bold">{{ $t('inventory.adjust_stock') }}</h5>
                                 <div class="text-muted small" v-if="selectedItem">
                                     {{ selectedItem.name }} ({{ selectedItem.default_variant?.sku || '-' }})
                                 </div>
@@ -495,27 +495,27 @@
                         <div class="modal-body">
                             <!-- Product Selector if opened via Quick Adjust without item preselected -->
                             <div class="mb-3" v-if="!selectedItem">
-                                <label class="form-label fw-semibold">Select Product *</label>
+                                <label class="form-label fw-semibold">{{ $t('products.product_name') }} *</label>
                                 <select
                                     v-model="adjustForm.product_id"
                                     class="form-select"
                                     required
                                     @change="onProductSelectChange"
                                 >
-                                    <option value="">-- Choose Product --</option>
+                                    <option value="">-- {{ $t('products.add_product') }} --</option>
                                     <option
                                         v-for="prod in items"
                                         :key="prod.id"
                                         :value="prod.id"
                                     >
-                                        {{ prod.name }} (Stock: {{ prod.total_stock }} {{ prod.unit?.short_name || '' }})
+                                        {{ prod.name }} ({{ $t('products.current_stock') }}: {{ prod.total_stock }} {{ prod.unit?.short_name || '' }})
                                     </option>
                                 </select>
                             </div>
 
                             <!-- Current Stock Info Badge -->
                             <div class="alert alert-light border d-flex justify-content-between align-items-center mb-3 py-2">
-                                <span class="text-muted">Current On-Hand Stock:</span>
+                                <span class="text-muted">{{ $t('products.current_stock') }}:</span>
                                 <span class="fw-bold fs-6">
                                     {{ currentAdjustStock }} {{ activeUnitShortName }}
                                 </span>
@@ -523,7 +523,7 @@
 
                             <!-- Adjustment Type Selector -->
                             <div class="mb-3">
-                                <label class="form-label fw-semibold">Adjustment Action *</label>
+                                <label class="form-label fw-semibold">{{ $t('inventory.adjustment_type') }} *</label>
                                 <div class="btn-group w-100" role="group">
                                     <input
                                         type="radio"
@@ -534,7 +534,7 @@
                                         v-model="adjustForm.type"
                                     />
                                     <label class="btn btn-outline-success" for="typeIn">
-                                        + Add Stock
+                                        {{ $t('inventory.add_stock') }}
                                     </label>
 
                                     <input
@@ -546,7 +546,7 @@
                                         v-model="adjustForm.type"
                                     />
                                     <label class="btn btn-outline-danger" for="typeOut">
-                                        - Deduct Stock
+                                        {{ $t('inventory.subtract_stock') }}
                                     </label>
 
                                     <input
@@ -558,7 +558,7 @@
                                         v-model="adjustForm.type"
                                     />
                                     <label class="btn btn-outline-primary" for="typeSet">
-                                        = Set Exact
+                                        {{ $t('inventory.audit_correction') }}
                                     </label>
                                 </div>
                             </div>
@@ -566,9 +566,7 @@
                             <!-- Quantity Input -->
                             <div class="mb-3">
                                 <label class="form-label fw-semibold">
-                                    <span v-if="adjustForm.type === 'in'">Quantity to Add *</span>
-                                    <span v-else-if="adjustForm.type === 'out'">Quantity to Deduct *</span>
-                                    <span v-else>New Total Quantity *</span>
+                                    {{ $t('common.quantity') }} *
                                 </label>
 
                                 <div class="input-group">
@@ -578,7 +576,7 @@
                                         :step="allowDecimal ? '0.001' : '1'"
                                         min="0"
                                         class="form-control"
-                                        placeholder="Enter quantity"
+                                        :placeholder="$t('common.quantity')"
                                         required
                                     />
                                     <span class="input-group-text">{{ activeUnitShortName || 'Units' }}</span>
@@ -591,7 +589,7 @@
                                 v-if="adjustForm.quantity !== null && adjustForm.quantity !== ''"
                             >
                                 <div class="d-flex justify-content-between">
-                                    <span class="text-muted">Resulting Balance:</span>
+                                    <span class="text-muted">{{ $t('inventory.stock_after') }}:</span>
                                     <span
                                         class="fw-bold"
                                         :class="calculatedNewStock < 0 ? 'text-danger' : 'text-primary'"
@@ -600,26 +598,24 @@
                                     </span>
                                 </div>
                                 <div v-if="calculatedNewStock < 0" class="text-danger small mt-1">
-                                    Warning: Deducting more than available stock will be rejected!
+                                    {{ $t('common.warning') }}: {{ $t('pos.insufficient_stock') }}
                                 </div>
                             </div>
 
                             <!-- Reason Selector -->
                             <div class="mb-3">
-                                <label class="form-label fw-semibold">Reason *</label>
+                                <label class="form-label fw-semibold">{{ $t('inventory.adjustment_reason') }} *</label>
                                 <select
                                     v-model="selectedReasonPreset"
                                     class="form-select mb-2"
                                     @change="onReasonPresetChange"
                                 >
-                                    <option value="Received Purchase / Restock">Received Purchase / Restock</option>
-                                    <option value="Physical Count Reconciliation">Physical Count Reconciliation</option>
-                                    <option value="Damaged / Broken Goods">Damaged / Broken Goods</option>
-                                    <option value="Expired Product">Expired Product</option>
-                                    <option value="Internal Store Consumption">Internal Store Consumption</option>
-                                    <option value="Customer Return">Customer Return</option>
-                                    <option value="Opening Stock Entry">Opening Stock Entry</option>
-                                    <option value="custom">Other / Custom Reason...</option>
+                                    <option value="Received Purchase / Restock">{{ $t('purchases.title') }} / {{ $t('inventory.add_stock') }}</option>
+                                    <option value="Physical Count Reconciliation">{{ $t('inventory.audit_correction') }}</option>
+                                    <option value="Damaged / Broken Goods">{{ $t('inventory.damage') }}</option>
+                                    <option value="Expired Product">{{ $t('inventory.expiry') }}</option>
+                                    <option value="Lost / Missing">{{ $t('inventory.theft') }}</option>
+                                    <option value="custom">{{ $t('common.actions') }}...</option>
                                 </select>
 
                                 <input
@@ -627,19 +623,19 @@
                                     v-model="adjustForm.reason"
                                     type="text"
                                     class="form-control"
-                                    placeholder="Type specific reason..."
+                                    :placeholder="$t('inventory.adjustment_reason')"
                                     required
                                 />
                             </div>
 
                             <!-- Notes Field -->
                             <div class="mb-3">
-                                <label class="form-label">Notes (Optional)</label>
+                                <label class="form-label">{{ $t('common.notes') }}</label>
                                 <textarea
                                     v-model="adjustForm.notes"
                                     class="form-control"
                                     rows="2"
-                                    placeholder="Additional remarks or reference invoice/batch number..."
+                                    :placeholder="$t('common.notes')"
                                 ></textarea>
                             </div>
 
@@ -651,7 +647,7 @@
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-light" data-bs-dismiss="modal">
-                                Cancel
+                                {{ $t('common.cancel') }}
                             </button>
                             <button
                                 type="submit"
@@ -659,7 +655,7 @@
                                 :disabled="adjusting || (adjustForm.type === 'out' && calculatedNewStock < 0)"
                             >
                                 <span v-if="adjusting" class="spinner-border spinner-border-sm me-1"></span>
-                                {{ adjusting ? 'Saving...' : 'Confirm Adjustment' }}
+                                {{ adjusting ? $t('common.processing') : $t('common.confirm') }}
                             </button>
                         </div>
                     </form>
@@ -675,7 +671,7 @@
                 <div class="modal-content border-0 shadow">
                     <div class="modal-header">
                         <div>
-                            <h5 class="modal-title fw-bold">Stock Movement History</h5>
+                            <h5 class="modal-title fw-bold">{{ $t('inventory.history') }}</h5>
                             <div class="text-muted small" v-if="historyItem">
                                 {{ historyItem.name }} ({{ historyItem.default_variant?.sku || '-' }})
                             </div>
@@ -686,22 +682,22 @@
                     <div class="modal-body p-0">
                         <div v-if="historyLoading" class="text-center py-5">
                             <div class="spinner-border spinner-border-sm me-2"></div>
-                            Loading movement history...
+                            {{ $t('common.loading') }}
                         </div>
 
                         <div v-else-if="historyList.length === 0" class="text-center py-5 text-muted">
-                            No adjustments or movements recorded for this item yet.
+                            {{ $t('common.no_data') }}
                         </div>
 
                         <div v-else class="table-responsive">
                             <table class="table table-hover align-middle mb-0">
                                 <thead class="table-light small">
                                     <tr>
-                                        <th>Date & Time</th>
-                                        <th>Action</th>
-                                        <th class="text-end">Change</th>
-                                        <th class="text-end">Balance After</th>
-                                        <th>Reason & Notes</th>
+                                        <th>{{ $t('common.date') }} & {{ $t('common.time') }}</th>
+                                        <th>{{ $t('inventory.adjustment_type') }}</th>
+                                        <th class="text-end">{{ $t('inventory.quantity_adjusted') }}</th>
+                                        <th class="text-end">{{ $t('inventory.stock_after') }}</th>
+                                        <th>{{ $t('inventory.adjustment_reason') }} & {{ $t('common.notes') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody class="small">
@@ -736,7 +732,7 @@
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                            Close
+                            {{ $t('common.close') }}
                         </button>
                     </div>
                 </div>

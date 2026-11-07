@@ -12,25 +12,27 @@
                 </span>
 
                 <div class="d-flex align-items-center gap-3">
+                    <ThemeToggle theme="dark" size="sm" />
+                    <LanguageSelector theme="dark" />
                     <router-link to="/track-order" class="text-white text-decoration-none">
-                        📍 Track Order
+                        📍 {{ $t('storefront.track_my_order') }}
                     </router-link>
                     <span class="text-secondary">|</span>
                     <router-link v-if="!isCustomerAuthenticated" to="/login" class="text-white text-decoration-none">
-                        👤 Sign In / Register
+                        👤 {{ $t('nav.sign_in') }} / {{ $t('nav.register') }}
                     </router-link>
                     <router-link v-else to="/account" class="text-warning text-decoration-none fw-semibold">
-                        👤 Hi, {{ customerName }}
+                        👤 {{ customerName }}
                     </router-link>
                 </div>
             </div>
         </div>
 
         <!-- Main Storefront Header & Navigation -->
-        <header class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm sticky-top">
-            <div class="container">
+        <header class="navbar navbar-expand-lg bg-white border-bottom shadow-sm sticky-top store-header-navbar py-2 py-lg-3">
+            <div class="container-fluid px-3 px-lg-4 px-xl-5">
                 <!-- Brand / Logo (Dynamic) -->
-                <router-link to="/" class="navbar-brand fw-bold text-primary fs-4 d-flex align-items-center gap-2">
+                <router-link to="/" class="navbar-brand fw-bold text-primary d-flex align-items-center gap-2 me-2 me-lg-4 py-0">
                     <img
                         v-if="settings.site_logo_url"
                         :src="settings.site_logo_url"
@@ -38,12 +40,12 @@
                         class="store-logo"
                     />
                     <span v-else class="fs-3">🛍️</span>
-                    <span>{{ settings.site_name || 'Retail Store' }}</span>
+                    <span class="store-name-text">{{ settings.site_name || 'Retail Store' }}</span>
                 </router-link>
 
                 <!-- Navbar Toggler for mobile -->
                 <button
-                    class="navbar-toggler"
+                    class="navbar-toggler border-0 p-1 ms-auto d-lg-none"
                     type="button"
                     data-bs-toggle="collapse"
                     data-bs-target="#shopNav"
@@ -51,112 +53,134 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
+                <!-- Navigation, Search & User Actions -->
                 <div class="collapse navbar-collapse" id="shopNav">
-                    <!-- Nav links -->
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-3">
+                    <!-- Left: Nav links (Pill style, no wrapping) -->
+                    <ul class="navbar-nav align-items-lg-center gap-lg-1 me-lg-2 mb-3 mb-lg-0">
                         <li class="nav-item">
-                            <router-link to="/" class="nav-link fw-medium" exact-active-class="active text-primary fw-bold">
-                                Home
+                            <router-link to="/" class="store-nav-link" exact-active-class="active">
+                                {{ $t('storefront.home') }}
                             </router-link>
                         </li>
                         <li class="nav-item">
-                            <router-link to="/shop" class="nav-link fw-medium" active-class="active text-primary fw-bold">
-                                All Products
+                            <router-link to="/shop" class="store-nav-link" active-class="active">
+                                {{ $t('storefront.all_products') }}
                             </router-link>
                         </li>
                         <li class="nav-item">
-                            <router-link to="/track-order" class="nav-link fw-medium" active-class="active text-primary fw-bold">
-                                Track My Order
+                            <router-link to="/track-order" class="store-nav-link" active-class="active">
+                                {{ $t('storefront.track_my_order') }}
                             </router-link>
                         </li>
                     </ul>
 
-                    <!-- Search Input Form -->
-                    <form class="d-flex me-3 my-2 my-lg-0" @submit.prevent="onSearch">
-                        <div class="input-group input-group-sm">
-                            <input
-                                v-model="navSearch"
-                                type="text"
-                                class="form-control"
-                                placeholder="Search products..."
-                                style="min-width: 190px;"
-                            />
-                            <button class="btn btn-outline-primary" type="submit">
-                                🔍
-                            </button>
-                        </div>
-                    </form>
+                    <!-- Spacer: creates a clean, luxurious gap between Nav Links and Right Tools -->
+                    <div class="me-auto d-none d-lg-block"></div>
 
-                    <!-- Wishlist Button with Live Counter Badge -->
-                    <router-link to="/wishlist" class="btn btn-outline-danger d-flex align-items-center gap-1 px-3 position-relative rounded-pill me-2">
-                        <span>❤️</span>
-                        <span class="d-none d-sm-inline">Wishlist</span>
-                        <span class="badge bg-danger text-white rounded-pill fw-bold" v-if="wishlistCount > 0">
-                            {{ wishlistCount }}
-                        </span>
-                    </router-link>
-
-                    <!-- Cart Button with Live Counter Badge -->
-                    <router-link to="/cart" class="btn btn-primary d-flex align-items-center gap-2 px-3 position-relative rounded-pill">
-                        <span>🛒 Cart</span>
-                        <span class="badge bg-white text-primary rounded-pill fw-bold" v-if="cartCount > 0">
-                            {{ cartCount }}
-                        </span>
-                        <span class="badge bg-white text-secondary rounded-pill fw-normal" v-else>
-                            0
-                        </span>
-                    </router-link>
-
-                    <!-- Customer Account Dropdown or Sign In Button -->
-                    <div v-if="isCustomerAuthenticated" class="position-relative ms-2">
-                        <button
-                            class="btn btn-outline-secondary btn-sm rounded-pill d-flex align-items-center gap-2 px-3 py-1"
-                            type="button"
-                            @click="showUserDropdown = !showUserDropdown"
-                        >
-                            <span class="avatar-initials bg-primary text-white rounded-circle d-flex align-items-center justify-content-center">
-                                {{ customerInitials }}
-                            </span>
-                            <span class="small fw-semibold text-dark d-none d-md-inline">{{ customerName }}</span>
-                            <span class="small text-muted">▾</span>
-                        </button>
-
-                        <div
-                            v-if="showUserDropdown"
-                            class="dropdown-menu dropdown-menu-end show shadow-lg border-0 rounded-3 mt-2 py-2"
-                            style="position: absolute; right: 0; min-width: 210px; z-index: 1050;"
-                        >
-                            <div class="px-3 py-2 border-bottom mb-1">
-                                <div class="fw-bold small text-dark text-truncate">{{ customerName }}</div>
-                                <div class="extra-small text-muted text-truncate">{{ customerEmail || customerPhone }}</div>
+                    <!-- Right Side Cluster: Compact Search, Theme, Wishlist, Cart, Profile -->
+                    <div class="d-flex align-items-center gap-2 flex-wrap flex-lg-nowrap mt-3 mt-lg-0 ms-lg-auto">
+                        <!-- Compact Search Input Form -->
+                        <form class="store-search-form my-1 my-lg-0" @submit.prevent="onSearch">
+                            <div class="input-group input-group-sm flex-nowrap store-search-box">
+                                <span class="input-group-text bg-transparent border-0 text-muted ps-2 pe-1">
+                                    🔍
+                                </span>
+                                <input
+                                    v-model="navSearch"
+                                    type="text"
+                                    class="form-control border-0 bg-transparent py-1 ps-1 pe-2 shadow-none store-search-input"
+                                    :placeholder="$t('storefront.search_store')"
+                                />
+                                <button class="btn btn-primary btn-sm rounded-pill px-2 py-0 my-1 me-1 fw-semibold store-search-submit" type="submit">
+                                    {{ $t('common.search') }}
+                                </button>
                             </div>
-                            <router-link to="/account" class="dropdown-item py-2 small" @click="showUserDropdown = false">
-                                📊 Dashboard
-                            </router-link>
-                            <router-link to="/account" class="dropdown-item py-2 small" @click="showUserDropdown = false">
-                                📦 My Orders
-                            </router-link>
-                            <router-link to="/wishlist" class="dropdown-item py-2 small" @click="showUserDropdown = false">
-                                ❤️ My Wishlist <span class="badge bg-danger text-white rounded-pill ms-1" v-if="wishlistCount > 0">{{ wishlistCount }}</span>
-                            </router-link>
-                            <router-link to="/account" class="dropdown-item py-2 small" @click="showUserDropdown = false">
-                                👤 Profile & Address
-                            </router-link>
-                            <div class="dropdown-divider my-1"></div>
-                            <button type="button" class="dropdown-item py-2 small text-danger" @click="handleCustomerLogout">
-                                🚪 Sign Out
-                            </button>
-                        </div>
-                    </div>
+                        </form>
 
-                    <router-link
-                        v-else
-                        to="/login"
-                        class="btn btn-outline-primary btn-sm rounded-pill px-3 ms-2 d-flex align-items-center gap-1"
-                    >
-                        <span>👤</span>
-                        <span class="d-none d-sm-inline">Sign In</span>
-                    </router-link>
+                        <!-- Wishlist Icon Button with Floating Live Badge -->
+                        <router-link
+                            to="/wishlist"
+                            class="store-icon-btn store-wishlist-btn position-relative"
+                            :title="$t('nav.wishlist')"
+                            :aria-label="$t('nav.wishlist')"
+                        >
+                            <span class="action-icon">❤️</span>
+                            <span class="store-badge-count bg-danger text-white" v-if="wishlistCount > 0">
+                                {{ wishlistCount }}
+                            </span>
+                        </router-link>
+
+                        <!-- Cart Icon Button with Floating Live Badge -->
+                        <router-link
+                            to="/cart"
+                            class="store-icon-btn store-cart-btn position-relative"
+                            :title="$t('nav.cart')"
+                            :aria-label="$t('nav.cart')"
+                        >
+                            <span class="action-icon">🛒</span>
+                            <span class="store-badge-count bg-primary text-white" v-if="cartCount > 0">
+                                {{ cartCount }}
+                            </span>
+                            <span class="store-badge-count bg-secondary text-white" v-else>
+                                0
+                            </span>
+                        </router-link>
+
+                        <!-- Customer Account Dropdown or Sign In Button -->
+                        <div v-if="isCustomerAuthenticated" class="position-relative">
+                            <button
+                                class="store-account-pill d-inline-flex align-items-center gap-1 px-2 border"
+                                type="button"
+                                @click="showUserDropdown = !showUserDropdown"
+                                :title="customerName"
+                            >
+                                <div class="avatar-initials bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold">
+                                    {{ customerInitials }}
+                                </div>
+                                <span class="small fw-semibold text-dark text-truncate d-none d-xxl-inline" style="max-width: 90px;">
+                                    {{ customerFirstName }}
+                                </span>
+                                <span class="extra-small text-muted">▾</span>
+                            </button>
+
+                            <div
+                                v-if="showUserDropdown"
+                                class="dropdown-menu dropdown-menu-end show shadow-lg border-0 rounded-3 mt-2 py-2 store-dropdown-menu"
+                            >
+                                <div class="px-3 py-2 border-bottom mb-1">
+                                    <div class="fw-bold small text-dark text-truncate">{{ customerName }}</div>
+                                    <div class="extra-small text-muted text-truncate">{{ customerEmail || customerPhone }}</div>
+                                </div>
+                                <router-link to="/account" class="dropdown-item py-2 small d-flex align-items-center gap-2" @click="showUserDropdown = false">
+                                    <span>📊</span> <span>{{ $t('account.tab_overview') }}</span>
+                                </router-link>
+                                <router-link to="/account" class="dropdown-item py-2 small d-flex align-items-center gap-2" @click="showUserDropdown = false">
+                                    <span>📦</span> <span>{{ $t('account.tab_orders') }}</span>
+                                </router-link>
+                                <router-link to="/wishlist" class="dropdown-item py-2 small d-flex align-items-center gap-2" @click="showUserDropdown = false">
+                                    <span>❤️</span> <span>{{ $t('account.tab_wishlist') }}</span>
+                                    <span class="badge bg-danger text-white rounded-pill ms-auto" v-if="wishlistCount > 0">{{ wishlistCount }}</span>
+                                </router-link>
+                                <router-link to="/account" class="dropdown-item py-2 small d-flex align-items-center gap-2" @click="showUserDropdown = false">
+                                    <span>👤</span> <span>{{ $t('account.tab_profile') }}</span>
+                                </router-link>
+                                <div class="dropdown-divider my-1"></div>
+                                <button type="button" class="dropdown-item py-2 small text-danger d-flex align-items-center gap-2" @click="handleCustomerLogout">
+                                    <span>🚪</span> <span>{{ $t('nav.logout') }}</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <router-link
+                            v-else
+                            to="/login"
+                            class="store-icon-btn"
+                            :title="$t('nav.sign_in')"
+                            :aria-label="$t('nav.sign_in')"
+                        >
+                            <span>👤</span>
+                        </router-link>
+                    </div>
                 </div>
             </div>
         </header>
@@ -240,6 +264,8 @@ import { useCart } from '../composables/useCart';
 import { useShopSettings } from '../composables/useShopSettings';
 import { useCustomerAuth } from '../composables/useCustomerAuth';
 import { useWishlist } from '../composables/useWishlist';
+import LanguageSelector from '../components/common/LanguageSelector.vue';
+import ThemeToggle from '../components/common/ThemeToggle.vue';
 
 const router = useRouter();
 const { cartCount } = useCart();
@@ -258,6 +284,11 @@ const customerInitials = computed(() => {
         .join('')
         .toUpperCase()
         .slice(0, 2);
+});
+
+const customerFirstName = computed(() => {
+    if (!customerName.value) return '';
+    return customerName.value.split(' ')[0];
 });
 
 function onSearch() {
@@ -302,9 +333,24 @@ onBeforeUnmount(() => {
     font-size: 0.75rem;
 }
 
+/* Storefront White Navbar Styling */
+.store-header-navbar {
+    background-color: #ffffff !important;
+    border-bottom: 1px solid #eef2f6 !important;
+    box-shadow: 0 2px 12px rgba(15, 23, 42, 0.04) !important;
+}
+
+.store-name-text {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0f172a;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+}
+
 .store-logo {
-    max-height: 38px;
-    max-width: 160px;
+    max-height: 40px;
+    max-width: 170px;
     object-fit: contain;
 }
 
@@ -314,10 +360,175 @@ onBeforeUnmount(() => {
     object-fit: contain;
 }
 
+/* Nav Links - Sleek, Horizontal, No Box */
+.store-nav-link {
+    display: inline-flex;
+    align-items: center;
+    color: #475569;
+    font-size: 0.92rem;
+    font-weight: 500;
+    padding: 0.45rem 0.85rem;
+    border-radius: 8px;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: all 0.18s ease;
+    outline: none !important;
+}
+
+.store-nav-link:hover {
+    color: #0d6efd;
+    background-color: #f8fafc;
+}
+
+.store-nav-link.active {
+    color: #0d6efd;
+    font-weight: 600;
+    background-color: #eff6ff;
+}
+
+/* Compact Search Form */
+.store-search-form {
+    width: 200px;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.store-search-form:focus-within {
+    width: 250px;
+}
+
+.store-search-box {
+    height: 36px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 50rem;
+    overflow: hidden;
+    transition: all 0.2s ease;
+    align-items: center;
+}
+
+.store-search-box:focus-within {
+    background: #ffffff;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+}
+
+.store-search-input {
+    font-size: 0.82rem;
+}
+
+.store-search-submit {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.65rem;
+    white-space: nowrap;
+    height: 28px;
+    line-height: 1;
+}
+
+/* Compact Circular Icon Buttons (Wishlist, Cart, Guest Login) */
+.store-icon-btn {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+    color: #475569;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    font-size: 0.95rem;
+    position: relative;
+    user-select: none;
+}
+
+.store-icon-btn:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.store-wishlist-btn:hover {
+    background: #fef2f2;
+    border-color: #fca5a5;
+    color: #ef4444;
+}
+
+.store-cart-btn {
+    border-color: #bfdbfe;
+    background: #eff6ff;
+}
+
+.store-cart-btn:hover {
+    background: #dbeafe;
+    border-color: #93c5fd;
+    color: #1d4ed8;
+}
+
+/* Floating Notification Count Badges */
+.store-badge-count {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    border-radius: 10px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    line-height: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Account Pill */
+.store-account-pill {
+    height: 36px;
+    border-radius: 50rem;
+    background: #ffffff;
+    border-color: #e2e8f0 !important;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.store-account-pill:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1 !important;
+    transform: translateY(-1px);
+}
+
 .avatar-initials {
     width: 24px;
     height: 24px;
-    font-size: 0.7rem;
-    font-weight: bold;
+    font-size: 0.68rem;
+    font-weight: 700;
+}
+
+.store-dropdown-menu {
+    position: absolute;
+    right: 0;
+    min-width: 210px;
+    z-index: 1050;
+}
+
+:global(html[dir="rtl"]) .store-dropdown-menu {
+    right: auto !important;
+    left: 0 !important;
+}
+
+:global(html[dir="rtl"]) .store-search-box .store-search-submit {
+    margin-left: 0.25rem !important;
+    margin-right: 0 !important;
+}
+
+:global(html[dir="rtl"]) .store-badge-count {
+    right: auto !important;
+    left: -5px !important;
 }
 </style>

@@ -2,87 +2,87 @@
     <aside class="sidebar">
 
         <div class="sidebar-heading">
-            MAIN MENU
+            {{ $t('nav.main_menu') }}
         </div>
 
         <router-link to="/admin/dashboard" class="menu-link">
-            <i class="bi bi-speedometer2"></i> Dashboard
+            <span>📊</span> {{ $t('nav.dashboard') }}
         </router-link>
 
         <div class="sidebar-heading">
-            CATALOG MANAGEMENT
+            {{ $t('nav.catalog_management') }}
         </div>
 
         <router-link to="/admin/categories" class="menu-link">
-            Categories
+            <span>📁</span> {{ $t('nav.categories') }}
         </router-link>
 
         <router-link to="/admin/brands" class="menu-link">
-            Brands
+            <span>🏷️</span> {{ $t('nav.brands') }}
         </router-link>
 
         <router-link to="/admin/units" class="menu-link">
-            Units
+            <span>📏</span> {{ $t('nav.units') }}
         </router-link>
 
         <router-link to="/admin/products" class="menu-link">
-            Products
+            <span>📦</span> {{ $t('nav.products') }}
         </router-link>
 
         <div class="sidebar-heading">
-            INVENTORY
+            {{ $t('nav.inventory') }}
         </div>
 
         <router-link to="/admin/inventory" class="menu-link">
-            Stock Management
+            <span>📈</span> {{ $t('nav.stock_management') }}
         </router-link>
 
         <router-link to="/admin/purchases" class="menu-link">
-            Purchases
+            <span>🛒</span> {{ $t('nav.purchases') }}
         </router-link>
 
         <div class="sidebar-heading">
-            SALES & FULFILLMENT
+            {{ $t('nav.sales_fulfillment') }}
         </div>
 
         <router-link to="/admin/pos" class="menu-link">
-            POS Counter
+            <span>💻</span> {{ $t('nav.pos_counter') }}
         </router-link>
 
         <router-link to="/admin/orders" class="menu-link">
-            Online Orders
+            <span>🛍️</span> {{ $t('nav.online_orders') }}
         </router-link>
 
         <router-link to="/admin/coupons" class="menu-link">
-            🏷️ Coupons & Discounts
+            <span>🏷️</span> {{ $t('nav.coupons_discounts') }}
         </router-link>
 
         <router-link to="/admin/reports" class="menu-link">
-            Reports
+            <span>📑</span> {{ $t('nav.reports') }}
         </router-link>
 
         <div class="sidebar-heading">
-            STOREFRONT & CMS
+            {{ $t('nav.storefront_cms') }}
         </div>
 
         <router-link to="/admin/website-settings" class="menu-link">
-            ⚙️ Website CMS & SEO
+            <span>⚙️</span> {{ $t('nav.website_settings') }}
         </router-link>
 
         <a href="/" target="_blank" class="menu-link text-primary fw-medium">
-            🌐 Visit Website
+            <span>🌐</span> {{ $t('nav.visit_website') }}
         </a>
 
         <div class="sidebar-heading">
-            ACCOUNT & SECURITY
+            {{ $t('nav.account_security') }}
         </div>
 
         <router-link to="/admin/profile" class="menu-link">
-            👤 Edit Profile / Password
+            <span>👤</span> {{ $t('nav.edit_profile') }}
         </router-link>
 
         <button type="button" class="menu-link text-danger border-0 bg-transparent w-100 text-start" @click="handleLogout">
-            🚪 Logout
+            <span>🚪</span> {{ $t('nav.logout') }}
         </button>
 
     </aside>
@@ -91,16 +91,18 @@
 <script setup>
 import { useAuth } from '../../composables/useAuth';
 import { useNotification } from '../../composables/useNotification';
+import { useI18n } from 'vue-i18n';
 
+const { t } = useI18n();
 const { logout } = useAuth();
 const { confirmDialog } = useNotification();
 
 async function handleLogout() {
     const ok = await confirmDialog({
-        title: 'Sign Out of Portal?',
-        message: 'Are you sure you want to log out of the Admin Portal?',
-        confirmText: 'Sign Out',
-        cancelText: 'Stay Logged In',
+        title: t('header.portal_title'),
+        message: t('common.are_you_sure'),
+        confirmText: t('nav.logout'),
+        cancelText: t('common.cancel'),
         type: 'danger',
     });
     if (ok) {
@@ -118,6 +120,21 @@ async function handleLogout() {
     padding: 20px 12px;
 }
 
+:global(html[dir="rtl"]) .sidebar {
+    border-right: none !important;
+    border-left: 1px solid #e5e7eb !important;
+    text-align: right !important;
+}
+
+:global(html[dir="rtl"]) .menu-link {
+    text-align: right !important;
+    justify-content: flex-start !important;
+}
+
+:global(html[dir="rtl"]) .sidebar-heading {
+    text-align: right !important;
+}
+
 .sidebar-heading {
     font-size: 11px;
     font-weight: 700;
@@ -126,7 +143,9 @@ async function handleLogout() {
 }
 
 .menu-link {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 8px;
     padding: 11px 12px;
     margin-bottom: 4px;
     border-radius: 6px;

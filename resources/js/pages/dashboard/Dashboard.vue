@@ -4,22 +4,22 @@
         <!-- Welcome Banner -->
         <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
             <div>
-                <h3 class="fw-bold mb-1">Welcome to Retail POS Management</h3>
+                <h3 class="fw-bold mb-1">{{ $t('header.portal_title') }}</h3>
                 <p class="text-muted mb-0">
-                    Omnichannel Point of Sale, Inventory Control & Business Analytics
+                    {{ $t('dashboard.subtitle') }}
                 </p>
             </div>
 
             <!-- Quick Action Buttons -->
             <div class="d-flex gap-2">
                 <router-link to="/admin/pos" class="btn btn-primary fw-semibold">
-                    🛒 Open POS Counter
+                    🛒 {{ $t('nav.pos_counter') }}
                 </router-link>
                 <router-link to="/admin/orders" class="btn btn-outline-primary">
-                    📦 Online Orders
+                    📦 {{ $t('nav.online_orders') }}
                 </router-link>
                 <router-link to="/admin/reports" class="btn btn-outline-secondary">
-                    📊 View Reports
+                    📊 {{ $t('dashboard.view_reports') }}
                 </router-link>
             </div>
         </div>
@@ -36,9 +36,9 @@
                             </svg>
                         </div>
                         <div>
-                            <div class="text-muted small fw-medium">Today's Sales Revenue</div>
+                            <div class="text-muted small fw-medium">{{ $t('dashboard.today_sales') }}</div>
                             <h4 class="fw-bold text-primary mb-0">₹{{ Number(stats.today_sales).toLocaleString() }}</h4>
-                            <div class="small text-muted mt-1">{{ stats.today_orders }} orders placed today</div>
+                            <div class="small text-muted mt-1">{{ stats.today_orders }} {{ $t('dashboard.today_orders') }}</div>
                         </div>
                     </div>
                 </div>
@@ -54,9 +54,9 @@
                             </svg>
                         </div>
                         <div>
-                            <div class="text-muted small fw-medium">Month's Gross Profit</div>
+                            <div class="text-muted small fw-medium">{{ $t('dashboard.gross_profit') }}</div>
                             <h4 class="fw-bold text-success mb-0">₹{{ Number(stats.month_profit).toLocaleString() }}</h4>
-                            <div class="small text-success fw-semibold mt-1">{{ stats.month_margin }}% Margin</div>
+                            <div class="small text-success fw-semibold mt-1">{{ stats.month_margin }}% {{ $t('dashboard.profit_margin') }}</div>
                         </div>
                     </div>
                 </div>
@@ -72,9 +72,9 @@
                             </svg>
                         </div>
                         <div>
-                            <div class="text-muted small fw-medium">Catalog Products</div>
+                            <div class="text-muted small fw-medium">{{ $t('dashboard.total_products') }}</div>
                             <h4 class="fw-bold mb-0">{{ stats.total_products }}</h4>
-                            <div class="small text-muted mt-1">{{ stats.stock_units }} total stock units</div>
+                            <div class="small text-muted mt-1">{{ stats.stock_units }} {{ $t('inventory.total_stock_units') }}</div>
                         </div>
                     </div>
                 </div>
@@ -90,9 +90,9 @@
                             </svg>
                         </div>
                         <div>
-                            <div class="text-muted small fw-medium">Stock Valuation</div>
+                            <div class="text-muted small fw-medium">{{ $t('inventory.valuation_cost') }}</div>
                             <h4 class="fw-bold text-dark mb-0">₹{{ Number(stats.cost_value).toLocaleString() }}</h4>
-                            <div class="small text-muted mt-1">Cost basis inventory</div>
+                            <div class="small text-muted mt-1">{{ $t('inventory.title') }}</div>
                         </div>
                     </div>
                 </div>
@@ -100,13 +100,13 @@
         </div>
 
         <!-- Quick Navigation Modules Grid -->
-        <h5 class="fw-bold mb-3 text-secondary">Quick Navigation</h5>
+        <h5 class="fw-bold mb-3 text-secondary">{{ $t('dashboard.quick_actions') }}</h5>
         <div class="row g-3">
             <div class="col-md-4">
                 <router-link to="/admin/pos" class="text-decoration-none">
                     <div class="card dashboard-card h-100 hover-card p-3 border-start border-primary border-4">
-                        <h6 class="fw-bold text-primary mb-1">🛒 POS Counter</h6>
-                        <p class="text-muted small mb-0">Open the cash register, scan barcodes, and print customer receipts.</p>
+                        <h6 class="fw-bold text-primary mb-1">🛒 {{ $t('nav.pos_counter') }}</h6>
+                        <p class="text-muted small mb-0">{{ $t('pos.cart_empty_sub') }}</p>
                     </div>
                 </router-link>
             </div>
@@ -114,8 +114,8 @@
             <div class="col-md-4">
                 <router-link to="/admin/orders" class="text-decoration-none">
                     <div class="card dashboard-card h-100 hover-card p-3 border-start border-info border-4">
-                        <h6 class="fw-bold text-info mb-1">📦 Online Orders</h6>
-                        <p class="text-muted small mb-0">Fulfill e-commerce, WhatsApp orders, dispatch couriers, and track delivery.</p>
+                        <h6 class="fw-bold text-info mb-1">📦 {{ $t('nav.online_orders') }}</h6>
+                        <p class="text-muted small mb-0">{{ $t('orders.subtitle') }}</p>
                     </div>
                 </router-link>
             </div>
@@ -123,8 +123,8 @@
             <div class="col-md-4">
                 <router-link to="/admin/inventory" class="text-decoration-none">
                     <div class="card dashboard-card h-100 hover-card p-3 border-start border-warning border-4">
-                        <h6 class="fw-bold text-warning mb-1">⚖️ Stock Management</h6>
-                        <p class="text-muted small mb-0">Monitor live inventory levels, low stock warnings, and audit adjustment logs.</p>
+                        <h6 class="fw-bold text-warning mb-1">⚖️ {{ $t('nav.stock_management') }}</h6>
+                        <p class="text-muted small mb-0">{{ $t('inventory.subtitle') }}</p>
                     </div>
                 </router-link>
             </div>
@@ -132,8 +132,8 @@
             <div class="col-md-4">
                 <router-link to="/admin/purchases" class="text-decoration-none">
                     <div class="card dashboard-card h-100 hover-card p-3 border-start border-secondary border-4">
-                        <h6 class="fw-bold text-secondary mb-1">📥 Supplier Purchases</h6>
-                        <p class="text-muted small mb-0">Manage supplier bills, purchase orders, vendor payables, and inbound stock.</p>
+                        <h6 class="fw-bold text-secondary mb-1">📥 {{ $t('nav.purchases') }}</h6>
+                        <p class="text-muted small mb-0">{{ $t('purchases.subtitle') }}</p>
                     </div>
                 </router-link>
             </div>
@@ -141,8 +141,8 @@
             <div class="col-md-4">
                 <router-link to="/admin/products" class="text-decoration-none">
                     <div class="card dashboard-card h-100 hover-card p-3 border-start border-dark border-4">
-                        <h6 class="fw-bold text-dark mb-1">🏷️ Product Catalog</h6>
-                        <p class="text-muted small mb-0">Manage items, variants, SKUs, barcodes, pricing, and images.</p>
+                        <h6 class="fw-bold text-dark mb-1">🏷️ {{ $t('nav.products') }}</h6>
+                        <p class="text-muted small mb-0">{{ $t('products.subtitle') }}</p>
                     </div>
                 </router-link>
             </div>
@@ -150,8 +150,8 @@
             <div class="col-md-4">
                 <router-link to="/admin/reports" class="text-decoration-none">
                     <div class="card dashboard-card h-100 hover-card p-3 border-start border-success border-4">
-                        <h6 class="fw-bold text-success mb-1">📊 Business Reports</h6>
-                        <p class="text-muted small mb-0">Executive P&L statements, product margins, and stock valuation reports.</p>
+                        <h6 class="fw-bold text-success mb-1">📊 {{ $t('nav.reports') }}</h6>
+                        <p class="text-muted small mb-0">{{ $t('reports.subtitle') }}</p>
                     </div>
                 </router-link>
             </div>

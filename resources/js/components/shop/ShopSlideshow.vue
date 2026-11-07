@@ -49,10 +49,10 @@
                                             v-model="searchQuery"
                                             type="text"
                                             class="form-control border-0 shadow-none ps-1"
-                                            placeholder="Search by product name, barcode, brand..."
+                                            :placeholder="$t('storefront.search_placeholder')"
                                         />
                                         <button type="submit" class="btn btn-primary px-4 py-2 rounded-pill fw-bold">
-                                            Search
+                                            {{ $t('common.search') }}
                                         </button>
                                     </form>
                                 </div>
