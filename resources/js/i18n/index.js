@@ -1,4 +1,5 @@
 import { createI18n } from 'vue-i18n';
+import { ref } from 'vue';
 import bootstrapRtlCss from 'bootstrap/dist/css/bootstrap.rtl.min.css?inline';
 
 import en from './locales/en.json';
@@ -136,6 +137,25 @@ export function setLanguage(localeCode) {
 
 export function getCurrentLanguage() {
     return i18n.global.locale.value || i18n.global.locale || 'en';
+}
+
+export const enabledLocales = ref([...supportedLocales]);
+
+export function updateEnabledLocales(codes, defaultCode = 'en') {
+    if (Array.isArray(codes) && codes.length > 0) {
+        const filtered = supportedLocales.filter(l => codes.includes(l.code));
+        enabledLocales.value = filtered.length > 0 ? filtered : [...supportedLocales];
+    } else {
+        enabledLocales.value = [...supportedLocales];
+    }
+
+    const current = getCurrentLanguage();
+    if (!enabledLocales.value.some(l => l.code === current)) {
+        const fallback = enabledLocales.value.some(l => l.code === defaultCode)
+            ? defaultCode
+            : (enabledLocales.value[0]?.code || 'en');
+        setLanguage(fallback);
+    }
 }
 
 // Locale-aware formatters

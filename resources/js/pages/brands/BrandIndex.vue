@@ -79,7 +79,8 @@
                             </td>
 
                             <td class="fw-semibold">
-                                {{ brand.name }}
+                                <div>{{ brand.name }}</div>
+                                <div v-if="brand.name_ar" class="small text-muted" dir="rtl">{{ brand.name_ar }}</div>
                             </td>
 
                             <td>{{ brand.description || '-' }}</td>
@@ -182,13 +183,43 @@
 
                             <div class="mb-3">
                                 <label class="form-label">
+                                    {{ $t('brands.brand_name_ar') }}
+                                    <span class="badge bg-light text-muted ms-1">عربي</span>
+                                </label>
+
+                                <input
+                                    v-model="form.name_ar"
+                                    type="text"
+                                    dir="rtl"
+                                    class="form-control"
+                                    :placeholder="$t('brands.brand_name_ar_placeholder')"
+                                />
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">
                                     {{ $t('common.description') }}
                                 </label>
 
                                 <textarea
                                     v-model="form.description"
                                     class="form-control"
-                                    rows="3">
+                                    rows="2">
+                                </textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    {{ $t('brands.description_ar') }}
+                                    <span class="badge bg-light text-muted ms-1">عربي</span>
+                                </label>
+
+                                <textarea
+                                    v-model="form.description_ar"
+                                    dir="rtl"
+                                    class="form-control"
+                                    rows="2"
+                                    :placeholder="$t('brands.description_ar_placeholder')">
                                 </textarea>
                             </div>
 
@@ -289,7 +320,9 @@ let brandModal = null;
 
 const form = reactive({
     name: '',
+    name_ar: '',
     description: '',
+    description_ar: '',
     status: true,
 });
 
@@ -322,7 +355,9 @@ function resetForm() {
     errorMessage.value = '';
 
     form.name = '';
+    form.name_ar = '';
     form.description = '';
+    form.description_ar = '';
     form.status = true;
 
     logoFile.value = null;
@@ -336,7 +371,9 @@ function openModal(brand = null) {
         editingId.value = brand.id;
 
         form.name = brand.name;
+        form.name_ar = brand.name_ar || '';
         form.description = brand.description || '';
+        form.description_ar = brand.description_ar || '';
         form.status = Boolean(brand.status);
 
         logoPreview.value = brand.logo
@@ -368,7 +405,9 @@ async function saveBrand() {
         const payload = new FormData();
 
         payload.append('name', form.name);
-        payload.append('description', form.description);
+        payload.append('name_ar', form.name_ar || '');
+        payload.append('description', form.description || '');
+        payload.append('description_ar', form.description_ar || '');
         payload.append('status', form.status ? '1' : '0');
 
         if (logoFile.value) {

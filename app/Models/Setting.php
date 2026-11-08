@@ -15,6 +15,11 @@ class Setting extends Model
     public static function defaults(): array
     {
         return [
+            // Localization & Languages
+            'enabled_languages' => json_encode(['en', 'ar', 'hi', 'ur', 'bn']),
+            'default_language' => 'en',
+            'language_switcher_enabled' => '1',
+
             // General & Branding
             'site_name' => 'Retail Store',
             'site_tagline' => 'Quality retail essentials delivered directly to your door',
@@ -231,6 +236,18 @@ class Setting extends Model
             }
         } else {
             $merged['testimonials_list_items'] = [];
+        }
+
+        // Decode enabled_languages into array
+        if (!empty($merged['enabled_languages'])) {
+            if (is_string($merged['enabled_languages'])) {
+                $decoded = json_decode($merged['enabled_languages'], true);
+                $merged['enabled_languages_list'] = is_array($decoded) ? $decoded : ['en', 'ar', 'hi', 'ur', 'bn'];
+            } elseif (is_array($merged['enabled_languages'])) {
+                $merged['enabled_languages_list'] = $merged['enabled_languages'];
+            }
+        } else {
+            $merged['enabled_languages_list'] = ['en', 'ar', 'hi', 'ur', 'bn'];
         }
 
         return $merged;

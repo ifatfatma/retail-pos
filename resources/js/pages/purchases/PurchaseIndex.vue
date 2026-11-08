@@ -493,10 +493,28 @@
                                     </div>
                                     <div class="col-md-6">
                                         <input
+                                            v-model="supplierForm.name_ar"
+                                            type="text"
+                                            dir="rtl"
+                                            class="form-control"
+                                            placeholder="اسم المورد بالعربية"
+                                        />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input
                                             v-model="supplierForm.company_name"
                                             type="text"
                                             class="form-control"
                                             placeholder="Company Name"
+                                        />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input
+                                            v-model="supplierForm.company_name_ar"
+                                            type="text"
+                                            dir="rtl"
+                                            class="form-control"
+                                            placeholder="اسم الشركة بالعربية"
                                         />
                                     </div>
                                     <div class="col-md-4">
@@ -563,8 +581,14 @@
                                         </td>
                                     </tr>
                                     <tr v-for="sup in suppliersList" :key="sup.id">
-                                        <td class="fw-semibold">{{ sup.name }}</td>
-                                        <td class="text-muted">{{ sup.company_name || '-' }}</td>
+                                        <td class="fw-semibold">
+                                            <div>{{ sup.name }}</div>
+                                            <div v-if="sup.name_ar" class="small text-muted" dir="rtl">{{ sup.name_ar }}</div>
+                                        </td>
+                                        <td class="text-muted">
+                                            <div>{{ sup.company_name || '-' }}</div>
+                                            <div v-if="sup.company_name_ar" class="extra-small text-muted" dir="rtl">{{ sup.company_name_ar }}</div>
+                                        </td>
                                         <td>{{ sup.phone || '-' }}</td>
                                         <td>{{ sup.email || '-' }}</td>
                                         <td class="text-center">
@@ -769,7 +793,9 @@ function resetSupplierForm() {
     editingSupplierId.value = null;
     Object.assign(supplierForm, {
         name: '',
+        name_ar: '',
         company_name: '',
+        company_name_ar: '',
         phone: '',
         email: '',
         gst_number: '',
@@ -782,7 +808,9 @@ function editSupplier(sup) {
     editingSupplierId.value = sup.id;
     Object.assign(supplierForm, {
         name: sup.name,
+        name_ar: sup.name_ar || '',
         company_name: sup.company_name || '',
+        company_name_ar: sup.company_name_ar || '',
         phone: sup.phone || '',
         email: sup.email || '',
         gst_number: sup.gst_number || '',

@@ -250,11 +250,12 @@
                             <!-- Title & first order tag -->
                             <td>
                                 <div class="fw-bold text-dark">{{ coupon.name }}</div>
+                                <div v-if="coupon.name_ar" class="extra-small text-muted" dir="rtl">{{ coupon.name_ar }}</div>
                                 <div v-if="coupon.description" class="extra-small text-muted text-truncate" style="max-width: 180px;">
                                     {{ coupon.description }}
                                 </div>
                                 <span v-if="coupon.is_first_order_only" class="badge bg-warning-subtle text-warning extra-small mt-1">
-                                    🌟 First Order Only
+                                    🌟 {{ $t('coupons.first_order_only') }}
                                 </span>
                             </td>
 
@@ -484,7 +485,7 @@
 
                                 <!-- Coupon Name / Title -->
                                 <div class="col-md-6">
-                                    <label class="form-label small fw-semibold">Promotion Name / Title <span class="text-danger">*</span></label>
+                                    <label class="form-label small fw-semibold">{{ $t('coupons.name') }} <span class="text-danger">*</span></label>
                                     <input
                                         v-model="form.name"
                                         type="text"
@@ -494,14 +495,42 @@
                                     />
                                 </div>
 
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-semibold">
+                                        {{ $t('coupons.name_ar') }}
+                                        <span class="badge bg-light text-muted ms-1">عربي</span>
+                                    </label>
+                                    <input
+                                        v-model="form.name_ar"
+                                        type="text"
+                                        dir="rtl"
+                                        class="form-control"
+                                        :placeholder="$t('coupons.name_ar_placeholder')"
+                                    />
+                                </div>
+
                                 <!-- Description -->
-                                <div class="col-12">
-                                    <label class="form-label small fw-semibold">Description / Terms <span class="text-muted fw-normal">(Optional)</span></label>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-semibold">{{ $t('common.description') }} <span class="text-muted fw-normal">({{ $t('common.info') }})</span></label>
                                     <input
                                         v-model="form.description"
                                         type="text"
                                         class="form-control"
                                         placeholder="e.g. 20% discount on stationery for bills above ₹400"
+                                    />
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-semibold">
+                                        {{ $t('coupons.description_ar') }}
+                                        <span class="badge bg-light text-muted ms-1">عربي</span>
+                                    </label>
+                                    <input
+                                        v-model="form.description_ar"
+                                        type="text"
+                                        dir="rtl"
+                                        class="form-control"
+                                        :placeholder="$t('coupons.description_ar_placeholder')"
                                     />
                                 </div>
 
@@ -1174,7 +1203,9 @@ const productSearch = ref('');
 const form = reactive({
     code: '',
     name: '',
+    name_ar: '',
     description: '',
+    description_ar: '',
     type: 'percentage',
     value: 10,
     max_discount_amount: null,
@@ -1375,7 +1406,9 @@ function openCreateModal() {
     Object.assign(form, {
         code: '',
         name: '',
+        name_ar: '',
         description: '',
+        description_ar: '',
         type: 'percentage',
         value: 10,
         max_discount_amount: null,
@@ -1427,7 +1460,9 @@ function openEditModal(coupon) {
     Object.assign(form, {
         code: coupon.code,
         name: coupon.name,
+        name_ar: coupon.name_ar || '',
         description: coupon.description || '',
+        description_ar: coupon.description_ar || '',
         type: coupon.type,
         value: Number(coupon.value),
         max_discount_amount: coupon.max_discount_amount ? Number(coupon.max_discount_amount) : null,

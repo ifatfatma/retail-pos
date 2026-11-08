@@ -250,7 +250,7 @@
                             </div>
 
                             <div class="flex-grow-1 me-2 overflow-hidden min-w-0">
-                                <div class="fw-semibold text-truncate small text-dark" :title="item.name">
+                                <div class="fw-semibold text-truncate small text-dark">
                                     {{ item.name }}
                                 </div>
                                 <div class="d-flex align-items-center text-muted extra-small">
@@ -2027,6 +2027,21 @@ onBeforeUnmount(() => {
     flex-direction: column;
     overflow-y: auto;
     overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+.pos-checkout::-webkit-scrollbar {
+    width: 5px;
+}
+
+.pos-checkout::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 4px;
+}
+
+.pos-checkout::-webkit-scrollbar-thumb:hover {
+    background-color: #94a3b8;
 }
 
 .category-pills-wrap {
@@ -2114,8 +2129,23 @@ onBeforeUnmount(() => {
     overflow-y: auto;
     overflow-x: hidden;
     flex: 1 1 auto;
-    min-height: 150px;
-    max-height: 300px;
+    min-height: 120px;
+    max-height: 280px;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+.cart-items-wrap::-webkit-scrollbar {
+    width: 5px;
+}
+
+.cart-items-wrap::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 4px;
+}
+
+.cart-items-wrap::-webkit-scrollbar-thumb:hover {
+    background-color: #94a3b8;
 }
 
 .cart-row {

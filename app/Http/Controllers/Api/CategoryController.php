@@ -18,7 +18,10 @@ class CategoryController extends Controller
         if ($request->filled('search')) {
             $search = $request->search;
 
-            $query->where('name', 'like', "%{$search}%");
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('name_ar', 'like', "%{$search}%");
+            });
         }
 
         if ($request->has('status') && $request->status !== '') {
@@ -37,8 +40,10 @@ class CategoryController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:150',
+            'name_ar' => 'nullable|string|max:150',
             'parent_id' => 'nullable|exists:categories,id',
             'description' => 'nullable|string',
+            'description_ar' => 'nullable|string',
             'status' => 'required|boolean',
         ]);
 
@@ -68,12 +73,14 @@ class CategoryController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:150',
+            'name_ar' => 'nullable|string|max:150',
             'parent_id' => [
                 'nullable',
                 'exists:categories,id',
                 Rule::notIn([$category->id]),
             ],
             'description' => 'nullable|string',
+            'description_ar' => 'nullable|string',
             'status' => 'required|boolean',
         ]);
 

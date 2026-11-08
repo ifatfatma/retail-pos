@@ -26,7 +26,8 @@ class CouponController extends Controller
             $search = trim($request->search);
             $query->where(function ($q) use ($search) {
                 $q->where('code', 'like', "%{$search}%")
-                  ->orWhere('name', 'like', "%{$search}%");
+                  ->orWhere('name', 'like', "%{$search}%")
+                  ->orWhere('name_ar', 'like', "%{$search}%");
             });
         }
 
@@ -85,7 +86,9 @@ class CouponController extends Controller
         $validated = $request->validate([
             'code' => 'required|string|max:50|unique:coupons,code',
             'name' => 'required|string|max:150',
+            'name_ar' => 'nullable|string|max:150',
             'description' => 'nullable|string|max:1000',
+            'description_ar' => 'nullable|string|max:1000',
             'type' => 'required|in:percentage,fixed_cart,free_shipping,buy_x_get_y,tiered',
             'value' => 'nullable|numeric|min:0',
             'max_discount_amount' => 'nullable|numeric|min:0',
@@ -186,7 +189,9 @@ class CouponController extends Controller
         $validated = $request->validate([
             'code' => ['required', 'string', 'max:50', Rule::unique('coupons')->ignore($coupon->id)],
             'name' => 'required|string|max:150',
+            'name_ar' => 'nullable|string|max:150',
             'description' => 'nullable|string|max:1000',
+            'description_ar' => 'nullable|string|max:1000',
             'type' => 'required|in:percentage,fixed_cart,free_shipping,buy_x_get_y,tiered',
             'value' => 'nullable|numeric|min:0',
             'max_discount_amount' => 'nullable|numeric|min:0',

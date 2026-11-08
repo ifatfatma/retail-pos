@@ -1,5 +1,6 @@
 import { ref, computed } from 'vue';
 import axios from 'axios';
+import { updateEnabledLocales } from '../i18n';
 
 // Shared singleton reactive settings
 const settings = ref({
@@ -52,6 +53,12 @@ export function useShopSettings() {
             if (res.data?.data) {
                 settings.value = { ...settings.value, ...res.data.data };
                 applySeoMeta(settings.value);
+                if (settings.value.enabled_languages_list) {
+                    updateEnabledLocales(
+                        settings.value.enabled_languages_list,
+                        settings.value.default_language || 'en'
+                    );
+                }
                 isLoaded.value = true;
             }
         } catch (e) {

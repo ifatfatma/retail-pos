@@ -19,7 +19,9 @@ class UnitController extends Controller
 
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('short_name', 'like', "%{$search}%");
+                    ->orWhere('name_ar', 'like', "%{$search}%")
+                    ->orWhere('short_name', 'like', "%{$search}%")
+                    ->orWhere('short_name_ar', 'like', "%{$search}%");
             });
         }
 
@@ -37,7 +39,9 @@ class UnitController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:100',
+            'name_ar' => 'nullable|string|max:100',
             'short_name' => 'required|string|max:20|unique:units,short_name',
+            'short_name_ar' => 'nullable|string|max:50',
             'allow_decimal' => 'required|boolean',
             'status' => 'required|boolean',
         ]);
@@ -63,6 +67,7 @@ class UnitController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:100',
+            'name_ar' => 'nullable|string|max:100',
 
             'short_name' => [
                 'required',
@@ -70,6 +75,7 @@ class UnitController extends Controller
                 'max:20',
                 Rule::unique('units', 'short_name')->ignore($unit->id),
             ],
+            'short_name_ar' => 'nullable|string|max:50',
 
             'allow_decimal' => 'required|boolean',
             'status' => 'required|boolean',

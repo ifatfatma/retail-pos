@@ -65,7 +65,8 @@
                             </td>
 
                             <td class="fw-semibold">
-                                {{ category.name }}
+                                <div>{{ category.name }}</div>
+                                <div v-if="category.name_ar" class="small text-muted" dir="rtl">{{ category.name_ar }}</div>
                             </td>
 
                             <td>
@@ -175,6 +176,21 @@
 
                             <div class="mb-3">
                                 <label class="form-label">
+                                    {{ $t('categories.category_name_ar') }}
+                                    <span class="badge bg-light text-muted ms-1">عربي</span>
+                                </label>
+
+                                <input
+                                    v-model="form.name_ar"
+                                    type="text"
+                                    dir="rtl"
+                                    class="form-control"
+                                    :placeholder="$t('categories.category_name_ar_placeholder')"
+                                />
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">
                                     {{ $t('categories.category_name') }} (Parent)
                                 </label>
 
@@ -207,7 +223,22 @@
                                 <textarea
                                     v-model="form.description"
                                     class="form-control"
-                                    rows="3">
+                                    rows="2">
+                                </textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    {{ $t('categories.description_ar') }}
+                                    <span class="badge bg-light text-muted ms-1">عربي</span>
+                                </label>
+
+                                <textarea
+                                    v-model="form.description_ar"
+                                    dir="rtl"
+                                    class="form-control"
+                                    rows="2"
+                                    :placeholder="$t('categories.description_ar_placeholder')">
                                 </textarea>
                             </div>
 
@@ -283,8 +314,10 @@ let categoryModal = null;
 
 const form = reactive({
     name: '',
+    name_ar: '',
     parent_id: null,
     description: '',
+    description_ar: '',
     status: true,
 });
 
@@ -322,8 +355,10 @@ function resetForm() {
 
     Object.assign(form, {
         name: '',
+        name_ar: '',
         parent_id: null,
         description: '',
+        description_ar: '',
         status: true,
     });
 }
@@ -336,8 +371,10 @@ function openModal(category = null) {
 
         Object.assign(form, {
             name: category.name,
+            name_ar: category.name_ar || '',
             parent_id: category.parent_id,
             description: category.description || '',
+            description_ar: category.description_ar || '',
             status: Boolean(category.status),
         });
     }

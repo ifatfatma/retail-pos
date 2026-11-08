@@ -18,7 +18,10 @@ class BrandController extends Controller
         if ($request->filled('search')) {
             $search = $request->search;
 
-            $query->where('name', 'like', "%{$search}%");
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('name_ar', 'like', "%{$search}%");
+            });
         }
 
         if ($request->has('status') && $request->status !== '') {
@@ -35,7 +38,9 @@ class BrandController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:150',
+            'name_ar' => 'nullable|string|max:150',
             'description' => 'nullable|string',
+            'description_ar' => 'nullable|string',
             'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'status' => 'required|boolean',
         ]);
@@ -49,8 +54,10 @@ class BrandController extends Controller
 
         $brand = Brand::create([
             'name' => $validated['name'],
+            'name_ar' => $validated['name_ar'] ?? null,
             'slug' => $this->generateSlug($validated['name']),
             'description' => $validated['description'] ?? null,
+            'description_ar' => $validated['description_ar'] ?? null,
             'logo' => $logo,
             'status' => $validated['status'],
         ]);
@@ -74,7 +81,9 @@ class BrandController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:150',
+            'name_ar' => 'nullable|string|max:150',
             'description' => 'nullable|string',
+            'description_ar' => 'nullable|string',
             'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'status' => 'required|boolean',
         ]);
@@ -93,11 +102,13 @@ class BrandController extends Controller
 
         $brand->update([
             'name' => $validated['name'],
+            'name_ar' => $validated['name_ar'] ?? null,
             'slug' => $this->generateSlug(
                 $validated['name'],
                 $brand->id
             ),
             'description' => $validated['description'] ?? null,
+            'description_ar' => $validated['description_ar'] ?? null,
             'logo' => $logo,
             'status' => $validated['status'],
         ]);

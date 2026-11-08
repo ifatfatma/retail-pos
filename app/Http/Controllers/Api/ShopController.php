@@ -22,8 +22,8 @@ class ShopController extends Controller
     public function products(Request $request)
     {
         $query = Product::with([
-            'category:id,name,slug',
-            'unit:id,name,short_name,allow_decimal',
+            'category:id,name,name_ar,slug',
+            'unit:id,name,name_ar,short_name,short_name_ar,allow_decimal',
             'images',
             'variants' => function ($v) {
                 $v->with('stock')->where('status', true);
@@ -35,7 +35,9 @@ class ShopController extends Controller
             $search = trim($request->search);
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('name_ar', 'like', "%{$search}%")
                     ->orWhere('description', 'like', "%{$search}%")
+                    ->orWhere('description_ar', 'like', "%{$search}%")
                     ->orWhereHas('variants', function ($v) use ($search) {
                         $v->where('sku', 'like', "%{$search}%")
                             ->orWhere('barcode', '=', $search);
@@ -89,14 +91,19 @@ class ShopController extends Controller
             return [
                 'id' => $product->id,
                 'name' => $product->name,
+                'name_ar' => $product->name_ar,
                 'slug' => $product->slug,
                 'description' => $product->description,
+                'description_ar' => $product->description_ar,
                 'category_id' => $product->category_id,
                 'category_name' => $product->category->name ?? 'General',
+                'category_name_ar' => $product->category->name_ar ?? null,
                 'category_slug' => $product->category->slug ?? '',
                 'unit' => [
                     'name' => $product->unit->name ?? 'Piece',
+                    'name_ar' => $product->unit->name_ar ?? null,
                     'short_name' => $product->unit->short_name ?? 'pcs',
+                    'short_name_ar' => $product->unit->short_name_ar ?? null,
                     'allow_decimal' => (bool) ($product->unit->allow_decimal ?? false),
                 ],
                 'image_url' => $primaryImage ? asset('storage/' . $primaryImage->image_path) : null,
@@ -127,9 +134,9 @@ class ShopController extends Controller
     public function productDetails($idOrSlug)
     {
         $product = Product::with([
-            'category:id,name,slug',
-            'brand:id,name',
-            'unit:id,name,short_name,allow_decimal',
+            'category:id,name,name_ar,slug',
+            'brand:id,name,name_ar',
+            'unit:id,name,name_ar,short_name,short_name_ar,allow_decimal',
             'images',
             'variants' => function ($v) {
                 $v->with('stock')->where('status', true);
@@ -151,16 +158,22 @@ class ShopController extends Controller
             'data' => [
                 'id' => $product->id,
                 'name' => $product->name,
+                'name_ar' => $product->name_ar,
                 'slug' => $product->slug,
                 'description' => $product->description,
+                'description_ar' => $product->description_ar,
                 'category_id' => $product->category_id,
                 'category_name' => $product->category ? $product->category->name : 'General',
+                'category_name_ar' => $product->category ? $product->category->name_ar : null,
                 'category' => $product->category ? $product->category->name : 'General',
                 'brand_name' => $product->brand ? $product->brand->name : null,
+                'brand_name_ar' => $product->brand ? $product->brand->name_ar : null,
                 'brand' => $product->brand ? $product->brand->name : null,
                 'unit' => [
                     'name' => $product->unit->name ?? 'Piece',
+                    'name_ar' => $product->unit->name_ar ?? null,
                     'short_name' => $product->unit->short_name ?? 'pcs',
+                    'short_name_ar' => $product->unit->short_name_ar ?? null,
                     'allow_decimal' => (bool) ($product->unit->allow_decimal ?? false),
                 ],
                 'image_url' => $primaryImage ? asset('storage/' . $primaryImage->image_path) : null,
@@ -198,8 +211,10 @@ class ShopController extends Controller
                 return [
                     'id' => $cat->id,
                     'name' => $cat->name,
+                    'name_ar' => $cat->name_ar,
                     'slug' => $cat->slug,
                     'description' => $cat->description,
+                    'description_ar' => $cat->description_ar,
                     'products_count' => $cat->products_count,
                 ];
             });

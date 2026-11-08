@@ -13,7 +13,10 @@
 
                 <div class="d-flex align-items-center gap-3">
                     <ThemeToggle theme="dark" size="sm" />
-                    <LanguageSelector theme="dark" />
+                    <LanguageSelector
+                        v-if="settings.language_switcher_enabled !== '0' && settings.language_switcher_enabled !== false"
+                        theme="dark"
+                    />
                     <router-link to="/track-order" class="text-white text-decoration-none">
                         📍 {{ $t('storefront.track_my_order') }}
                     </router-link>
@@ -161,6 +164,9 @@
                                     <span>❤️</span> <span>{{ $t('account.tab_wishlist') }}</span>
                                     <span class="badge bg-danger text-white rounded-pill ms-auto" v-if="wishlistCount > 0">{{ wishlistCount }}</span>
                                 </router-link>
+                                <router-link to="/account?tab=notifications" class="dropdown-item py-2 small d-flex align-items-center gap-2" @click="showUserDropdown = false">
+                                    <span>🔔</span> <span>{{ $t('account.tab_notifications') }}</span>
+                                </router-link>
                                 <router-link to="/account" class="dropdown-item py-2 small d-flex align-items-center gap-2" @click="showUserDropdown = false">
                                     <span>👤</span> <span>{{ $t('account.tab_profile') }}</span>
                                 </router-link>
@@ -184,6 +190,22 @@
                 </div>
             </div>
         </header>
+
+        <!-- Live Promotional Deal Ribbon (Amazon/Flipkart Flash Sale & Festive Deals) -->
+        <div v-if="activePromo" class="store-promo-ribbon py-2 px-3 text-white text-center d-flex flex-wrap align-items-center justify-content-center gap-2">
+            <span class="badge bg-warning text-dark fw-bold extra-small text-uppercase">
+                ⚡ {{ activePromo.campaign_type.replace('_', ' ') }}
+            </span>
+            <span class="fw-semibold small text-truncate" style="max-width: 400px;">
+                {{ activePromo.title }}
+            </span>
+            <span v-if="activePromo.discount_value > 0" class="badge bg-danger extra-small">
+                {{ activePromo.discount_type === 'percentage' ? activePromo.discount_value + '% OFF' : '₹' + activePromo.discount_value + ' OFF' }}
+            </span>
+            <router-link to="/shop" class="btn btn-sm btn-light py-0 px-2 fw-bold extra-small ms-1 text-decoration-none">
+                {{ $t('marketing.shop_now') }} →
+            </router-link>
+        </div>
 
         <!-- Main View Container -->
         <main class="flex-grow-1 bg-light-subtle">
@@ -215,41 +237,41 @@
                     </div>
 
                     <div class="col-lg-2 col-md-6">
-                        <h6 class="fw-bold text-uppercase text-secondary small mb-3">Quick Links</h6>
+                        <h6 class="fw-bold text-uppercase text-secondary small mb-3">{{ $t('storefront.quick_links') }}</h6>
                         <ul class="list-unstyled small mb-0">
-                            <li class="mb-2"><router-link to="/" class="text-white text-decoration-none">Home</router-link></li>
-                            <li class="mb-2"><router-link to="/shop" class="text-white text-decoration-none">Shop Catalog</router-link></li>
-                            <li class="mb-2"><router-link to="/cart" class="text-white text-decoration-none">My Cart</router-link></li>
-                            <li class="mb-2"><router-link to="/wishlist" class="text-white text-decoration-none">My Wishlist</router-link></li>
-                            <li class="mb-2"><router-link to="/account" class="text-white text-decoration-none">My Account</router-link></li>
-                            <li class="mb-2"><router-link to="/track-order" class="text-white text-decoration-none">Track Order</router-link></li>
+                            <li class="mb-2"><router-link to="/" class="text-white text-decoration-none">{{ $t('storefront.home') }}</router-link></li>
+                            <li class="mb-2"><router-link to="/shop" class="text-white text-decoration-none">{{ $t('storefront.catalog') }}</router-link></li>
+                            <li class="mb-2"><router-link to="/cart" class="text-white text-decoration-none">{{ $t('storefront.my_cart') }}</router-link></li>
+                            <li class="mb-2"><router-link to="/wishlist" class="text-white text-decoration-none">{{ $t('storefront.my_wishlist') }}</router-link></li>
+                            <li class="mb-2"><router-link to="/account" class="text-white text-decoration-none">{{ $t('storefront.my_account') }}</router-link></li>
+                            <li class="mb-2"><router-link to="/track-order" class="text-white text-decoration-none">{{ $t('storefront.track_my_order') }}</router-link></li>
                         </ul>
                     </div>
 
                     <div class="col-lg-3 col-md-6">
-                        <h6 class="fw-bold text-uppercase text-secondary small mb-3">Customer Service</h6>
+                        <h6 class="fw-bold text-uppercase text-secondary small mb-3">{{ $t('storefront.customer_service') }}</h6>
                         <ul class="list-unstyled small mb-0">
-                            <li class="mb-2 text-secondary">🚚 Free Delivery on orders over ₹500</li>
-                            <li class="mb-2 text-secondary">💵 Cash on Delivery (COD) Supported</li>
-                            <li class="mb-2 text-secondary">⚡ Real-time Live Inventory Tracking</li>
-                            <li class="mb-2 text-secondary">🛡️ 100% Secure Checkout</li>
+                            <li class="mb-2 text-secondary">🚚 {{ $t('storefront.free_delivery') }}</li>
+                            <li class="mb-2 text-secondary">💵 {{ $t('storefront.cod_available') }}</li>
+                            <li class="mb-2 text-secondary">⚡ {{ $t('storefront.live_inventory') }}</li>
+                            <li class="mb-2 text-secondary">🛡️ {{ $t('storefront.verified_quality') }}</li>
                         </ul>
                     </div>
 
                     <div class="col-lg-3 col-md-6">
-                        <h6 class="fw-bold text-uppercase text-secondary small mb-3">Store Hours & Support</h6>
+                        <h6 class="fw-bold text-uppercase text-secondary small mb-3">{{ $t('storefront.store_hours_support') }}</h6>
                         <p class="small text-secondary mb-2" style="white-space: pre-line;">
                             {{ settings.store_hours }}
                         </p>
                         <p class="small text-secondary mb-0">
-                            Have questions about your order? Visit our <router-link to="/track-order" class="text-warning text-decoration-none">Track Order</router-link> page or contact customer support.
+                            {{ $t('storefront.cta_desc') }}
                         </p>
                     </div>
                 </div>
 
                 <div class="border-top border-secondary pt-3 d-flex flex-wrap justify-content-between align-items-center small text-secondary">
                     <span>&copy; {{ new Date().getFullYear() }} {{ settings.copyright_text }}</span>
-                    <span>Powered by Retail POS Live Inventory System</span>
+                    <span>{{ $t('storefront.powered_by') }}</span>
                 </div>
             </div>
         </footer>
@@ -260,6 +282,7 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
+import axios from 'axios';
 import { useCart } from '../composables/useCart';
 import { useShopSettings } from '../composables/useShopSettings';
 import { useCustomerAuth } from '../composables/useCustomerAuth';
@@ -275,6 +298,16 @@ const { customer, customerName, customerEmail, customerPhone, isCustomerAuthenti
 
 const navSearch = ref('');
 const showUserDropdown = ref(false);
+const activePromo = ref(null);
+
+async function loadPromos() {
+    try {
+        const res = await axios.get('/api/shop/marketing/banners');
+        if (res.data && res.data.length > 0) {
+            activePromo.value = res.data[0];
+        }
+    } catch (e) {}
+}
 
 const customerInitials = computed(() => {
     if (!customerName.value) return 'CU';
@@ -313,6 +346,7 @@ function handleGlobalClick(e) {
 onMounted(() => {
     loadSettings();
     loadWishlist();
+    loadPromos();
     if (isCustomerAuthenticated.value) {
         fetchCustomerProfile();
     }
@@ -530,5 +564,11 @@ onBeforeUnmount(() => {
 :global(html[dir="rtl"]) .store-badge-count {
     right: auto !important;
     left: -5px !important;
+}
+
+.store-promo-ribbon {
+    background: linear-gradient(90deg, #1e3a8a 0%, #3b82f6 50%, #1e3a8a 100%);
+    box-shadow: inset 0 -1px 0 rgba(0,0,0,0.1);
+    z-index: 1020;
 }
 </style>

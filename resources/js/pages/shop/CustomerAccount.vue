@@ -81,6 +81,17 @@
                                 <span>🔒</span>
                                 <span>{{ $t('account.tab_security') }}</span>
                             </button>
+                            <button
+                                class="nav-link text-start rounded-pill py-2 px-3 fw-semibold d-flex align-items-center gap-2"
+                                :class="{ active: activeTab === 'notifications' }"
+                                @click="switchToNotifications"
+                            >
+                                <span>🔔</span>
+                                <span>{{ $t('account.tab_notifications') }}</span>
+                                <span class="badge bg-danger rounded-pill ms-auto small" v-if="unreadNotificationsCount > 0">
+                                    {{ unreadNotificationsCount }}
+                                </span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -611,6 +622,204 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Tab 6: Notification Preferences & Promotional Inbox -->
+                    <div v-show="activeTab === 'notifications'">
+                        <!-- Promotional Inbox Card -->
+                        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
+                            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
+                                <div>
+                                    <h5 class="fw-bold mb-1">🔔 {{ $t('account.promotional_notifications') }}</h5>
+                                    <div class="text-muted small">{{ $t('account.promotional_notifications_sub') }}</div>
+                                </div>
+                                <button
+                                    v-if="notifications.length > 0 && unreadNotificationsCount > 0"
+                                    class="btn btn-outline-secondary btn-sm rounded-pill px-3"
+                                    @click="markAllAsRead"
+                                >
+                                    ✓ {{ $t('account.mark_all_read') }}
+                                </button>
+                            </div>
+
+                            <div v-if="notificationsLoading" class="text-center py-4">
+                                <div class="spinner-border text-primary" role="status"></div>
+                            </div>
+
+                            <div v-else-if="notifications.length === 0" class="text-center py-5 text-muted">
+                                <div class="fs-1 mb-2">📭</div>
+                                <div class="fw-bold">{{ $t('account.no_notifications') }}</div>
+                                <div class="small mt-1">{{ $t('account.no_notifications_desc') }}</div>
+                            </div>
+
+                            <div v-else class="d-flex flex-column gap-3">
+                                <div
+                                    v-for="notif in notifications"
+                                    :key="notif.id"
+                                    class="p-3 rounded-4 border"
+                                    :class="notif.is_read ? 'bg-light-subtle' : 'bg-primary-subtle border-primary-subtle'"
+                                >
+                                    <div class="d-flex gap-3 align-items-start">
+                                        <img
+                                            v-if="notif.image_url"
+                                            :src="notif.image_url"
+                                            class="rounded-3 object-fit-cover flex-shrink-0"
+                                            style="width: 56px; height: 56px;"
+                                            alt=""
+                                        />
+                                        <div v-else class="rounded-3 bg-primary text-white d-flex align-items-center justify-content-center flex-shrink-0 fs-4" style="width: 56px; height: 56px;">
+                                            🏷️
+                                        </div>
+
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-1">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <h6 class="fw-bold mb-0 text-dark">{{ notif.title }}</h6>
+                                                    <span v-if="notif.discount_badge" class="badge bg-danger rounded-pill extra-small">
+                                                        {{ notif.discount_badge }}
+                                                    </span>
+                                                    <span v-if="!notif.is_read" class="badge bg-primary rounded-pill extra-small">
+                                                        NEW
+                                                    </span>
+                                                </div>
+                                                <span class="extra-small text-muted">{{ formatDate(notif.created_at) }}</span>
+                                            </div>
+
+                                            <p class="small text-muted mb-2">{{ notif.message }}</p>
+
+                                            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+                                                <div v-if="notif.coupon_code" class="d-inline-flex align-items-center gap-2 bg-white px-2 py-1 rounded border">
+                                                    <span class="extra-small text-muted">{{ $t('coupons.coupon_code') }}:</span>
+                                                    <strong class="font-monospace text-primary small">{{ notif.coupon_code }}</strong>
+                                                    <button class="btn btn-sm btn-link p-0 text-decoration-none extra-small" @click="copyCoupon(notif.coupon_code)">
+                                                        📋
+                                                    </button>
+                                                </div>
+
+                                                <div class="d-flex align-items-center gap-2 ms-auto">
+                                                    <button
+                                                        v-if="!notif.is_read"
+                                                        class="btn btn-link text-muted btn-sm p-0 extra-small text-decoration-none"
+                                                        @click="markOneAsRead(notif)"
+                                                    >
+                                                        ✓ {{ $t('account.mark_read') }}
+                                                    </button>
+                                                    <router-link :to="notif.action_url || '/shop'" class="btn btn-primary btn-sm rounded-pill px-3 py-1 fw-semibold extra-small">
+                                                        {{ notif.action_text || $t('marketing.shop_now') }} →
+                                                    </router-link>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Marketing Preferences & Consent Card -->
+                        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+                            <h5 class="fw-bold mb-1">⚙️ {{ $t('account.notification_preferences') }}</h5>
+                            <p class="text-muted small mb-4">{{ $t('account.notification_preferences_sub') }}</p>
+
+                            <!-- Master Promotional Toggle -->
+                            <div class="p-3 rounded-4 bg-light border mb-4 d-flex align-items-center justify-content-between">
+                                <div>
+                                    <h6 class="fw-bold mb-1 text-dark">{{ $t('account.promotional_consent_title') }}</h6>
+                                    <div class="small text-muted">{{ $t('account.promotional_consent_desc') }}</div>
+                                </div>
+                                <div class="form-check form-switch fs-4">
+                                    <input
+                                        class="form-check-input"
+                                        type="checkbox"
+                                        v-model="preferences.promotional_enabled"
+                                        @change="savePreferences"
+                                    />
+                                </div>
+                            </div>
+
+                            <div v-if="preferences.promotional_enabled">
+                                <!-- Preferred Channels -->
+                                <h6 class="fw-bold small text-uppercase text-muted mb-3">{{ $t('account.preferred_channels') }}</h6>
+                                <div class="row g-3 mb-4">
+                                    <div class="col-sm-6 col-md-4">
+                                        <label class="d-flex align-items-center justify-content-between p-3 border rounded-3 bg-light-subtle cursor-pointer">
+                                            <span class="small fw-semibold">📱 {{ $t('marketing.channel_in_app') }}</span>
+                                            <input type="checkbox" v-model="preferences.channel_in_app" class="form-check-input mt-0" @change="savePreferences" />
+                                        </label>
+                                    </div>
+                                    <div class="col-sm-6 col-md-4">
+                                        <label class="d-flex align-items-center justify-content-between p-3 border rounded-3 bg-light-subtle cursor-pointer">
+                                            <span class="small fw-semibold">✉️ {{ $t('marketing.channel_email') }}</span>
+                                            <input type="checkbox" v-model="preferences.channel_email" class="form-check-input mt-0" @change="savePreferences" />
+                                        </label>
+                                    </div>
+                                    <div class="col-sm-6 col-md-4">
+                                        <label class="d-flex align-items-center justify-content-between p-3 border rounded-3 bg-light-subtle cursor-pointer">
+                                            <span class="small fw-semibold">💬 {{ $t('marketing.channel_sms') }}</span>
+                                            <input type="checkbox" v-model="preferences.channel_sms" class="form-check-input mt-0" @change="savePreferences" />
+                                        </label>
+                                    </div>
+                                    <div class="col-sm-6 col-md-4">
+                                        <label class="d-flex align-items-center justify-content-between p-3 border rounded-3 bg-light-subtle cursor-pointer">
+                                            <span class="small fw-semibold">🟢 {{ $t('marketing.channel_whatsapp') }}</span>
+                                            <input type="checkbox" v-model="preferences.channel_whatsapp" class="form-check-input mt-0" @change="savePreferences" />
+                                        </label>
+                                    </div>
+                                    <div class="col-sm-6 col-md-4">
+                                        <label class="d-flex align-items-center justify-content-between p-3 border rounded-3 bg-light-subtle cursor-pointer">
+                                            <span class="small fw-semibold">🔔 {{ $t('marketing.channel_push') }}</span>
+                                            <input type="checkbox" v-model="preferences.channel_push" class="form-check-input mt-0" @change="savePreferences" />
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Notification Categories -->
+                                <h6 class="fw-bold small text-uppercase text-muted mb-3">{{ $t('account.alert_topics') }}</h6>
+                                <div class="d-flex flex-column gap-2 mb-4">
+                                    <label class="d-flex align-items-center justify-content-between p-2 border rounded-3 bg-light-subtle cursor-pointer">
+                                        <div>
+                                            <div class="small fw-semibold">⚡ {{ $t('marketing.rule_flash_sale') }}</div>
+                                            <div class="extra-small text-muted">{{ $t('marketing.rule_flash_sale_desc') }}</div>
+                                        </div>
+                                        <input type="checkbox" v-model="preferences.category_flash_sales" class="form-check-input mt-0" @change="savePreferences" />
+                                    </label>
+                                    <label class="d-flex align-items-center justify-content-between p-2 border rounded-3 bg-light-subtle cursor-pointer">
+                                        <div>
+                                            <div class="small fw-semibold">📦 {{ $t('marketing.rule_back_in_stock') }}</div>
+                                            <div class="extra-small text-muted">{{ $t('marketing.rule_back_in_stock_desc') }}</div>
+                                        </div>
+                                        <input type="checkbox" v-model="preferences.category_back_in_stock" class="form-check-input mt-0" @change="savePreferences" />
+                                    </label>
+                                    <label class="d-flex align-items-center justify-content-between p-2 border rounded-3 bg-light-subtle cursor-pointer">
+                                        <div>
+                                            <div class="small fw-semibold">⭐ {{ $t('marketing.rule_loyalty_rewards') }}</div>
+                                            <div class="extra-small text-muted">{{ $t('marketing.rule_loyalty_desc') }}</div>
+                                        </div>
+                                        <input type="checkbox" v-model="preferences.category_rewards" class="form-check-input mt-0" @change="savePreferences" />
+                                    </label>
+                                    <label class="d-flex align-items-center justify-content-between p-2 border rounded-3 bg-light-subtle cursor-pointer">
+                                        <div>
+                                            <div class="small fw-semibold">🎉 {{ $t('marketing.rule_festival') }}</div>
+                                            <div class="extra-small text-muted">{{ $t('marketing.rule_festival_desc') }}</div>
+                                        </div>
+                                        <input type="checkbox" v-model="preferences.category_festivals" class="form-check-input mt-0" @change="savePreferences" />
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- 1-Click Opt-Out Button -->
+                            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 pt-3 border-top">
+                                <div class="extra-small text-muted" style="max-width: 500px;">
+                                    🔒 <em>{{ $t('account.transactional_guarantee') }}</em>
+                                </div>
+                                <button
+                                    v-if="preferences.promotional_enabled"
+                                    class="btn btn-outline-danger btn-sm rounded-pill px-3"
+                                    @click="unsubscribeAllMarketing"
+                                >
+                                    {{ $t('account.unsubscribe_all_marketing') }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -620,6 +829,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import axios from 'axios';
 import { useCustomerAuth } from '../../composables/useCustomerAuth';
 import { useWishlist } from '../../composables/useWishlist';
 import { useNotification } from '../../composables/useNotification';
@@ -664,6 +874,111 @@ const passwordForm = ref({
     password: '',
     password_confirmation: '',
 });
+
+// Notifications & Marketing Preferences State
+const notifications = ref([]);
+const unreadNotificationsCount = ref(0);
+const notificationsLoading = ref(false);
+const preferences = ref({
+    promotional_enabled: true,
+    channel_in_app: true,
+    channel_email: true,
+    channel_sms: true,
+    channel_whatsapp: true,
+    channel_push: true,
+    category_flash_sales: true,
+    category_back_in_stock: true,
+    category_rewards: true,
+    category_new_arrivals: true,
+    category_festivals: true,
+});
+
+async function switchToNotifications() {
+    activeTab.value = 'notifications';
+    await Promise.all([loadNotifications(), loadPreferences()]);
+}
+
+async function loadNotifications() {
+    notificationsLoading.value = true;
+    try {
+        const res = await axios.get('/api/shop/account/notifications');
+        notifications.value = res.data.notifications?.data || [];
+        unreadNotificationsCount.value = res.data.unread_count || 0;
+    } catch (err) {
+        // silently ignore if not authed
+    } finally {
+        notificationsLoading.value = false;
+    }
+}
+
+async function loadPreferences() {
+    try {
+        const res = await axios.get('/api/shop/account/notification-preferences');
+        if (res.data) {
+            preferences.value = { ...preferences.value, ...res.data };
+        }
+    } catch (err) {
+        // ignore
+    }
+}
+
+async function savePreferences() {
+    try {
+        await axios.put('/api/shop/account/notification-preferences', preferences.value);
+        toast({ title: 'Saved', message: 'Notification preferences updated.', type: 'success' });
+    } catch (err) {
+        toast({ title: 'Error', message: 'Could not update preferences.', type: 'danger' });
+    }
+}
+
+async function markOneAsRead(notif) {
+    try {
+        await axios.patch(`/api/shop/account/notifications/${notif.id}/read`);
+        notif.is_read = true;
+        if (unreadNotificationsCount.value > 0) unreadNotificationsCount.value--;
+    } catch (err) {}
+}
+
+async function markAllAsRead() {
+    try {
+        await axios.patch('/api/shop/account/notifications/read-all');
+        notifications.value.forEach(n => n.is_read = true);
+        unreadNotificationsCount.value = 0;
+        toast({ title: 'Success', message: 'All notifications marked as read.', type: 'success' });
+    } catch (err) {}
+}
+
+function copyCoupon(code) {
+    if (navigator?.clipboard) {
+        navigator.clipboard.writeText(code);
+        toast({ title: 'Copied!', message: `Coupon code ${code} copied to clipboard!`, type: 'success' });
+    }
+}
+
+async function unsubscribeAllMarketing() {
+    const ok = await confirmDialog({
+        title: 'Unsubscribe from Marketing?',
+        message: 'Are you sure you want to stop receiving all promotional emails, deal alerts, and vouchers?',
+        confirmText: 'Unsubscribe',
+        cancelText: 'Keep Subscribed',
+        type: 'danger',
+    });
+    if (!ok) return;
+
+    try {
+        await axios.post('/api/shop/account/notification-preferences/unsubscribe-all');
+        preferences.value.promotional_enabled = false;
+        toast({ title: 'Unsubscribed', message: 'You have been unsubscribed from promotional marketing.', type: 'info' });
+    } catch (err) {
+        toast({ title: 'Error', message: 'Failed to update preferences.', type: 'danger' });
+    }
+}
+
+function formatDate(dateStr) {
+    if (!dateStr) return '';
+    const d = new Date(dateStr);
+    return d.toLocaleDateString();
+}
 
 const customerInitials = computed(() => {
     if (!customer.value?.name) return 'CU';
@@ -788,6 +1103,10 @@ onMounted(async () => {
     loadWishlist();
     if (route.query.tab === 'wishlist') {
         activeTab.value = 'wishlist';
+    } else if (route.query.tab === 'notifications') {
+        switchToNotifications();
+    } else {
+        loadNotifications();
     }
 });
 </script>

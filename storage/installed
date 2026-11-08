@@ -1,0 +1,12 @@
+{
+    "installed": true,
+    "installed_at": "2026-11-08T08:08:28+00:00",
+    "app_name": "Ifat Store",
+    "app_version": "2.5.0",
+    "php_version": "8.2.12",
+    "laravel_version": "12.70.2",
+    "environment": "local",
+    "admin_email": "admin@ifatstore.com",
+    "currency": "\u20b9",
+    "database": "retail_pos_2"
+}

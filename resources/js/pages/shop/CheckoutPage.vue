@@ -19,7 +19,7 @@
             <div v-else class="row g-4">
                 <!-- Left Column: Form Details -->
                 <div class="col-lg-7">
-                    <form @submit.prevent="submitOrder">
+                    <form id="checkout-form" @submit.prevent="submitOrder">
                         <!-- Customer Contact Details Card -->
                         <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
                             <div class="d-flex justify-content-between align-items-center mb-3">
@@ -303,10 +303,10 @@
 
                         <!-- Desktop Submit Button -->
                         <button
-                            type="button"
+                            type="submit"
+                            form="checkout-form"
                             class="btn btn-primary btn-lg w-100 fw-bold rounded-pill mb-3 shadow-sm d-none d-lg-block"
                             :disabled="submitting"
-                            @click="submitOrder"
                         >
                             <span v-if="submitting" class="spinner-border spinner-border-sm me-2" role="status"></span>
                             {{ submitting ? $t('common.processing') : $t('checkout.place_order') }}

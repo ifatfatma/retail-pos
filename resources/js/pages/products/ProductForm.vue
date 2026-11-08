@@ -41,19 +41,36 @@
 
                         <div class="card-body">
 
-                            <div class="mb-3">
-                                <label class="form-label">
-                                    {{ $t('products.product_name') }}
-                                    <span class="text-danger">*</span>
-                                </label>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">
+                                        {{ $t('products.product_name') }}
+                                        <span class="text-danger">*</span>
+                                    </label>
 
-                                <input
-                                    v-model.trim="form.name"
-                                    type="text"
-                                    class="form-control"
-                                    :placeholder="$t('products.product_name_placeholder')"
-                                    required
-                                >
+                                    <input
+                                        v-model.trim="form.name"
+                                        type="text"
+                                        class="form-control"
+                                        :placeholder="$t('products.product_name_placeholder')"
+                                        required
+                                    >
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">
+                                        {{ $t('products.product_name_ar') }}
+                                        <span class="badge bg-light text-muted ms-1">عربي</span>
+                                    </label>
+
+                                    <input
+                                        v-model.trim="form.name_ar"
+                                        type="text"
+                                        dir="rtl"
+                                        class="form-control"
+                                        :placeholder="$t('products.product_name_ar_placeholder')"
+                                    >
+                                </div>
                             </div>
 
                             <div class="row">
@@ -125,15 +142,32 @@
 
                             </div>
 
-                            <div class="mb-0">
-                                <label class="form-label">{{ $t('common.description') }}</label>
+                            <div class="row">
+                                <div class="col-md-6 mb-3 mb-md-0">
+                                    <label class="form-label">{{ $t('common.description') }}</label>
 
-                                <textarea
-                                    v-model="form.description"
-                                    class="form-control"
-                                    rows="3"
-                                    :placeholder="$t('common.description')"
-                                ></textarea>
+                                    <textarea
+                                        v-model="form.description"
+                                        class="form-control"
+                                        rows="3"
+                                        :placeholder="$t('common.description')"
+                                    ></textarea>
+                                </div>
+
+                                <div class="col-md-6 mb-0">
+                                    <label class="form-label">
+                                        {{ $t('products.description_ar') }}
+                                        <span class="badge bg-light text-muted ms-1">عربي</span>
+                                    </label>
+
+                                    <textarea
+                                        v-model="form.description_ar"
+                                        dir="rtl"
+                                        class="form-control"
+                                        rows="3"
+                                        :placeholder="$t('products.description_ar_placeholder')"
+                                    ></textarea>
+                                </div>
                             </div>
 
                         </div>
@@ -490,10 +524,12 @@ const isEdit = computed(() => !!route.params.id);
 // Product form
 const form = reactive({
     name: '',
+    name_ar: '',
     category_id: '',
     brand_id: '',
     unit_id: '',
     description: '',
+    description_ar: '',
     sku: '',
     barcode: '',
     purchase_price: 0,
@@ -570,12 +606,14 @@ const loadProduct = async () => {
 
         Object.assign(form, {
             name: product.name || '',
+            name_ar: product.name_ar || '',
             category_id: String(product.category_id || ''),
             brand_id: product.brand_id
                 ? String(product.brand_id)
                 : '',
             unit_id: String(product.unit_id || ''),
             description: product.description || '',
+            description_ar: product.description_ar || '',
             sku: variant.sku || '',
             barcode: variant.barcode || '',
             purchase_price: Number(variant.purchase_price || 0),

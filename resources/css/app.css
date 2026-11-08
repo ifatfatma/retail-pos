@@ -519,3 +519,25 @@ html[dir="rtl"] .input-group > :not(:last-child):not(.dropdown-toggle):not(.drop
         page-break-inside: avoid !important;
     }
 }
+
+/* Marketing & Notifications Styling */
+[data-bs-theme="dark"] .rule-card,
+[data-bs-theme="dark"] .template-card,
+[data-bs-theme="dark"] .segment-card,
+[data-bs-theme="dark"] .kpi-card {
+    background-color: #111c38 !important;
+    border-color: #1e293b !important;
+    color: #e2e8f0 !important;
+}
+
+[data-bs-theme="dark"] .preview-push-card,
+[data-bs-theme="dark"] .preview-sms-card,
+[data-bs-theme="dark"] .preview-email-card {
+    background-color: #111c38 !important;
+    border-color: #1e293b !important;
+    color: #e2e8f0 !important;
+}
+
+html[dir="rtl"] .store-promo-ribbon {
+    direction: rtl;
+}

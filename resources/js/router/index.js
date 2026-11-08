@@ -20,6 +20,16 @@ import OrderIndex from '../pages/orders/OrderIndex.vue';
 import CouponIndex from '../pages/coupons/CouponIndex.vue';
 import ReportIndex from '../pages/reports/ReportIndex.vue';
 
+// Marketing & Notification System Pages
+import MarketingDashboard from '../pages/marketing/MarketingDashboard.vue';
+import CampaignList from '../pages/marketing/CampaignList.vue';
+import CampaignForm from '../pages/marketing/CampaignForm.vue';
+import AutomatedRules from '../pages/marketing/AutomatedRules.vue';
+import CustomerSegments from '../pages/marketing/CustomerSegments.vue';
+import NotificationTemplates from '../pages/marketing/NotificationTemplates.vue';
+import DeliveryReports from '../pages/marketing/DeliveryReports.vue';
+import MarketingSettings from '../pages/marketing/MarketingSettings.vue';
+
 // E-Commerce Storefront Pages
 import ShopHome from '../pages/shop/ShopHome.vue';
 import ShopCatalog from '../pages/shop/ShopCatalog.vue';
@@ -36,7 +46,17 @@ import CustomerRegister from '../pages/shop/CustomerRegister.vue';
 import ForgotPassword from '../pages/shop/ForgotPassword.vue';
 import CustomerAccount from '../pages/shop/CustomerAccount.vue';
 
+// Installation Wizard
+import InstallWizard from '../pages/install/InstallWizard.vue';
+
 const routes = [
+    // Installation Wizard Route
+    {
+        path: '/install',
+        name: 'InstallWizard',
+        component: InstallWizard,
+    },
+
     // Storefront Public Routes
     {
         path: '/',
@@ -193,6 +213,68 @@ const routes = [
         component: ReportIndex,
         meta: { requiresAuth: true },
     },
+
+    // Marketing & Notification System Routes
+    {
+        path: '/admin/marketing/dashboard',
+        name: 'MarketingDashboard',
+        component: MarketingDashboard,
+        meta: { requiresAuth: true },
+    },
+    {
+        path: '/admin/marketing/campaigns',
+        name: 'CampaignList',
+        component: CampaignList,
+        meta: { requiresAuth: true },
+    },
+    {
+        path: '/admin/marketing/campaigns/create',
+        name: 'CampaignCreate',
+        component: CampaignForm,
+        meta: { requiresAuth: true },
+    },
+    {
+        path: '/admin/marketing/campaigns/:id/edit',
+        name: 'CampaignEdit',
+        component: CampaignForm,
+        meta: { requiresAuth: true },
+    },
+    {
+        path: '/admin/marketing/automated-rules',
+        name: 'AutomatedRules',
+        component: AutomatedRules,
+        meta: { requiresAuth: true },
+    },
+    {
+        path: '/admin/marketing/segments',
+        name: 'CustomerSegments',
+        component: CustomerSegments,
+        meta: { requiresAuth: true },
+    },
+    {
+        path: '/admin/marketing/templates',
+        name: 'NotificationTemplates',
+        component: NotificationTemplates,
+        meta: { requiresAuth: true },
+    },
+    {
+        path: '/admin/marketing/scheduled',
+        name: 'ScheduledCampaigns',
+        component: CampaignList,
+        meta: { requiresAuth: true },
+    },
+    {
+        path: '/admin/marketing/delivery-reports',
+        name: 'DeliveryReports',
+        component: DeliveryReports,
+        meta: { requiresAuth: true },
+    },
+    {
+        path: '/admin/marketing/settings',
+        name: 'MarketingSettings',
+        component: MarketingSettings,
+        meta: { requiresAuth: true },
+    },
 ];
 
 const router = createRouter({
@@ -207,8 +289,34 @@ const router = createRouter({
     }
 });
 
+// Cached installation state
+let isAppInstalledCache = null;
+
 // Navigation Guards
-router.beforeEach((to, from) => {
+router.beforeEach(async (to, from) => {
+    // 0. Installation Status Check
+    if (isAppInstalledCache === null) {
+        try {
+            const res = await fetch('/api/install/status');
+            if (res.ok) {
+                const data = await res.json();
+                isAppInstalledCache = !!data.installed;
+            } else {
+                isAppInstalledCache = true;
+            }
+        } catch (e) {
+            isAppInstalledCache = true;
+        }
+    }
+
+    if (to.path.startsWith('/install') && isAppInstalledCache === true) {
+        return '/admin/login';
+    }
+
+    if (!to.path.startsWith('/install') && isAppInstalledCache === false) {
+        return '/install';
+    }
+
     // 1. Admin Authentication Guards
     const adminToken = localStorage.getItem('admin_access_token');
     const isAdminRoute = to.path.startsWith('/admin');

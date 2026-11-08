@@ -29,7 +29,7 @@
             </div>
 
             <button
-                v-for="loc in supportedLocales"
+                v-for="loc in availableLocales"
                 :key="loc.code"
                 type="button"
                 class="dropdown-item d-flex align-items-center justify-content-between px-3 py-2 small"
@@ -54,7 +54,7 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { supportedLocales, setLanguage, getCurrentLanguage } from '../../i18n';
+import { supportedLocales, enabledLocales, setLanguage, getCurrentLanguage } from '../../i18n';
 
 const props = defineProps({
     theme: {
@@ -71,12 +71,18 @@ const { locale } = useI18n();
 const isOpen = ref(false);
 const dropdownRef = ref(null);
 
+const availableLocales = computed(() => {
+    return enabledLocales.value?.length ? enabledLocales.value : supportedLocales;
+});
+
 const currentLocaleCode = computed(() => {
     return locale.value || getCurrentLanguage();
 });
 
 const currentLocaleObj = computed(() => {
-    return supportedLocales.find(l => l.code === currentLocaleCode.value) || supportedLocales[0];
+    return availableLocales.value.find(l => l.code === currentLocaleCode.value)
+        || availableLocales.value[0]
+        || supportedLocales[0];
 });
 
 function onSelect(code) {

@@ -62,6 +62,50 @@
         </router-link>
 
         <div class="sidebar-heading">
+            {{ $t('nav.marketing_notifications') }}
+        </div>
+
+        <router-link to="/admin/marketing/dashboard" class="menu-link">
+            <span>📢</span> {{ $t('nav.notification_dashboard') }}
+        </router-link>
+
+        <router-link to="/admin/marketing/campaigns" class="menu-link">
+            <span>🎯</span> {{ $t('nav.campaign_management') }}
+        </router-link>
+
+        <router-link to="/admin/marketing/campaigns/create" class="menu-link ps-4">
+            <span>➕</span> {{ $t('nav.create_campaign') }}
+        </router-link>
+
+        <router-link to="/admin/coupons" class="menu-link">
+            <span>🏷️</span> {{ $t('nav.offers_coupons') }}
+        </router-link>
+
+        <router-link to="/admin/marketing/automated-rules" class="menu-link">
+            <span>⚡</span> {{ $t('nav.automated_rules') }}
+        </router-link>
+
+        <router-link to="/admin/marketing/segments" class="menu-link">
+            <span>👥</span> {{ $t('nav.customer_segments') }}
+        </router-link>
+
+        <router-link to="/admin/marketing/templates" class="menu-link">
+            <span>📄</span> {{ $t('nav.notification_templates') }}
+        </router-link>
+
+        <router-link to="/admin/marketing/scheduled" class="menu-link">
+            <span>⏰</span> {{ $t('nav.scheduled_campaigns') }}
+        </router-link>
+
+        <router-link to="/admin/marketing/delivery-reports" class="menu-link">
+            <span>📊</span> {{ $t('nav.delivery_reports') }}
+        </router-link>
+
+        <router-link to="/admin/marketing/settings" class="menu-link">
+            <span>⚙️</span> {{ $t('nav.notification_settings') }}
+        </router-link>
+
+        <div class="sidebar-heading">
             {{ $t('nav.storefront_cms') }}
         </div>
 

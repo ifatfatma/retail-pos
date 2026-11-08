@@ -10,8 +10,10 @@ class AutomatedRule extends Model
 {
     protected $fillable = [
         'name',
+        'name_ar',
         'event_type',
         'description',
+        'description_ar',
         'segment_id',
         'template_id',
         'channels',

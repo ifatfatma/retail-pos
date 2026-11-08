@@ -13,8 +13,10 @@ class MarketingCampaign extends Model
 
     protected $fillable = [
         'title',
+        'title_ar',
         'slug',
         'description',
+        'description_ar',
         'banner_url',
         'image_url',
         'campaign_type',

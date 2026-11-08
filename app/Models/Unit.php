@@ -11,7 +11,9 @@ class Unit extends Model
 
     protected $fillable = [
         'name',
+        'name_ar',
         'short_name',
+        'short_name_ar',
         'allow_decimal',
         'status',
     ];

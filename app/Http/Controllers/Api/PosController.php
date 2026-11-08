@@ -21,8 +21,8 @@ class PosController extends Controller
     public function products(Request $request)
     {
         $query = Product::with([
-            'category:id,name',
-            'unit:id,name,short_name,allow_decimal',
+            'category:id,name,name_ar',
+            'unit:id,name,name_ar,short_name,short_name_ar,allow_decimal',
             'images',
             'variants' => function ($v) {
                 $v->with('stock')->where('status', true);
@@ -34,6 +34,7 @@ class PosController extends Controller
             $search = trim($request->search);
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('name_ar', 'like', "%{$search}%")
                     ->orWhereHas('variants', function ($v) use ($search) {
                         $v->where('sku', 'like', "%{$search}%")
                             ->orWhere('barcode', '=', $search);
@@ -67,15 +68,19 @@ class PosController extends Controller
             return [
                 'id' => $product->id,
                 'name' => $product->name,
+                'name_ar' => $product->name_ar,
                 'image_url' => $imageUrl,
                 'category_id' => $product->category_id,
                 'category_name' => $product->category ? $product->category->name : 'General',
+                'category_name_ar' => $product->category ? $product->category->name_ar : null,
                 'track_inventory' => (bool) $product->track_inventory,
                 'low_stock_threshold' => (float) $product->low_stock_threshold,
                 'unit' => [
                     'id' => $product->unit?->id,
                     'name' => $product->unit?->name,
+                    'name_ar' => $product->unit?->name_ar,
                     'short_name' => $product->unit?->short_name ?: 'pcs',
+                    'short_name_ar' => $product->unit?->short_name_ar ?: 'pcs',
                     'allow_decimal' => (bool) ($product->unit?->allow_decimal ?? false),
                 ],
                 'variant' => $defaultVariant ? [

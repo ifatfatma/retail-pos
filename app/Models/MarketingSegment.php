@@ -10,8 +10,10 @@ class MarketingSegment extends Model
 {
     protected $fillable = [
         'name',
+        'name_ar',
         'slug',
         'description',
+        'description_ar',
         'criteria',
         'customer_count',
         'is_system',

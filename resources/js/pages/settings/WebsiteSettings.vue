@@ -59,6 +59,15 @@
                     <li class="nav-item">
                         <button
                             class="nav-link fw-semibold px-4 py-3"
+                            :class="{ active: activeTab === 'localization' }"
+                            @click="activeTab = 'localization'"
+                        >
+                            🌐 {{ $t('settings.languages') }}
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button
+                            class="nav-link fw-semibold px-4 py-3"
                             :class="{ active: activeTab === 'slideshow' }"
                             @click="activeTab = 'slideshow'"
                         >
@@ -211,6 +220,147 @@
                                 <span>Preview: </span>
                                 <span>{{ form.announcement_text || 'Free delivery on all orders!' }}</span>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============================================== -->
+                <!-- TAB 2: LANGUAGES & LOCALIZATION                -->
+                <!-- ============================================== -->
+                <div v-show="activeTab === 'localization'">
+                    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                        <div>
+                            <h5 class="fw-bold mb-1">🌐 {{ $t('settings.languages') }}</h5>
+                            <p class="text-muted small mb-0">
+                                {{ $t('settings.languages_desc') }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Language Selection Cards -->
+                    <h6 class="fw-bold text-dark mb-3">
+                        {{ $t('settings.enabled_languages') }}
+                        <span class="badge bg-primary-subtle text-primary ms-2">{{ enabledLanguagesList.length }} / {{ allSupportedLanguages.length }}</span>
+                    </h6>
+
+                    <div class="row g-3 mb-4">
+                        <div
+                            v-for="lang in allSupportedLanguages"
+                            :key="lang.code"
+                            class="col-md-6 col-lg-4"
+                        >
+                            <div
+                                class="card border h-100 rounded-3 transition-all"
+                                :class="isLangEnabled(lang.code) ? 'border-primary shadow-xs' : 'border-light-subtle bg-light opacity-75'"
+                            >
+                                <div class="card-body p-3 d-flex flex-column justify-content-between">
+                                    <div class="d-flex align-items-center justify-content-between mb-2">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="fs-4">{{ lang.flag }}</span>
+                                            <div>
+                                                <h6 class="fw-bold mb-0 text-dark">{{ lang.nativeName }}</h6>
+                                                <span class="extra-small text-muted">{{ lang.name }} ({{ lang.code.toUpperCase() }})</span>
+                                            </div>
+                                        </div>
+                                        <span
+                                            class="badge px-2 py-1"
+                                            :class="lang.dir === 'rtl' ? 'bg-warning-subtle text-warning border border-warning' : 'bg-secondary-subtle text-secondary'"
+                                        >
+                                            {{ lang.dir.toUpperCase() }}
+                                        </span>
+                                    </div>
+
+                                    <div class="d-flex align-items-center justify-content-between pt-2 border-top mt-2">
+                                        <span class="extra-small fw-semibold" :class="isLangEnabled(lang.code) ? 'text-success' : 'text-muted'">
+                                            {{ isLangEnabled(lang.code) ? '● ' + $t('settings.active_on_site') : '○ ' + $t('settings.disabled_on_site') }}
+                                        </span>
+
+                                        <div class="form-check form-switch mb-0">
+                                            <input
+                                                class="form-check-input"
+                                                type="checkbox"
+                                                :id="'toggleLang_' + lang.code"
+                                                :checked="isLangEnabled(lang.code)"
+                                                @change="toggleLanguage(lang.code)"
+                                                :disabled="isLangEnabled(lang.code) && enabledLanguagesList.length === 1"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Default Language & Switcher Configuration -->
+                    <div class="card border-0 bg-light rounded-4 p-4 mb-4">
+                        <div class="row g-4">
+                            <!-- Default Website Language -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold small text-dark mb-1">
+                                    {{ $t('settings.default_language') }}
+                                </label>
+                                <p class="text-muted extra-small mb-2">
+                                    {{ $t('settings.default_language_desc') }}
+                                </p>
+                                <select
+                                    v-model="form.default_language"
+                                    class="form-select"
+                                >
+                                    <option
+                                        v-for="lang in enabledLanguageObjects"
+                                        :key="lang.code"
+                                        :value="lang.code"
+                                    >
+                                        {{ lang.flag }} {{ lang.nativeName }} ({{ lang.name }})
+                                    </option>
+                                </select>
+                            </div>
+
+                            <!-- Header Language Switcher Toggle -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold small text-dark mb-1">
+                                    {{ $t('settings.language_switcher') }}
+                                </label>
+                                <p class="text-muted extra-small mb-2">
+                                    {{ $t('settings.language_switcher_desc') }}
+                                </p>
+                                <div class="form-check form-switch mt-2">
+                                    <input
+                                        id="toggleSwitcher"
+                                        v-model="languageSwitcherBool"
+                                        class="form-check-input"
+                                        type="checkbox"
+                                    />
+                                    <label class="form-check-label small fw-semibold" for="toggleSwitcher">
+                                        {{ languageSwitcherBool ? $t('common.enabled') : $t('common.disabled') }}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Live Switcher Preview -->
+                    <div class="border rounded-3 p-3 bg-white mb-3">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="small fw-bold text-uppercase text-muted">
+                                👁️ {{ $t('settings.language_preview') }}
+                            </span>
+                            <span class="badge bg-primary-subtle text-primary">
+                                {{ enabledLanguagesList.length }} {{ $t('settings.enabled_languages') }}
+                            </span>
+                        </div>
+                        <div class="p-3 bg-dark rounded-3 d-flex align-items-center justify-content-between">
+                            <span class="text-white small fw-bold">Smart Stationery POS</span>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="btn btn-sm btn-dark border-secondary text-white d-flex align-items-center gap-2 px-3 py-1">
+                                    <span>🌐</span>
+                                    <span>{{ defaultLangObj.nativeName }}</span>
+                                    <span class="small opacity-75">▾</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-2 extra-small text-muted">
+                            Active in dropdown: <span class="fw-semibold text-dark">{{ enabledLanguagesList.map(c => c.toUpperCase()).join(', ') }}</span>
                         </div>
                     </div>
                 </div>
@@ -973,6 +1123,7 @@
 import { ref, computed, onMounted } from 'vue';
 import axios from 'axios';
 import { useShopSettings } from '../../composables/useShopSettings';
+import { supportedLocales, updateEnabledLocales } from '../../i18n';
 
 const { loadSettings: reloadStoreSettings } = useShopSettings();
 
@@ -993,6 +1144,10 @@ const form = ref({
     site_logo_url: null,
     announcement_text: '',
     announcement_enabled: '1',
+
+    enabled_languages: '',
+    default_language: 'en',
+    language_switcher_enabled: '1',
 
     hero_badge: '',
     hero_title: '',
@@ -1027,6 +1182,44 @@ const form = ref({
     upi_id: 'smartstationery@upi',
     upi_merchant_name: 'Smart Stationery Store',
     upi_enabled: '1',
+});
+
+// Localization & Language Management
+const allSupportedLanguages = supportedLocales;
+const enabledLanguagesList = ref(['en', 'ar', 'hi', 'ur', 'bn']);
+
+const languageSwitcherBool = computed({
+    get: () => form.value.language_switcher_enabled === '1' || form.value.language_switcher_enabled === true,
+    set: (val) => {
+        form.value.language_switcher_enabled = val ? '1' : '0';
+    }
+});
+
+function isLangEnabled(code) {
+    return enabledLanguagesList.value.includes(code);
+}
+
+function toggleLanguage(code) {
+    if (isLangEnabled(code)) {
+        if (enabledLanguagesList.value.length <= 1) {
+            alert('At least one language must remain enabled.');
+            return;
+        }
+        enabledLanguagesList.value = enabledLanguagesList.value.filter(c => c !== code);
+        if (form.value.default_language === code) {
+            form.value.default_language = enabledLanguagesList.value[0];
+        }
+    } else {
+        enabledLanguagesList.value.push(code);
+    }
+}
+
+const enabledLanguageObjects = computed(() => {
+    return allSupportedLanguages.filter(l => enabledLanguagesList.value.includes(l.code));
+});
+
+const defaultLangObj = computed(() => {
+    return allSupportedLanguages.find(l => l.code === form.value.default_language) || allSupportedLanguages[0];
 });
 
 const slidesList = ref([]);
@@ -1174,6 +1367,27 @@ async function fetchSettings() {
                     testimonialsList.value = [];
                 }
             }
+
+            // Sync localization settings
+            if (res.data.data.enabled_languages_list && res.data.data.enabled_languages_list.length > 0) {
+                enabledLanguagesList.value = res.data.data.enabled_languages_list;
+            } else if (res.data.data.enabled_languages) {
+                try {
+                    enabledLanguagesList.value = typeof res.data.data.enabled_languages === 'string'
+                        ? JSON.parse(res.data.data.enabled_languages)
+                        : res.data.data.enabled_languages;
+                } catch (e) {
+                    enabledLanguagesList.value = ['en', 'ar', 'hi', 'ur', 'bn'];
+                }
+            } else {
+                enabledLanguagesList.value = ['en', 'ar', 'hi', 'ur', 'bn'];
+            }
+            if (!form.value.default_language) {
+                form.value.default_language = 'en';
+            }
+            if (!form.value.language_switcher_enabled) {
+                form.value.language_switcher_enabled = '1';
+            }
         }
     } catch (e) {
         console.error('Failed to fetch settings:', e);
@@ -1191,9 +1405,10 @@ async function saveSettings() {
     try {
         const formData = new FormData();
 
-        // Sync slides & testimonials list to JSON
+        // Sync slides & testimonials list & enabled languages to JSON
         form.value.slideshow_slides = JSON.stringify(slidesList.value);
         form.value.testimonials_list = JSON.stringify(testimonialsList.value);
+        form.value.enabled_languages = JSON.stringify(enabledLanguagesList.value);
 
         // Append logo file if selected
         if (selectedLogoFile.value) {
@@ -1226,6 +1441,7 @@ async function saveSettings() {
 
         // Reload shared settings cache so preview & shop update immediately
         await reloadStoreSettings(true);
+        updateEnabledLocales(enabledLanguagesList.value, form.value.default_language || 'en');
     } catch (e) {
         console.error('Failed to save settings:', e);
         errorMsg.value = e.response?.data?.message || 'Failed to save settings. Please review errors.';

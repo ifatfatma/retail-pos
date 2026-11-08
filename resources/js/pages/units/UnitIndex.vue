@@ -66,12 +66,14 @@
                             </td>
 
                             <td class="fw-semibold">
-                                {{ unit.name }}
+                                <div>{{ unit.name }}</div>
+                                <div v-if="unit.name_ar" class="small text-muted" dir="rtl">{{ unit.name_ar }}</div>
                             </td>
 
                             <td>
                                 <span class="badge bg-light text-dark border">
                                     {{ unit.short_name }}
+                                    <span v-if="unit.short_name_ar" class="text-muted ms-1">({{ unit.short_name_ar }})</span>
                                 </span>
                             </td>
 
@@ -181,6 +183,21 @@
 
                             <div class="mb-3">
                                 <label class="form-label">
+                                    {{ $t('units.unit_name_ar') }}
+                                    <span class="badge bg-light text-muted ms-1">عربي</span>
+                                </label>
+
+                                <input
+                                    v-model="form.name_ar"
+                                    type="text"
+                                    dir="rtl"
+                                    class="form-control"
+                                    :placeholder="$t('units.unit_name_ar_placeholder')"
+                                />
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">
                                     {{ $t('units.short_name') }} *
                                 </label>
 
@@ -191,6 +208,22 @@
                                     placeholder="Example: PCS"
                                     maxlength="20"
                                     required
+                                />
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    {{ $t('units.short_name_ar') }}
+                                    <span class="badge bg-light text-muted ms-1">عربي</span>
+                                </label>
+
+                                <input
+                                    v-model="form.short_name_ar"
+                                    type="text"
+                                    dir="rtl"
+                                    class="form-control"
+                                    :placeholder="$t('units.short_name_ar_placeholder')"
+                                    maxlength="50"
                                 />
                             </div>
 
@@ -287,7 +320,9 @@ let unitModal = null;
 
 const form = reactive({
     name: '',
+    name_ar: '',
     short_name: '',
+    short_name_ar: '',
     allow_decimal: false,
     status: true,
 });
@@ -322,7 +357,9 @@ function resetForm() {
 
     Object.assign(form, {
         name: '',
+        name_ar: '',
         short_name: '',
+        short_name_ar: '',
         allow_decimal: false,
         status: true,
     });
@@ -336,7 +373,9 @@ function openModal(unit = null) {
 
         Object.assign(form, {
             name: unit.name,
+            name_ar: unit.name_ar || '',
             short_name: unit.short_name,
+            short_name_ar: unit.short_name_ar || '',
             allow_decimal: Boolean(unit.allow_decimal),
             status: Boolean(unit.status),
         });
@@ -352,7 +391,9 @@ async function saveUnit() {
     try {
         const payload = {
             name: form.name,
+            name_ar: form.name_ar || null,
             short_name: form.short_name.trim(),
+            short_name_ar: form.short_name_ar?.trim() || null,
             allow_decimal: form.allow_decimal,
             status: form.status,
         };

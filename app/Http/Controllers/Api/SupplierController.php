@@ -17,7 +17,9 @@ class SupplierController extends Controller
             $search = trim($request->search);
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('name_ar', 'like', "%{$search}%")
                     ->orWhere('company_name', 'like', "%{$search}%")
+                    ->orWhere('company_name_ar', 'like', "%{$search}%")
                     ->orWhere('phone', 'like', "%{$search}%")
                     ->orWhere('email', 'like', "%{$search}%");
             });
@@ -48,7 +50,9 @@ class SupplierController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:150',
+            'name_ar' => 'nullable|string|max:150',
             'company_name' => 'nullable|string|max:150',
+            'company_name_ar' => 'nullable|string|max:150',
             'phone' => 'nullable|string|max:30',
             'email' => 'nullable|email|max:150',
             'gst_number' => 'nullable|string|max:50',
@@ -77,7 +81,9 @@ class SupplierController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:150',
+            'name_ar' => 'nullable|string|max:150',
             'company_name' => 'nullable|string|max:150',
+            'company_name_ar' => 'nullable|string|max:150',
             'phone' => 'nullable|string|max:30',
             'email' => 'nullable|email|max:150',
             'gst_number' => 'nullable|string|max:50',

@@ -18,9 +18,9 @@ class ProductController extends Controller
     public function index(Request $request)
     {
        $query = Product::with([
-    'category:id,name',
-    'brand:id,name',
-    'unit:id,name',
+    'category:id,name,name_ar',
+    'brand:id,name,name_ar',
+    'unit:id,name,name_ar,short_name,short_name_ar',
     'variants'
 ]);
 
@@ -30,6 +30,7 @@ class ProductController extends Controller
 
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('name_ar', 'like', "%{$search}%")
                     ->orWhereHas('variants', function ($v) use ($search) {
                         $v->where('sku', 'like', "%{$search}%")
                             ->orWhere('barcode', 'like', "%{$search}%");
@@ -67,10 +68,12 @@ class ProductController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:200',
+            'name_ar' => 'nullable|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'brand_id' => 'nullable|exists:brands,id',
             'unit_id' => 'required|exists:units,id',
             'description' => 'nullable|string',
+            'description_ar' => 'nullable|string',
             'product_type' => 'required|in:simple',
             'purchase_price' => 'required|numeric|min:0',
             'selling_price' => 'required|numeric|min:0',
@@ -86,11 +89,13 @@ class ProductController extends Controller
 
             $product = Product::create([
                 'name' => $validated['name'],
+                'name_ar' => $validated['name_ar'] ?? null,
                 'slug' => $this->generateSlug($validated['name']),
                 'category_id' => $validated['category_id'],
                 'brand_id' => $validated['brand_id'] ?? null,
                 'unit_id' => $validated['unit_id'],
                 'description' => $validated['description'] ?? null,
+                'description_ar' => $validated['description_ar'] ?? null,
                 'product_type' => 'simple',
                 'track_inventory' => $validated['track_inventory'],
                 'low_stock_threshold' => $validated['low_stock_threshold'],
@@ -157,10 +162,12 @@ class ProductController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:200',
+            'name_ar' => 'nullable|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'brand_id' => 'nullable|exists:brands,id',
             'unit_id' => 'required|exists:units,id',
             'description' => 'nullable|string',
+            'description_ar' => 'nullable|string',
             'purchase_price' => 'required|numeric|min:0',
             'selling_price' => 'required|numeric|min:0',
             'mrp' => 'required|numeric|min:0',
@@ -175,6 +182,7 @@ class ProductController extends Controller
 
             $product->update([
                 'name' => $validated['name'],
+                'name_ar' => $validated['name_ar'] ?? null,
                 'slug' => $this->generateSlug(
                     $validated['name'],
                     $product->id
@@ -183,6 +191,7 @@ class ProductController extends Controller
                 'brand_id' => $validated['brand_id'] ?? null,
                 'unit_id' => $validated['unit_id'],
                 'description' => $validated['description'] ?? null,
+                'description_ar' => $validated['description_ar'] ?? null,
                 'track_inventory' => $validated['track_inventory'],
                 'low_stock_threshold' => $validated['low_stock_threshold'],
                 'status' => $validated['status'],

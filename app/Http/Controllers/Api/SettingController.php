@@ -59,6 +59,10 @@ class SettingController extends Controller
             'upi_id' => 'payment',
             'upi_merchant_name' => 'payment',
             'upi_enabled' => 'payment',
+
+            'enabled_languages' => 'localization',
+            'default_language' => 'localization',
+            'language_switcher_enabled' => 'localization',
         ];
 
         // Handle logo file upload if provided
@@ -89,6 +93,9 @@ class SettingController extends Controller
                 }
                 if ($key === 'testimonials_list' && is_array($value)) {
                     $value = json_encode($value);
+                }
+                if ($key === 'enabled_languages' && is_array($value)) {
+                    $value = json_encode(array_values($value));
                 }
                 Setting::set($key, $value, $group);
             }
